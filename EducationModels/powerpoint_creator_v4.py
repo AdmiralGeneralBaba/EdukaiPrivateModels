@@ -4,6 +4,7 @@ import re
 
 class PowerpointCreatorV4 : 
     #     Fixed stages for a single lesson :
+#################    FIXED STAGES FOR EVERY LESSON/POWERPOINT:  #####################
     def stage_1_groupings_for_facts(numberedFacts) : 
         gptAgent = OpenAI()
         stage1Temp = 0.64
@@ -44,8 +45,7 @@ Here are the lesson facts :
 """      
         gptInput = numberedFacts + optimalFactGroupings
         powerpointPlan = gptAgent.open_ai_gpt4_call(gptInput, stage2Prompt, stage2Temp)
-        return powerpointPlan
-    
+        return powerpointPlan  
     def stage_3_lesson_description(numberedFacts) : 
         gptAgent = OpenAI()
         stage3Temp = 0.49
@@ -53,7 +53,7 @@ Here are the lesson facts :
         lessonDescription = gptAgent.open_ai_gpt4_call(numberedFacts, stage3Prompt, stage3Temp)
         return lessonDescription
 
-    
+#############     MODULE GENERIC CODE:        ###############
     # Looping stages 
     #Extracts the powerpoint individual slide plans, and the total amount of slides for the current powerpoint
     def stage_4_facts_for_slide_powerpoint_extractor(self, powerpointPlan) : 
@@ -61,7 +61,6 @@ Here are the lesson facts :
         last_powerpoint_number = powerpointNumbers[-1] if powerpointNumbers else None
         powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+? \{.*?\} \{.*?\})', powerpointPlan)
         return powerpointSlides, last_powerpoint_number
-    
     #Extracts the facts from the optimum grouping of a single powerpoint slide 
     def stage_4_facts_extraction_from_choices(self, powerpointSlide, factsString):
         # Use regex to extract the fact numbers from the slide text
@@ -87,14 +86,22 @@ Here are the lesson facts :
                     slide_facts.append(fact)
 
         return slide_facts
-    def stage_4_slide_general_content_page_splitter(self, powerpointSlide) :
+    #Extracts the facts from the fact numbers for the powerpoint slide
+
+
+
+#################    MODULE SPECIFIC CODE:         ##########################: 
+
+    ############# MODULE A, 'General Content Page' ###################:
+    def stage_4_A_slide_general_content_page_splitter(self, powerpointSlide) :
         match = re.search(r"TITLE:\s*(.*?)\n\nCONTENT:\s*\n(.*?)(?=\n\n|$)", powerpointSlide, re.DOTALL)
         if match is not None:
             title, content = match.groups()
             return title, content
         else:
             print("No match found in the provided slide content.")
-    def stage_4_slide_general_content_page(self, slideNumber, lessonDecription, powerpointPlan, slideFacts ) : 
+    #Splits up out of the general content page into two sections of strings
+    def stage_4_A_slide_general_content_page(self, slideNumber, lessonDecription, powerpointPlan, slideFacts ) : 
         gptAgent = OpenAI()
         stage4Temp = 0.97  
         generalContentPagePrompt = """ I want you to pretend to be an expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable. Based on this lesson description, and the inputted facts, you are to create a SINGLE powerpoint slide ({SLIDE NUMBER}) based on the facts given. Assume that everything in the lesson description is covered in the other slides. Start with a UNIQUE, INTERESTING title, by doing TITLE : {INSERT TITLE HERE}, and then CONTENT : {INSERT THE CONTENT HERE}. Tips for content:
@@ -114,19 +121,8 @@ Here are the lesson facts :
         titleAndContent = self.stage_4_slide_general_content_page_splitter(powerpointSlide)
         return titleAndContent
         #Split the title and content from the returned powerpoint slide : 
-        
-
-    #Extracts the module from a powerpoint slide, outputs the correct prompt
-    def stage_4_extract_module(self, powerpoint_line):
-        pattern = r"POWERPOINT \d+ : (.*?) \{"
-        powerpointModule = re.search(pattern, powerpoint_line)
-        if powerpointModule:
-            return powerpointModule.group(1)  # Return the captured group, which is the module name
-        else : 
-            print("ERROR in module extraction, make sure the module output syntax is correct.")
-        #returns the prompt for that module
-    
-    def stage_5_picture_query_single_picture(self, titleAndContent) : 
+    #Creates the title and content ofr the 'General Content Page' slide.
+    def stage_4_A_picture_query_single_picture(self, titleAndContent) : 
         gptAgent = OpenAI()
         pictureQueryPrompt = """I want you to pretend to be an expert teacher. Your task is to analyse the inputted powerpoint slide, and from it ONLY print a number of images that this powerpoint slide need, and then the search query intended to be used to search online on google next the image number, like so (dont include the brackets):
 
@@ -139,7 +135,22 @@ Here is the slide :
         fullSlide = " TITLE : " + titleAndContent[0] + " CONTENT : " + titleAndContent[1]
         pictureQuery = gptAgent.open_ai_gpt4_call(fullSlide, pictureQueryPrompt, 0.0)
         return pictureQuery
-    ##############Module Functions : 
+    #Creates the picture search query for the 'General Content Page' slide. 
+    
+################ MODULE EXTRACTION CODE ###################:
+
+    #Extracts the module from a powerpoint slide, outputs the correct prompt
+    def stage_5_extract_module(self, powerpoint_line):
+        pattern = r"POWERPOINT \d+ : (.*?) \{"
+        powerpointModule = re.search(pattern, powerpoint_line)
+        if powerpointModule:
+            return powerpointModule.group(1)  # Return the captured group, which is the module name
+        else : 
+            print("ERROR in module extraction, make sure the module output syntax is correct.")
+        #returns the prompt for that module
+    
+ 
+  
 
 test = PowerpointCreatorV4()
 

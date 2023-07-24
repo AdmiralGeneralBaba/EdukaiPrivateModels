@@ -61,7 +61,7 @@ Here are the lesson facts :
         last_powerpoint_number = powerpointNumbers[-1] if powerpointNumbers else None
         powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+? \{.*?\} \{.*?\})', powerpointPlan)
         return powerpointSlides, last_powerpoint_number
-    #Extracts the facts from the optimum grouping of a single powerpoint slide 
+    #Extracts the fact numbers from the optimum grouping of a single powerpoint slide 
     def stage_4_facts_extraction_from_choices(self, powerpointSlide, factsString):
         # Use regex to extract the fact numbers from the slide text
         fact_numbers_match = re.search(r'\{(.+?)\}', powerpointSlide)
@@ -88,6 +88,8 @@ Here are the lesson facts :
         return slide_facts
     #Extracts the facts from the fact numbers for the powerpoint slide
 
+    #NEED TO CREATE A FUNCTION HERE CALLED 'def stage_4_picture_search(searchQueryList)', where it first checks if it's a list, then searches at position i and returns 
+    #the first image that comes up, OR if it's just a string it just searches it up using that string ONLY.
 
 
 #################    MODULE SPECIFIC CODE:         ##########################: 
@@ -118,7 +120,7 @@ Here are the lesson facts :
         gptInput = "Lesson description : {" + lessonDecription  +"}" + "Lesson Context : {" + powerpointPlan + "}" + f"SLIDE NUMBER IS {slideNumber}, " + "Lesson Facts: "  + slideFacts ## Input for GPT
 
         powerpointSlide = gptAgent.open_ai_gpt4_call(gptInput, generalContentPagePrompt, temp=stage4Temp) 
-        titleAndContent = self.stage_4_slide_general_content_page_splitter(powerpointSlide)
+        titleAndContent = self.stage_4_A_slide_general_content_page_splitter(powerpointSlide)
         return titleAndContent
         #Split the title and content from the returned powerpoint slide : 
     #Creates the title and content ofr the 'General Content Page' slide.
@@ -136,7 +138,11 @@ Here is the slide :
         pictureQuery = gptAgent.open_ai_gpt4_call(fullSlide, pictureQueryPrompt, 0.0)
         return pictureQuery
     #Creates the picture search query for the 'General Content Page' slide. 
-    
+
+    def stage_4_A_combined_process(self, slideNumber, lessonDescription, powerpointPlan, lessonFacts) :
+        self.stage
+        self.stage_4_A_slide_general_content_page(slideNumber,lessonDescription,powerpointPlan,)
+        
 ################ MODULE EXTRACTION CODE ###################:
 
     #Extracts the module from a powerpoint slide, outputs the correct prompt
@@ -203,3 +209,11 @@ Take the scenarios of Japan and the United States. Both countries are surrounded
 For countries like Japan and the United States, it's essential to develop the carrier variant of naval bombers. Why? Imagine a mobile airstrip crossing oceans, carrying a fleet of airborne defenders, ready to protect against maritime threats from any direction. That's what a carrier gives you. In Hearts of Iron IV, it’s not just about having the right weapons, but knowing how to use them strategically.
 """
 test.stage_4_slide_general_content_page_splitter(text)
+
+
+######################            TO DO FOR THIS SECTION :            ###########################
+
+#NEED TO CREATE A FUNCTION HERE CALLED 'def stage_4_picture_search(searchQueryList)', where it first checks if it's a list, then searches at position i and returns 
+    #the first image that comes up, OR if it's just a string it just searches it up using that string ONLY. LOOK UP, I PUT IT WHERE IT SHOULD GO
+#NEED TO add in the L.O module, title page module and ending slide module/extract it from the powerpoint plan
+#NEED TO figure out how to search online programmically and have it return 

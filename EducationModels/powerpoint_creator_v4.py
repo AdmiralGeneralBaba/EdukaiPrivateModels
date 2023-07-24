@@ -126,7 +126,7 @@ Here are the lesson facts :
             print("ERROR in module extraction, make sure the module output syntax is correct.")
         #returns the prompt for that module
     
-    def stage_5_picture_query(self, titleAndContent) : 
+    def stage_5_picture_query_single_picture(self, titleAndContent) : 
         gptAgent = OpenAI()
         pictureQueryPrompt = """I want you to pretend to be an expert teacher. Your task is to analyse the inputted powerpoint slide, and from it ONLY print a number of images that this powerpoint slide need, and then the search query intended to be used to search online on google next the image number, like so (dont include the brackets):
 

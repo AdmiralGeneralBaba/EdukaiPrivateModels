@@ -62,9 +62,9 @@ Here are the lesson facts :
         powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+? \{.*?\} \{.*?\})', powerpointPlan)
         return powerpointSlides, last_powerpoint_number
     #Extracts the fact numbers from the optimum grouping of a single powerpoint slide 
-    def stage_4_facts_extraction_from_choices(self, powerpointSlide, factsString):
+    def stage_4_facts_extraction_from_choices(self, slideNumber, factsString):
         # Use regex to extract the fact numbers from the slide text
-        fact_numbers_match = re.search(r'\{(.+?)\}', powerpointSlide)
+        fact_numbers_match = re.search(r'\{(.+?)\}', slideNumber)
         if fact_numbers_match is None:
             return []
 
@@ -139,10 +139,24 @@ Here is the slide :
         return pictureQuery
     #Creates the picture search query for the 'General Content Page' slide. 
 
+   
+   
     def stage_4_A_combined_process(self, slideNumber, lessonDescription, powerpointPlan, lessonFacts) :
-        self.stage
-        self.stage_4_A_slide_general_content_page(slideNumber,lessonDescription,powerpointPlan,)
+        slideFacts = self.stage_4_facts_extraction_from_choices(slideNumber, lessonFacts) # Gets slide facts
+        powerpointSlide = self.stage_4_A_slide_general_content_page(slideNumber,lessonDescription,powerpointPlan, slideFacts) # Creates slide
+        powerpointTitleAndContent = self.stage_4_A_slide_general_content_page_splitter(powerpointSlide) #Splits slide into a 'Title' string and 'Content' String
+        searchQuery = self.stage_4_A_picture_query_single_picture(powerpointSlide) # Makes a search query to search online
+        #NEED to input a stage here where it searches online for a image.
+        return powerpointTitleAndContent, searchQuery # Returns the splitted powerpoint slide tuple and the search query
         
+
+
+
+
+
+
+
+
 ################ MODULE EXTRACTION CODE ###################:
 
     #Extracts the module from a powerpoint slide, outputs the correct prompt
@@ -208,7 +222,7 @@ Take the scenarios of Japan and the United States. Both countries are surrounded
 
 For countries like Japan and the United States, it's essential to develop the carrier variant of naval bombers. Why? Imagine a mobile airstrip crossing oceans, carrying a fleet of airborne defenders, ready to protect against maritime threats from any direction. That's what a carrier gives you. In Hearts of Iron IV, it’s not just about having the right weapons, but knowing how to use them strategically.
 """
-test.stage_4_slide_general_content_page_splitter(text)
+test.stage_4_A_combined_process()
 
 
 ######################            TO DO FOR THIS SECTION :            ###########################
@@ -217,3 +231,4 @@ test.stage_4_slide_general_content_page_splitter(text)
     #the first image that comes up, OR if it's just a string it just searches it up using that string ONLY. LOOK UP, I PUT IT WHERE IT SHOULD GO
 #NEED TO add in the L.O module, title page module and ending slide module/extract it from the powerpoint plan
 #NEED TO figure out how to search online programmically and have it return 
+#NEED to finish the 'powerpoint full process' creator

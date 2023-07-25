@@ -33,19 +33,35 @@ class OpenAI :
 
         reply_content = completion.choices[0].message.content
         return reply_content  # Returning the reply_content from the function
-    def open_ai_gpt4_call(self, user_content, prompt=None) : 
-            messages = [{"role": "user", "content": user_content}]
-            if prompt:
-                messages.insert(0, {"role":"system", "content": prompt})
+    def open_ai_gpt4_call(self, user_content, prompt=None, setTemperature=None):
+        # Initialize messages
+        messages = []
 
-            completion  = openai.ChatCompletion.create(
-                model="gpt-4-0613",
+        # If prompt exists, add it as system message
+        if prompt:
+            messages.append({"role":"system", "content": prompt})
+
+        # Check if user_content is a list and if it contains proper structured messages
+        if isinstance(user_content, list):
+            messages.extend(user_content)
+        else:
+            messages.append({"role": "user", "content": user_content})
+
+        # If setTemperature is provided, include it in the completion
+        if setTemperature:
+            completion = openai.ChatCompletion.create(
+                model="gpt-4",
+                messages=messages,
+                temperature=setTemperature
+            )
+        else:
+            completion = openai.ChatCompletion.create(
+                model="gpt-4",
                 messages=messages
             )
 
-            reply_content = completion.choices[0].message.content
-
-            return reply_content  # Returning the reply_content from the function7
+        reply_content = completion.choices[0].message.content
+        return reply_content  # Returning the reply_content from the function
     def open_ai_dalle_call_n1(self, inputPrompt) :
         response = openai.Image.create(
             prompt= inputPrompt,

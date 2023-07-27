@@ -52,15 +52,14 @@ Here are the lesson facts :
         stage3Prompt = """These facts are included for a lesson. Summarise these facts into one,  brief line, outlining the lesson."""
         lessonDescription = gptAgent.open_ai_gpt4_call(numberedFacts, stage3Prompt, stage3Temp)
         return lessonDescription
+    def stage_3_facts_for_slide_powerpoint_extractor(self, powerpointPlan) : 
+        powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+? \{.*?\} \{.*?\})', powerpointPlan)
+        return powerpointSlides
 
 #############     MODULE GENERIC CODE:        ###############
     # Looping stages 
     #Extracts the powerpoint individual slide plans, and the total amount of slides for the current powerpoint
-    def stage_4_facts_for_slide_powerpoint_extractor(self, powerpointPlan) : 
-        powerpointNumbers = re.findall(r"POWERPOINT (\d+)", powerpointPlan)
-        last_powerpoint_number = powerpointNumbers[-1] if powerpointNumbers else None
-        powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+? \{.*?\} \{.*?\})', powerpointPlan)
-        return powerpointSlides, last_powerpoint_number
+    
     #Extracts the fact numbers from the optimum grouping of a single powerpoint slide 
     def stage_4_facts_extraction_from_choices(self, slideNumber, factsString):
         # Use regex to extract the fact numbers from the slide text
@@ -142,6 +141,7 @@ Here is the slide :
 
 
     def stage_4_A_combined_process(self, slideNumber, lessonDescription, powerpointPlan, lessonFacts) :
+        slideNumber = str(slideNumber) # Convert slideNumber to string
         slideFacts = self.stage_4_facts_extraction_from_choices(slideNumber, lessonFacts) # Gets slide facts
         powerpointSlide = self.stage_4_A_slide_general_content_page(slideNumber,lessonDescription,powerpointPlan, slideFacts) # Creates slide
         searchQuery = self.stage_4_A_picture_query_single_picture(powerpointSlide) # Makes a search query to search online
@@ -158,13 +158,31 @@ Here is the slide :
         pattern = r"POWERPOINT \d+ : (.*?) \{"
         powerpointModule = re.search(pattern, powerpoint_line)
         if powerpointModule:
-            return powerpointModule.group(1)  # Return the captured group, which is the module name
+            return powerpointModule.group(1), powerpoint_line # Return the captured group, which is the module name
         else : 
             print("ERROR in module extraction, make sure the module output syntax is correct.")
-        #returns the prompt for that module
+    def stage_5_module_powerpoint_slide_function_calls(self, module, powerpointSlideOutline, lessonFacts, lessonDescription) : # Calls stage_4 functions for modules based on the name of the module, use 'swtich : case' for this
+         #runs the method for that module
+         #Output is powerpoint slide for the module inputted + lessonfact
+         return None
+    def stage_6_create_powerpoint(self, lessonFacts) : 
+        poweropointMethods = PowerpointCreatorV4()
+        powerpointSlidesDetailed = []
+        factGroupings = self.stage_1_groupings_for_facts(lessonFacts)
+        powerpointPlan = self.stage_2_powerpoint_plan(lessonFacts, factGroupings)
+        lessonDescription = self.stage_3_lesson_description(lessonFacts)
+        powerpointSlideOutline = self.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlan)
+        for i in range(len(powerpointSlideOutline)) : 
+            module = poweropointMethods.stage_5_extract_module(powerpointSlideOutline[i]) #Extracts module from powerpoint plan
+            powerpointSlide = poweropointMethods.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutline[i], lessonFacts, lessonDescription) #Calls function that creates powerpoint based on module name.
+            powerpointSlidesDetailed.append(powerpointSlide)
+        return powerpointSlidesDetailed #Returns an array, where at [i] it is the powerpoint detailed content, and the name of the module/number that that slide is.
     
- 
-  
+
+
+            
+
+            
 
 test = PowerpointCreatorV4()
 
@@ -220,4 +238,5 @@ POWERPOINT 8 : Module : General content page - {15, 16}, Strategic bombers and t
 
 POWERPOINT 9 : Module : Ending slide - Conclusion, Summary of the different types of aircraft in Hearts of Iron IV, their roles, and their impacts.
 """
-powerpointSlide = test.stage_4_A_combined_process("7", lessonDescriptionTesting, powerpointPlanTesting, facts)
+
+powerpointSlide = test.stage_4_A_combined_process(lessonDescriptionTesting, powerpointPlanTesting, facts)

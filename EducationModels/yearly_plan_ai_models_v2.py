@@ -35,14 +35,14 @@ class YearlyPlanCreatorV2() :
         return lessons
     def yearly_plan_homework_creator(lessons, schoolType) :
         homeworkContent = [] 
-        homeworkPrompt = f"""Pretend you are a teacher for a {schoolType}. Based on the following raw facts, create a homework assignemnet for students to compelete.
+        homeworkPrompt = f"""Pretend you are a teacher for a. Based on the following raw facts, create a homework assignemnet for students to compelete.
                              Remember to only test based on the information provided: """
         gptAgent = OpenAI()
         for i in range(len(lessons)) : 
             homeworkContent.append(gptAgent.open_ai_gpt_call(lessons[i], homeworkPrompt))
         
         return homeworkContent
-    def homework_creator_template_one(lessonFacts, gptType) : 
+    def homework_creator_template_one(self, lessonFacts, gptType) : 
         gptAgent = OpenAI() # Creates a GPTAgent
         homeworkTemplateOneCreationPrompt = """ Imagine you are a teacher creating a piece of homework intended for after class. Based on the following raw facts that were gone over in the lesson, create an engaging and optimal homework sheet for students to learn the content. Follow these steps to create the homework task, but ONLY ouput the sections that students need to see:
 
@@ -118,7 +118,23 @@ class YearlyPlanCreatorV2() :
             homeworkSheet = gptAgent.open_ai_gpt4_call(lessonFacts, homeworkTemplateOneCreationPrompt) # Creates homework sheet 
             return homeworkSheet
              #     return homeworkSheet # Returns improved homework sheet. 
+    def yearly_plan_homework_creator_new_prototype(self, lessons):
+        homeworkContent = []
+        
+        for i in range(len(lessons)):
+            homeworkTemplate = int(input("Enter the homework template number (0 or 1): "))
+            
+            if homeworkTemplate == 0:
+                homeworkPrompt = self.homework_creator_template_one(lessons[i])
+            elif homeworkTemplate == 1:
+                homeworkPrompt = self.homework_creator_template_two(lessons[i])
+            else:
+                raise ValueError(f"Invalid homeworkTemplate value: {homeworkTemplate}")
 
+            gptAgent = OpenAI()
+            homeworkContent.append(gptAgent.open_ai_gpt_call(lessons[i], homeworkPrompt))
+        
+        return homeworkContent
 
 #######################         TESTING CODE           ########################### : 
 path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\HoI_IV_Strategy_Guide.pdf"

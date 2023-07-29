@@ -280,15 +280,17 @@ Here are the lesson facts :
         powerpointSlideOutlines = self.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlan)
         print("STAGE 3.2 COMPLETE")
         print("LOOPING STAGES IN PROGRESS...")
-        for i in range(len(powerpointSlideOutlines)) : 
-            slideNumber = i + 1 # #+1 because powerpoint slides start at 1
+        for i in range(len(powerpointSlideOutlines)):
+            slideNumber = i + 1 # +1 because powerpoint slides start at 1
             print(f"CURRENT SLIDE IS {slideNumber}")
             print(powerpointSlideOutlines[i])
-            module = poweropointMethods.stage_5_extract_module(powerpointSlideOutlines[i]) #Extracts module from powerpoint plan
-    
-            powerpointSlide = poweropointMethods.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines[i], slideNumber, lessonFacts, lessonDescription, powerpointPlan) #Calls function that creates powerpoint based on module name.
+            module = poweropointMethods.stage_5_extract_module(powerpointSlideOutlines[i]) # Extracts module from powerpoint plan
+
+            powerpointSlide = poweropointMethods.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines[i], slideNumber, lessonFacts, lessonDescription, powerpointPlan) # Calls function that creates powerpoint based on module name.
             print("POWERPOINT SLIDE CREATED, APPENDING...")
-            powerpointSlidesDetailed.append(powerpointSlide)
+
+            powerpointSlidesDetailed.append({"slide": powerpointSlide, "module": module})
+
             print("POWERPOINT SLIDE APPENDED TO ARRAY")
         print("FULL POWERPOINT CREATED!")
         return powerpointSlidesDetailed #Returns an array, where at [i] it is the powerpoint detailed content, and the name of the module/number that that slide is
@@ -387,5 +389,10 @@ powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powe
 # print(powerpointSlideOutlines[1])
 
 powerpointTest = test.stage_6_create_powerpoint(facts)
-print(powerpointTest[:10])  # Prints the first 10 items
+for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
+    print(f"SlideModulePair #{i+1}:")
+    print(f"  Module: {slide_module_dict['module']}")
+    print(f"  Slide: {slide_module_dict['slide']}")
+    print()
+
 

@@ -84,7 +84,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
                 rawFacts.append(self.gptAgent.open_ai_gpt_call(textbookChuncked[i], listPrompt, gptTemp))  # Changed here
 
             return rawFacts
-        def renumber_points(self, input_text):
+        def renumber_facts(self, input_text):
             # split the text into lines
             lines = re.split(r'(?<=})', input_text.strip())
 

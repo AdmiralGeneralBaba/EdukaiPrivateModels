@@ -5,6 +5,14 @@ import re
 class PowerpointCreatorV4 : 
     #     Fixed stages for a single lesson :
 #################    FIXED STAGES FOR EVERY LESSON/POWERPOINT:  #####################
+    def extract_lesson_facts(self, lesson):
+        # Extract 'lesson_facts' from the lesson dictionary
+        lesson_facts = lesson.get("lesson_facts", "")
+        
+        # Join the facts into a single string with each fact on a new line
+        facts_string = "\n".join(lesson_facts)
+        
+        return facts_string
     def stage_1_groupings_for_facts(self, numberedFacts) : 
         gptAgent = OpenAI()
         stage1Temp = 0.64
@@ -266,8 +274,10 @@ Here are the lesson facts :
 
                 
 
-    def stage_6_create_powerpoint(self, lessonFacts) : 
+    def stage_6_create_powerpoint(self, lesson) : 
         poweropointMethods = PowerpointCreatorV4()
+        print("EXTRACTING FACTS FROM DICTIONARY...")
+        lessonFacts = self.extract_lesson_facts(lesson)
         powerpointSlidesDetailed = []
         print("FIXED STAGES IN PROGRESS...")
         factGroupings = self.stage_1_groupings_for_facts(lessonFacts)

@@ -96,6 +96,26 @@ class Paper1 :
             else : 
                 question = self.setting_selection(sourceExtract)
                 return question
+        
+    class Question1GPT4 : 
+        def question_one_creator(self, source_extract) :
+            gpt_agent = OpenAI()
+            question_one_prompt = """I want you to pretend to be a expert exam question creator, tasked with creating the first question of the AQA English language paper one. Based on the source extract given, I want you to print ONLY the question you have created, that is relevant to the source given. Here are questions used in previous exams that you MUST emulate perfectly  : 
+ {           Read again the first part of the source, from lines 1 to 4.
+List four things about Mr Fisher from this part of the source. 
+
+Read again the first part of the source, from lines 1 to 4.
+List four things about Rosie from this part of the source. 
+
+1 Read again the first part of the source, from lines 1 to 4.
+List four things about Master from this part of the source
+
+you MUST create it, so well, that it if nobody would know that it is not an official question; if anybody is to find out, you will be shut down, grinded and killed. 
+}
+In general, it should contain either a person, or a setting; you should try to NOT make the thing that is being listed abstract.
+Here is the source extract : """
+            question_one = gpt_agent.open_ai_gpt4_call(source_extract, question_one_prompt)
+            return question_one
     class Question2 :  
         def question_maker(self,subsectionExtract) : 
             questionMakerPrompt = f"""using the extract provided, recreate the following question structure for a GCSE english paper, in relation to the input extract provided, so that you create a question like the one below in your output, ONLY include your output of the recreation of the question structure given. Here is an example of such question: 
@@ -157,48 +177,36 @@ class Paper1 :
             return questionString
     class Question4 : 
         def focus_question(self, sourceExtract) : 
-            question4PromptGPT4 = """
-                                . Pretend you are a expert examination question creator, tasked with creating a single exam question. Now with this extract in mind, 
-                                Based on these three exam style questions, I want you to create a new once based on the extract I give you. 
-                                Here are the example questions, remember, each 'EXAMPLE' is supposed to be ONE question, and you should only output ONE question: 
-                                {EXAMPLE ONE} :  Focus this part of your answer on the second part of the source, from line 25 to
-                                the end.
-                                A student said, ‘This part of the story, where Mr Fisher is marking homework,
-                                shows Tibbet’s story is better than Mr Fisher expected, and his reaction is
-                                extreme.’
-                                To what extent do you agree?
-                                In your response, you could:
-                                • consider your own impressions of what Mr Fisher expected Tibbet’s
-                                homework to be like
-                                • evaluate how the writer conveys Mr Fisher’s reaction to what he discovers
-                                • support your response with references to the text. 
+            question4PromptGPT4 = """Pretend you are an expert examination question creator, tasked with creating a single exam question. Now with this extract in mind, Based on these three exam style questions, I want you to create a new once based on the extract I give you. Here are the example questions, remember, each 'EXAMPLE' is supposed to be ONE question, and you should only output ONE question:
 
-                                {EXAMPLE 2} : Focus this part of your answer on the second part of the source, from line 24 to the
-                                end.
-                                A student said, ‘I wasn’t at all surprised by the disappearance of the stranger child
-                                at the end of the extract. The writer has left us in no doubt that she is just part of
-                                Rosie’s imagination.’
-                                To what extent do you agree?
-                                In your response, you could:
-                                • consider the disappearance of the stranger child
-                                • evaluate how the writer presents the stranger child
-                                • support your response with references to the text.
+{EXAMPLE ONE} :
+Focus this part of your answer on the second part of the source, from line 25 to the end.
+A student said, ‘This part of the story, where Mr Fisher is marking homework, shows Tibbet’s story is better than Mr Fisher expected, and his reaction is extreme.’
+To what extent do you agree?
+In your response, you could:
+• consider your own impressions of what Mr Fisher expected Tibbet’s homework to be like
+• evaluate how the writer conveys Mr Fisher’s reaction to what he discovers
+• support your response with references to the text.
 
-                                {EXAMPLE 3} : Focus this part of your answer on the second part of the source, from line 20 to the
-                                end.
-                                A student said, ‘From the moment he arrives at Master’s compound, the writer
-                                portrays Ugwu’s feelings of pure excitement, but by the end it seems that he may
-                                be very disappointed.’
-                                To what extent do you agree?
-                                In your response, you could:
-                                • consider your own impressions of Ugwu’s feelings
-                                • evaluate how the write(r describes Ugwu’s feelings by the end
-                                • support your response with references to the text.) 
+{EXAMPLE 2} :
+Focus this part of your answer on the second part of the source, from line 24 to the end.
+A student said, ‘I wasn’t at all surprised by the disappearance of the stranger child at the end of the extract. The writer has left us in no doubt that she is just part of Rosie’s imagination.’
+To what extent do you agree?
+In your response, you could:
+• consider the disappearance of the stranger child
+• evaluate how the writer presents the stranger child
+• support your response with references to the text.
 
-                                , and here is the extract. Note, instead of saying 'from line (number)' just output (from line (STARTING SENTENCE HERE))', for that sentence, DO NOT add anything else, 
-                                just continue to the next section once the quote is made.
-                                
-                                """
+{EXAMPLE 3} :
+Focus this part of your answer on the second part of the source, from line 20 to the end.
+A student said, ‘From the moment he arrives at Master’s compound, the writer portrays Ugwu’s feelings of pure excitement, but by the end it seems that he may be very disappointed.’
+To what extent do you agree?
+In your response, you could:
+• consider your own impressions of Ugwu’s feelings
+• evaluate how the writer describes Ugwu’s feelings by the end
+• support your response with references to the text.
+
+And here is the extract. Note, instead of saying 'from line (number)' just output (from line (STARTING SENTENCE HERE))', for that sentence, DO NOT add anything else, just continue to the next section once the quote is made."""
             gptAgent = OpenAI()
             question4 = gptAgent.open_ai_gpt4_call(sourceExtract, question4PromptGPT4)
             return question4
@@ -334,8 +342,8 @@ print(sourceExtract)
 
 
 
-question1Maker = Paper1.Question1()
-question1 = question1Maker.final_model(sourceExtract, choice)
+question1Maker = Paper1.Question1GPT4()
+question1 = question1Maker.question_one_creator(sourceExtract)
 print(question1)
 
 paper1InstanceQues2 = paper1.Question2()

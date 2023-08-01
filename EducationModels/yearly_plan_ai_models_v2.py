@@ -1,7 +1,8 @@
 from openai_calls import OpenAI 
 from info_extraction_v1 import InfoExtractorV1
 from info_extraction_v1 import SentenceIdentifier
-# from homework_creator_v1 import homeworkCreatorsV1
+from homework_creator_v1 import homeworkCreatorsV1
+from powerpoint_creator_v4 import PowerpointCreatorV4
 import re
 
 class YearlyPlanCreatorV2() : 
@@ -42,7 +43,12 @@ class YearlyPlanCreatorV2() :
             lessons.append({"lesson_facts": current_lesson})
         self.yearly_plan_cleanup_facts_per_lesson(lessons)
         return lessons
-  
+    def yearly_plan_homework_per_lesson(self, lessons) : 
+        homework_creator = homeworkCreatorsV1()
+        for lesson in lessons : 
+            lesson_facts = lesson['lesson_facts']
+            lesson['lesson_homework']  = homework_creator.homework_addon_lesson(lesson_facts)
+        return lessons
     def lesson_descriptor(self, lesson) :
         gpt_agent = OpenAI()
         gpt_temp = 0.8
@@ -69,22 +75,14 @@ class YearlyPlanCreatorV2() :
         return lesson_description
     
     def yearly_plan_addon_lesson_descriptions(self, lessons):
-        lesson_list = []
-        info_extraction = InfoExtractorV1()
         for lesson in lessons:
-            lesson_facts = lesson["lesson_facts"]  # Extracting the 'lesson_facts'
-            lesson_renumbered = info_extraction.renumber_facts(lesson_facts)
-            lesson_description = self.lesson_descriptor(lesson_renumbered)
-            lesson_dict = {
-                'description': lesson_description,
-                'facts': lesson_renumbered 
-            }
-            lesson_list.append(lesson_dict)
-        return lesson_list  
-    
+            lesson_facts = lesson['lesson_facts']
+            lesson_descripton = self.lesson_descriptor(lesson_facts)
+            lesson['lesson_description'] = lesson_descripton
+        return lessons
     def yearly_plan_homework_creator_templates_versions(self, lessons):
         homeworkContent = [] #NEED TO HAVE THIS TAKE IN LESSONS AS A LIST OF DICTIONARYS
-        homework_creator = homeworkCreatorV1()
+        homework_creator = homeworkCreatorsV1()
         
         for i in range(len(lessons)):
             homeworkTemplate = int(input("Enter the homework template number (0 or 1): "))

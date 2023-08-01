@@ -211,7 +211,7 @@ Here are the lesson facts :
     def stage_4_C_combined_process(self, lessonFacts) : 
         #'C' is Title Page#
         gptAgent = OpenAI()
-        temperature = 0.5
+        temperature = 0.7
         inputPrompt = """I want you to pretend to be a expert teacher, making a perfectly constructed first powerpoint slide based on the inputted lesson facts. You are to create a perfect Title and subtitle. Put the title in 'TITLE : INSERT TITLE HERE ' then 'SUBTITLE : INSERT SUBTITLE HERE' 
 Here are the lesson facts : """
         titlePowerpoint = gptAgent.open_ai_gpt4_call(inputPrompt, lessonFacts, temperature)
@@ -220,7 +220,7 @@ Here are the lesson facts : """
         return splitTitlePowerpoint
     def stage_4_D_combine_process(self, lessonFacts) : 
         gptAgent = OpenAI()
-        temperature = 0.5
+        temperature = 0.
         inputPrompt = """I want you to pretend to be a expert teacher, making a perfectly constructed FINAL powerpoint slide for your students, so that it is easily readable. Using the inputted facts, you are to create a SINGLE powerpoint slide. Start with a title for the Ending slide, by doing 'TITLE : INSERT TITLE HERE', and then 'CONTENT : INSERT THE CONTENT HERE'. 
 - Have it follow a standard ending slide structure.
 - In the content, keep it brief and short, about what the WHOLE lesson was about in an engaging, fun way for students.
@@ -303,27 +303,7 @@ Here are the lesson facts :
 
 test = PowerpointCreatorV4()
 
-facts =  """1 Supply routes can be improved by improving infrastructure and naval bases.
-2 The map is divided into air zones for planes to operate in.
-3 There are five basic types of planes in Hearts of Iron IV.
-4 Fighters can be used for air superiority and interception missions.
-5 There are light fighters and heavy fighters, each with different capabilities.
-6 Heavy fighters have greater operational range and can sustain more damage but are vulnerable to lighter fighter planes.
-7 Guns work better against enemy bombers.
-8 Close attack aircraft are light bombers used to support armies in combat.
-9 CAS planes attack enemy troops directly.
-10 CAS planes can also attack ships and ports through Naval Strikes and Port Strikes.
-11 CAS planes make up the bulk of bombing wings.
-12 Tactical bombers are midway between close attack support and strategic bombers.
-13 Tactical bombers can perform Close Air Support, Port Strikes, or Strategic bombing.
-14 Tactical bombers have greater range than CAS planes but cannot attack ships at sea.
-15 Strategic bombers are used for the destruction of the enemy's industrial base and infrastructure.
-16 Strategic bombers have long range and high survivability.
-17 Mid-game is a period of time during the game.
-18 Naval bombers specialize in naval strikes and port strikes.
-19 Naval bombers are crucial for Japan and Italy due to the risk of amphibious and naval attacks.
-20 Naval bombers are specialized in their purpose.
-21 Japan and the United States should develop the carrier variant of naval bombers.
+facts =  """4. Some dockyard slots will have to produce convoys to keep resources flowing in case of a blockade.5. Challenging the Royal Navy with battleships or cruisers will take a lot of time.6. Carrier research starts far behind other powers.7. Submarines are only moderately effective against large surface fleets.8. Invading the United Kingdom across the English Channel requires clearing a path for armies.9. Following the historical path of Germany and striking out for Romania's oil fields or investing in synthetic factories may reduce the need for convoys.10. Every decision in the early game connects to another decision, and many choices won't bear fruit for months or years.11. It is important to spend the early game thinking about what you want your situation to be when the world war starts.12. Key questions to consider are who the likely enemies and friends are, where to attack and defend, military priorities, turning industrial power into a war machine, the number of ships needed, and the desire for advanced weapons.13. Most nations in Hearts of Iron IV start with three research slots.14. Industrial production should be the number one focus in the early game.15. Research should focus on capability multipliers such as building factories faster and increasing factory efficiency.16. Researching technologies that speed up research is important.17. Computing, radar, atomic weapons, and rockets are research options in the electronics tab.
  """
 
 # groupings = test.stage_1_groupings_for_facts(facts)

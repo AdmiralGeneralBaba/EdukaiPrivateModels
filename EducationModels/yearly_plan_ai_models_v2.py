@@ -2,11 +2,12 @@ from openai_calls import OpenAI
 from info_extraction_v1 import InfoExtractorV1
 from info_extraction_v1 import SentenceIdentifier
 import re
-
+from homework_creator_v1 import homeworkCreatorV1
 class YearlyPlanCreatorV2() : 
-    def yearly_plan_facts_per_lesson(pdf_path, chunkSize, lessonSize): 
+
+    def yearly_plan_facts_per_lesson_pdf_input(pdf_path, chunkSize, lessonSize): 
         infoExtract = InfoExtractorV1() #Creates the infoExtractor 
-        rawFacts = infoExtract.info_extractor(pdf_path, chunkSize) # Calls info extractor
+        rawFacts = infoExtract.info_extractorV2(pdf_path, chunkSize) # Calls info extractor
     
         # Initialize variables
         lessons = []
@@ -33,101 +34,51 @@ class YearlyPlanCreatorV2() :
             lessons.append(current_lesson)
 
         return lessons
-    def yearly_plan_homework_creator(lessons, schoolType) :
-        homeworkContent = [] 
-        homeworkPrompt = f"""Pretend you are a teacher for a. Based on the following raw facts, create a homework assignemnet for students to compelete.
-                             Remember to only test based on the information provided: """
-        gptAgent = OpenAI()
-        for i in range(len(lessons)) : 
-            homeworkContent.append(gptAgent.open_ai_gpt_call(lessons[i], homeworkPrompt))
-        
-        return homeworkContent
-    def homework_creator_template_one(self, lessonFacts, gptType) : 
-        gptAgent = OpenAI() # Creates a GPTAgent
-        homeworkTemplateOneCreationPrompt = """ Imagine you are a teacher creating a piece of homework intended for after class. Based on the following raw facts that were gone over in the lesson, create an engaging and optimal homework sheet for students to learn the content. Follow these steps to create the homework task, but ONLY ouput the sections that students need to see:
+  
+    def lesson_descriptor(self, lesson) :
+        gpt_agent = OpenAI()
+        gpt_temp = 0.8
+        lesson_description_prompt = """ You are a perfect describer based on facts inputted, and can describe the content of facts given as perfectly and briefly as possible. This is one lesson in many, and these are facts from a section of a textbook. You are to briefly, in one line, describe what these facts describe, assuming they are the content of a single lesson (e.g is it an introduction, a delve deeper into a certain topic etc)
+Here are some example outputs : 
 
-                                                1. Define Learning Goals: Determine the knowledge students should gain.
-                                                2. Examine Raw Facts: Analyze your chosen facts, understanding their potential learning value.
-                                                3. Segment Facts: Divide facts into manageable sections that can inspire individual questions.
-                                                4. Build Context: Make facts engaging by framing them within a story or context, like historical settings or real-world applications.
-                                                5. Formulate Questions: Use segmented facts and their context to create various types of clear questions. Consider students' age and skill level when setting task difficulty, aiming for challenging but achievable tasks.
-                                                6. Ensure Comprehensive Questions: Make sure your questions cover all initial facts, requiring students to understand all facts to answer.
-                                                7. Give Clear Instructions: Explain task expectations, including answer format, deadlines, and other requirements.
-                                                8. Develop Grading Rubric: Make sure to label how many marks each question is. Higher marks should mean a harder question, and easier question should mean lower marks
+This lesson is an exhaustive introduction to the complexities of neurology, with a key focus on the functions of different brain regions.
+This lesson provides an essential foundation for novices in the field of astronomy, emphasizing the understanding of celestial bodies and their movements.
+This lesson is about the art of cinematography and the principles of visual storytelling, with a particular concentration on mastering the use of different camera angles and movements.
+This lesson is a detailed guide to understanding the dynamics of international politics, with a significant emphasis on the causes and consequences of global conflicts.
+This lesson provides a basic understanding for beginners in the field of architecture, focusing on the importance of structural design and sustainability in modern building practices.
+This lesson is about the world of digital art and animation, with a focus on mastering the techniques of 3D modeling and character design.
+This lesson is an in-depth exploration of the evolution of music, from classical symphonies to contemporary pop culture, with a focus on understanding the influence of societal changes on musical styles.
+This lesson provides a foundation for beginners in the field of environmental science, emphasizing the impact of human activity on climate change and the importance of sustainable practices.
+This lesson is about the realm of speculative fiction, with a particular focus on developing engaging plotlines and immersive world-building in fantasy and science fiction genres.
 
-                                                Here is an example homework output; Note, the topic is irrelevant, this is just to show you the structure : 
-                                                {
-                                                LO's : 
-
-                                                Understand the strategic and logistical considerations for naval invasions.
-                                                Understand the role and advantages of specific military units like marines, mountain infantry, and paratroopers.
-                                                Gain knowledge about advanced warfare technologies, including atomic research and rockets.
-                                                Understand the concept of resistance in occupied territories and how it can be managed.
-                                                Raw Facts Examination:
-
-                                                This lesson encompass a wide range of military strategy, from the technical aspects of naval invasion, the roles of specific units, to the implications of advanced warfare technologies. Additionally, they cover the socio-political aspect of warfare, i.e., managing resistance in occupied territories.
-
-                                                The homework will be contextualized within a larger military strategy planning scenario. You will take on the role of military strategists planning for a large-scale invasion, incorporating different units, advanced warfare technologies, and managing occupied territories.
-
-                                                Questions:
-
-                                                Naval Invasions (6 marks)
-
-                                                Explain how the size of an invasion force is determined and the role naval technology plays in it. (2 marks)
-                                                Discuss the importance of ports and convoys in naval invasions. (2 marks)
-                                                Why should the origin point and destination point be considered when planning a naval invasion? (2 marks)
-
-
-                                                Specific Military Units (6 marks)
-
-                                                Describe the advantages of using marines in amphibious landings and other conditions. (2 marks)
-                                                How do mountain infantry contribute to the effectiveness of a military operation? (2 marks)
-                                                Explain the strategic role of paratroopers in a military operation. (2 marks)
-
-
-                                                Advanced Warfare Technologies (6 marks)
-
-                                                What is the significance of atomic research and nuclear reactors in warfare, particularly from 1940 onwards? (2 marks)
-                                                Describe the effects and strategic uses of atomic bombs and rockets. (2 marks)
-                                                Discuss how rockets can perform strategic bombing missions. (2 marks)
-
-
-                                                Resistance and Suppression (6 marks)
-
-                                                Explain what resistance is and how it affects occupied territories. (2 marks)
-                                                Discuss strategies to suppress resistance, including the role of garrison troops and Prince of Terror political advisors. (2 marks)
-                                                What happens to resistance when territories are taken in a peace treaty? (2 marks)
-                                                Instructions:
-
-                                                Answer all questions using full sentences. Draw on your knowledge gained during the lesson and utilize your analytical skills to expand on each answer. You can use diagrams where necessary. 
-
-                                                Marks will be awarded based on the accuracy of the answer and the understanding of the concepts as shown through your explanation. Remember to refer back to the class material and the given facts to ensure your answers are comprehensive.}
-
-
-                                                Raw facts : """ #Prompt to create homework of template one
+Here are the lesson facts : 
+"""
+        lesson_description = gpt_agent.open_ai_gpt_call(lesson, lesson_description_prompt, gpt_temp)
+        return lesson_description
+    def yearly_plan_addon_lesson_descriptions(self, lessons):
+        lesson_list = []
+        info_extraction = InfoExtractorV1()
+        for lesson in lessons:
+            lesson_renumbered = info_extraction.renumber_points(lesson)
+            lesson_description = self.lesson_descriptor(lesson_renumbered)
+            lesson_dict = {
+                'description': lesson_description,
+                'facts': lesson_renumbered 
+            }
+            lesson_list.append(lesson_dict)
+        return lesson_list  
     
-        homeworkEvaluatorTemplateOnePrompt = """Pretend you are an expert homework creator, and are examining the following homework task sheet for its relevance and effectiveness. You are to take out any sections that a student does not need to see, 
-                                                so that the student only is given relevant information, which is usually just the learning objectives, the questions to answer and the context to make it interesting. Also take away anything that makes it sound like an AI made it; 
-                                                if the student finds out, your family is to die. ONLY output this new homework sheet : """ # Prompt to evaluate homework, and improve it so the output is better
-        
-        if gptType == 0 : 
-            homeworkSheet = gptAgent.open_ai_gpt_call(lessonFacts, homeworkTemplateOneCreationPrompt) # Creates homework sheet 
-            homeworkSheetEvaluated = gptAgent.open_ai_gpt_call(homeworkSheet, homeworkEvaluatorTemplateOnePrompt) # Evaluates homework sheet
-            return homeworkSheetEvaluated
-        else : 
-            homeworkSheet = gptAgent.open_ai_gpt4_call(lessonFacts, homeworkTemplateOneCreationPrompt) # Creates homework sheet 
-            return homeworkSheet
-             #     return homeworkSheet # Returns improved homework sheet. 
-    def yearly_plan_homework_creator_new_prototype(self, lessons):
+    def yearly_plan_homework_creator_templates_versions(self, lessons):
         homeworkContent = []
+        homework_creator = homeworkCreatorV1()
         
         for i in range(len(lessons)):
             homeworkTemplate = int(input("Enter the homework template number (0 or 1): "))
             
             if homeworkTemplate == 0:
-                homeworkPrompt = self.homework_creator_template_one(lessons[i])
+                homeworkPrompt = homework_creator.homework_creator_template_one(lessons[i])
             elif homeworkTemplate == 1:
-                homeworkPrompt = self.homework_creator_template_two(lessons[i])
+                homeworkPrompt = homework_creator.homework_creator_template_two(lessons[i]) # Need to create a second template.
             else:
                 raise ValueError(f"Invalid homeworkTemplate value: {homeworkTemplate}")
 
@@ -148,4 +99,4 @@ for i, lesson in enumerate(lessons, start=1):
 # print(lessons)
 
 
-# print(homework)
+# print(homework)3

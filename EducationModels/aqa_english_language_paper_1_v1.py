@@ -64,20 +64,39 @@ class Paper1 :
 
             return subsection
         def source_extraction(self, pdf_file):
+            max_attempts = 3
+            attempts = 0
 
-            content = self.get_pdf_content(pdf_file)
-            
-            startAndEndLines = self.start_and_end_lines(content[0])
+            while attempts < max_attempts:
+                content = self.get_pdf_content(pdf_file)
+                startAndEndLines = self.start_and_end_lines(content[0])
+                
+                if len(startAndEndLines) >= 2:  # Make sure there are at least two elements
+                    sourceExtract = self.extract_subsection(content[0], startAndEndLines[0], startAndEndLines[1])
+                    
+                    if sourceExtract != "Start or end sentence not found in the text.":
+                        return sourceExtract, content[1], content[2]
 
-            sourceExtract = self.extract_subsection(content[0], startAndEndLines[0], startAndEndLines[1])
-            
-            return sourceExtract, content[1], content[2]
+                attempts += 1
 
-        
-        def subsection_extraction(self, extract) : 
-            startAndEnd = self.start_and_end_lines(extract)
-            subsection = self.extract_subsection(extract, startAndEnd[0], startAndEnd[1])
-            return subsection
+            return "Extraction unsuccessful after 3 attempts.", None, None
+        def subsection_extraction(self, extract):
+            max_attempts = 3
+            attempts = 0
+
+            while attempts < max_attempts:
+                startAndEnd = self.start_and_end_lines(extract)
+                
+                if len(startAndEnd) >= 2:  # Make sure there are at least two elements
+                    subsection = self.extract_subsection(extract, startAndEnd[0], startAndEnd[1])
+                    
+                    if subsection != "Start or end sentence not found in the text.":
+                        return subsection
+
+                attempts += 1
+
+            return "Extraction unsuccessful after 3 attempts."
+
     class Question1 : 
         def character_selection(self, sourceExtract) : 
             quesOnePrompt = """ Based on this extract, pick out a person of significance for a comprehension question of the text. ONLY print out the person's FULL name, 

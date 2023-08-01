@@ -20,7 +20,7 @@ class FlashcardModelV2 :
  Here are the raw facts :  """ 
         
         questions = gptAgent.open_ai_gpt_call(answers, prompt, gptTemperature)
-        renumberedQuestions = infoExtractor.renumber_points(questions)
+        renumberedQuestions = infoExtractor.renumber_facts(questions)
         return renumberedQuestions
     
     def flashcard_info_splitter(self, answerOrQuestions) :  #Splits a inputted question string or answer string, so that it is an array with individual lines for each of the answers and questions at position [i]
@@ -53,7 +53,7 @@ class FlashcardModelV2 :
     #NEW flashcard creator - Creates flashcards based on a input of facts, in the layout specified in the documents. 
     def flashcard_creator_from_raw_facts(self, answers) : 
         info_extraction = InfoExtractorV1()
-        renumbered_answers = info_extraction.renumber_points(answers)
+        renumbered_answers = info_extraction.renumber_facts(answers)
         questions = self.flashcard_question_creator(renumbered_answers)
         question_array = self.flashcard_info_splitter(questions)
         answer_array = self.flashcard_info_splitter(renumbered_answers)
@@ -110,7 +110,7 @@ The French Revolution was a transformative period in history, driven by social i
 rawFacts = """ {Using specialized units, conducting amphibious assaults, and reducing resistance in occupied lands.}{Explaining the peace treaty system and how to make the most of ending the game.}{Launching a naval invasion requires an army capable of crossing the ocean, enough convoys, a starting point, an ending point, and information about the sea zones between them.}1. {The size of an invasion force is limited by naval technology research into landing craft and the launching point for the invasion.} 2. {Larger ports can support larger naval invasions.} 3. {If there are not enough convoys available, an invasion will not happen.} 4. {Build more convoys or stop the destruction of existing ones to undertake an invasion.} 5. {Shift-click to attach the desired army to an invasion plan.} 6. {The starting point of an invasion helps determine the size of the invading army.} 7. {The further the origin point is from the destination, the greater the chance of interception by the enemy.} 8. {The destination point should ideally be a place that is not heavily defended.} 9. {A poorly defended beach will likely be low in supply.} 10. {Try to land beside a port and seize it immediately after landing.} 11. {In order for a naval invasion to happen, there needs to be moderate superiority in or information about the sea zones between the origin and destination points.} 12. {Fleets operating in sea zones provide information about them.} 13. {A successful landing in a naval invasion is not difficult.}
 """
 path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\meetingminutes.pdf"
-testRaw = infoExtractionTest.renumber_points(rawFacts)
-# flashcards = test.flashcard_creator_from_raw_facts(rawFacts)
-# print(flashcards)
+testRaw = infoExtractionTest.renumber_facts(rawFacts)
+flashcards = test.flashcard_creator_from_raw_facts(rawFacts)
+print(flashcards)
 print(testRaw)

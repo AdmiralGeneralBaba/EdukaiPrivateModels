@@ -2,6 +2,7 @@ from openai_calls import OpenAI
 from info_extraction_v1 import InfoExtractorV1
 import re
 
+## Creates multiple choice questions based on inputted raw facts. ##
 class McqCreatorV1 : 
     def mcq_question_creator(self, answers, gpt_type) : #Creates the questions for the given answers
         print("Creating MCQ questions...")

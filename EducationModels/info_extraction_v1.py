@@ -111,8 +111,15 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
             return output_text
 
-
-        
+        def facts_splitter_into_array(self, answerOrQuestions) :  #Splits a inputted question string or answer string, so that it is an array with individual lines for each of the answers and questions at position [i]
+            # split the text into facts using regular expressions
+            facts = re.split(r'(?<=})', answerOrQuestions.strip())
+            
+            # remove leading/trailing whitespace from each fact and filter out any empty strings
+            facts = [fact.strip() for fact in facts if fact.strip()]
+            
+            return facts
+            
         def process_facts(self, facts):
             answerArray = []
 
@@ -122,6 +129,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
                     answerArray.append(match.group(1))
 
             return answerArray
+        
 class SentenceIdentifier : 
         def split_into_sentences(self, text: str) -> list[str]:
             alphabets= "([A-Za-z])"

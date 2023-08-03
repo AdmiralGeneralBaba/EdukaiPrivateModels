@@ -7,8 +7,7 @@ class PowerpointCreatorV4 :
 #################    FIXED STAGES FOR EVERY LESSON/POWERPOINT:  #####################
     def extract_lesson_facts(self, lesson):
         # Extract 'lesson_facts' from the lesson dictionary
-        lesson_facts = lesson.get("lesson_facts", "")
-        
+        lesson_facts = lesson["lesson_facts"]
         # Join the facts into a single string with each fact on a new line
         facts_string = "\n".join(lesson_facts)
         
@@ -311,7 +310,7 @@ Here are the lesson facts :
 
             
 
-test = PowerpointCreatorV4()
+
 
 facts =  """4. Some dockyard slots will have to produce convoys to keep resources flowing in case of a blockade.5. Challenging the Royal Navy with battleships or cruisers will take a lot of time.6. Carrier research starts far behind other powers.7. Submarines are only moderately effective against large surface fleets.8. Invading the United Kingdom across the English Channel requires clearing a path for armies.9. Following the historical path of Germany and striking out for Romania's oil fields or investing in synthetic factories may reduce the need for convoys.10. Every decision in the early game connects to another decision, and many choices won't bear fruit for months or years.11. It is important to spend the early game thinking about what you want your situation to be when the world war starts.12. Key questions to consider are who the likely enemies and friends are, where to attack and defend, military priorities, turning industrial power into a war machine, the number of ships needed, and the desire for advanced weapons.13. Most nations in Hearts of Iron IV start with three research slots.14. Industrial production should be the number one focus in the early game.15. Research should focus on capability multipliers such as building factories faster and increasing factory efficiency.16. Researching technologies that speed up research is important.17. Computing, radar, atomic weapons, and rockets are research options in the electronics tab.
  """
@@ -359,30 +358,30 @@ By the end of this presentation, you should be able to:
 5. Understand the characteristics of strategic bombers, notably their long range and high survivability.
 # 6. Differentiate between tactical and strategic bombers based on their respective tasks and capabilities."""
 
-powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# powerpointSlide, searchQuery = test.stage_4_A_combined_process(4, powerpointSlideOutlines, lessonDescriptionTesting, powerpointPlanTesting, facts)
-# if powerpointSlide is not None:
-#     print("THIS IS THE TITLE : " + powerpointSlide[0] + "THIS IS THE CONTENT : " + powerpointSlide[1] + "THIS IS THE SEARCH QUERY" + searchQuery)
-# else:
-#     print("powerpointSlide is None")
-
-# slides = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# slideFacts = test.stage_4_facts_extraction_from_choices(slides[5], facts) # Gets slide facts
-# print(slideFacts)
-# slideNumber = 7
-# module = test.stage_5_extract_module(powerpointSlideOutlines[slideNumber])
-# print(module)
-# powerpointContent = test.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines, slideNumber, facts,lessonDescriptionTesting,powerpointPlanTesting)
-
-# # print(powerpointContent)
 # powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# print(powerpointSlideOutlines[1])
+# # powerpointSlide, searchQuery = test.stage_4_A_combined_process(4, powerpointSlideOutlines, lessonDescriptionTesting, powerpointPlanTesting, facts)
+# # if powerpointSlide is not None:
+# #     print("THIS IS THE TITLE : " + powerpointSlide[0] + "THIS IS THE CONTENT : " + powerpointSlide[1] + "THIS IS THE SEARCH QUERY" + searchQuery)
+# # else:
+# #     print("powerpointSlide is None")
 
-powerpointTest = test.stage_6_create_powerpoint(facts)
-for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
-    print(f"SlideModulePair #{i+1}:")
-    print(f"  Module: {slide_module_dict['module']}")
-    print(f"  Slide: {slide_module_dict['slide']}")
-    print()
+# # slides = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
+# # slideFacts = test.stage_4_facts_extraction_from_choices(slides[5], facts) # Gets slide facts
+# # print(slideFacts)
+# # slideNumber = 7
+# # module = test.stage_5_extract_module(powerpointSlideOutlines[slideNumber])
+# # print(module)
+# # powerpointContent = test.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines, slideNumber, facts,lessonDescriptionTesting,powerpointPlanTesting)
+
+# # # print(powerpointContent)
+# # powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
+# # print(powerpointSlideOutlines[1])
+
+# powerpointTest = test.stage_6_create_powerpoint(facts)
+# for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
+#     print(f"SlideModulePair #{i+1}:")
+#     print(f"  Module: {slide_module_dict['module']}")
+#     print(f"  Slide: {slide_module_dict['slide']}")
+#     print()
 
 

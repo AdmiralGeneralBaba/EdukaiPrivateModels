@@ -1,11 +1,10 @@
 from openai_calls import OpenAI
 from info_extraction_v1 import InfoExtractorV1
-from info_extraction_v1 import SentenceIdentifier
 import re
 
 
 class FlashcardModelV2 : 
-    def flashcard_question_creator(self, answers) : #Creates the questions for the given answers
+    def flashcard_question_creator(self, answers, gpt_type) : #Creates the questions for the given answers
         infoExtractor = InfoExtractorV1()
         gptAgent = OpenAI()
         gptTemperature = 0.5
@@ -18,19 +17,12 @@ class FlashcardModelV2 :
 5. {Who painted the "Starry Night"?}
 
  Here are the raw facts :  """ 
-        
-        questions = gptAgent.open_ai_gpt_call(answers, prompt, gptTemperature)
-        renumberedQuestions = infoExtractor.renumber_facts(questions)
+        if gpt_type == 0 :
+            questions = gptAgent.open_ai_gpt_call(answers, prompt, gptTemperature)
+        else : 
+            questions = gptAgent.open_ai_gpt4_call(answers, prompt, gptTemperature)
+        renumberedQuestions = infoExtractor.renumber_facts(questions)   
         return renumberedQuestions
-    
-    def flashcard_info_splitter(self, answerOrQuestions) :  #Splits a inputted question string or answer string, so that it is an array with individual lines for each of the answers and questions at position [i]
-        # split the text into facts using regular expressions
-        facts = re.split(r'(?<=})', answerOrQuestions.strip())
-        
-        # remove leading/trailing whitespace from each fact and filter out any empty strings
-        facts = [fact.strip() for fact in facts if fact.strip()]
-        
-        return facts
     
     def clean_text(self, text): #Cleans the text around the questions and answers so it looks better for the final output
         # Remove the number and the curly brackets
@@ -51,20 +43,13 @@ class FlashcardModelV2 :
     
 
     #NEW flashcard creator - Creates flashcards based on a input of facts, in the layout specified in the documents. 
-    def flashcard_creator_from_raw_facts(self, answers) : 
+    def flashcard_creator_from_raw_facts(self, answers, gpt_type) : 
         info_extraction = InfoExtractorV1()
-        renumbered_answers = info_extraction.renumber_facts(answers)
-        questions = self.flashcard_question_creator(renumbered_answers)
-        question_array = self.flashcard_info_splitter(questions)
-        answer_array = self.flashcard_info_splitter(renumbered_answers)
+        questions = self.flashcard_question_creator(answers, gpt_type)
+        question_array = info_extraction.facts_splitter_into_array(questions)
+        answer_array = info_extraction.facts_splitter_into_array(answers)
         flashcards = self.create_qa_dict(questions=question_array, answers=answer_array) 
         return flashcards
-
-
-
-
-
-
 
     def flashcard_intialise_pdf_legacy(self, textbook_path, chunkSize): #Creates flashcards for the whole of an inputted PDF in one go. 
         gptAgent = OpenAI()
@@ -107,10 +92,11 @@ Internationally, the French Revolution sparked ideological debates and influence
 Conclusion:
 The French Revolution was a transformative period in history, driven by social inequality, economic crises, and the spread of Enlightenment ideals. Its impact was felt not only within France but also far beyond its borders. The revolution forever altered the political and social landscape, challenging traditional authority and advocating for liberty, equality, and fraternity. Its enduring legacy can be seen in the principles that shaped modern democracies and the pursuit of individual rights and social justice. The French Revolution remains a powerful reminder of the potential for radical change when the voices of the oppressed and marginalized demand justice and freedom."""
 
-rawFacts = """ {Using specialized units, conducting amphibious assaults, and reducing resistance in occupied lands.}{Explaining the peace treaty system and how to make the most of ending the game.}{Launching a naval invasion requires an army capable of crossing the ocean, enough convoys, a starting point, an ending point, and information about the sea zones between them.}1. {The size of an invasion force is limited by naval technology research into landing craft and the launching point for the invasion.} 2. {Larger ports can support larger naval invasions.} 3. {If there are not enough convoys available, an invasion will not happen.} 4. {Build more convoys or stop the destruction of existing ones to undertake an invasion.} 5. {Shift-click to attach the desired army to an invasion plan.} 6. {The starting point of an invasion helps determine the size of the invading army.} 7. {The further the origin point is from the destination, the greater the chance of interception by the enemy.} 8. {The destination point should ideally be a place that is not heavily defended.} 9. {A poorly defended beach will likely be low in supply.} 10. {Try to land beside a port and seize it immediately after landing.} 11. {In order for a naval invasion to happen, there needs to be moderate superiority in or information about the sea zones between the origin and destination points.} 12. {Fleets operating in sea zones provide information about them.} 13. {A successful landing in a naval invasion is not difficult.}
+rawFacts = """ 1. {Navies primarily control sea lanes, escort or intercept trade convoys, and support overseas military action.} 2. {Fleets can perform missions in up to three contiguous sea zones.} 3. {Patrol missions spread fleets out in search of enemy ships.} 4. {Search and Destroy missions keep fleets close together to maximize killing power.} 5. {Convoy raiding missions spread fleets out to seek convoy vessels.} 6. {Convoy escort missions protect trade ships.} 7. {Hold missions stop fleets in their current sea zone to assist ground operations.} 8. {Carrier groups should not have more than four aircraft carriers to avoid air combat penalties.} 9. {A naval power should have multiple battle fleets to dominate sea lanes.} 10. {A fleet should have a mix of battleships, heavy cruisers, light cruisers, and destroyers.} 11. {Naval experience can be used to upgrade and improve vessels.} 12. {Specialized ships can be created for specific tasks.} 13. {Research priorities shift in the mid-game to focus on other aspects of the game.} 14. {Late-game is about getting more advanced weapons and tactics onto the field.} 15. {Unlocking extra research slots in the National Focus tree before the war starts should be a top priority.} 16. {Researching industrial efficiency is important for saving efficiency loss and equipping divisions faster.} 17. {Researching new infantry equipment is important for the backbone of the army.} 18. {Devoting research slots to military doctrines is recommended.}
 """
 path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\meetingminutes.pdf"
 testRaw = infoExtractionTest.renumber_facts(rawFacts)
-flashcards = test.flashcard_creator_from_raw_facts(rawFacts)
+
+flashcards = test.flashcard_creator_from_raw_facts(rawFacts, 1)
 print(flashcards)
 print(testRaw)

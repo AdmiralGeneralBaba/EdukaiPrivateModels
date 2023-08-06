@@ -13,7 +13,7 @@ class YearlyPlanCreatorV2() :
             renumbered_lesson_facts = info_extraction.renumber_facts(lesson_facts)
             lesson["lesson_facts"] = renumbered_lesson_facts  # Assigning the renumbered facts back
         return lessons
-    def yearly_plan_facts_per_lesson_pdf_input(self, pdf_path, chunkSize, lessonSize): 
+    def yearly_plan_facts_per_lesson_pdf_input_and_chunk_lesson_sizes(self, pdf_path, chunkSize, lessonSize): 
         infoExtract = InfoExtractorV1() # Creates the infoExtractor 
         rawFacts = infoExtract.info_extractorV2(pdf_path, chunkSize) # Calls info extractor
 
@@ -31,6 +31,36 @@ class YearlyPlanCreatorV2() :
         for rawFact in rawFactsSplit:
             # If adding the next fact doesn't exceed the char_limit, add the fact to the current lesson
             if len(current_lesson + rawFact) <= lessonSize:
+                current_lesson += rawFact
+            # If it does, append the current lesson to lessons and start a new lesson
+            else:
+                lessons.append({"lesson_facts": current_lesson})
+                current_lesson = rawFact
+                lesson_count += 1  # Increment lesson_count
+
+        # Append the last lesson if it's non-empty
+        if current_lesson:
+            lessons.append({"lesson_facts": current_lesson})
+        self.yearly_plan_cleanup_facts_per_lesson(lessons)
+        return lessons
+    def yearly_plan_facts_per_lesson_pdf_input_only(self, pdf_path): 
+        infoExtract = InfoExtractorV1() # Creates the infoExtractor 
+        rawFacts = infoExtract.info_extractorV2(pdf_path, 2000) # Calls info extractor
+
+        # Initialize variables
+        lessons = []
+        current_lesson = ""
+        lesson_count = 1  # Used to generate keys for the dictionary
+
+        # Split the raw facts into separate strings
+        rawFactsSplit = [] 
+        for fact in rawFacts:
+            rawFactsSplit.extend(re.split('\n-|\n', fact)) # Splits up gpt-3.5's message into raw facts
+
+        # Loop through raw facts
+        for rawFact in rawFactsSplit:
+            # If adding the next fact doesn't exceed the char_limit, add the fact to the current lesson
+            if len(current_lesson + rawFact) <= 1500:
                 current_lesson += rawFact
             # If it does, append the current lesson to lessons and start a new lesson
             else:
@@ -103,6 +133,8 @@ class YearlyPlanCreatorV2() :
 path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\HoI_IV_Strategy_Guide.pdf"
 schoolType = "High School"
 yearly_planner = YearlyPlanCreatorV2()
+
+
 lessons = yearly_planner.yearly_plan_facts_per_lesson_pdf_input(path, 1000, 1500)
 # homework = YearlyPlanCreatorV2.homework_creator_template_one(lessons[4], 1)
 

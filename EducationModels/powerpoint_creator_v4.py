@@ -258,19 +258,29 @@ Here are the lesson facts : """
         return structured_output
     
 #stage_4_D refers to the 'Final Slide' module
-    def stage_4_D_combine_process(self, lessonFacts) : 
+    def stage_4_D_combine_process(self, lessonFacts):
         gptAgent = OpenAI()
         temperature = 0.
         inputPrompt = """I want you to pretend to be a expert teacher, making a perfectly constructed FINAL powerpoint slide for your students, so that it is easily readable. Using the inputted facts, you are to create a SINGLE powerpoint slide. Start with a title for the Ending slide, by doing 'TITLE : INSERT TITLE HERE', and then 'CONTENT : INSERT THE CONTENT HERE'. 
-- Have it follow a standard ending slide structure.
-- In the content, keep it brief and short, about what the WHOLE lesson was about in an engaging, fun way for students.
-- It should wrap up what they learnt, and be a conclusion for the students.
-Here are the lesson facts :
-""" 
+    - Have it follow a standard ending slide structure.
+    - In the content, keep it brief and short, about what the WHOLE lesson was about in an engaging, fun way for students.
+    - It should wrap up what they learnt, and be a conclusion for the students.
+    Here are the lesson facts :
+    """
         powerpointSlide = gptAgent.open_ai_gpt4_call(inputPrompt, lessonFacts, temperature)
         splittedPowerpointSlide = self.stage_4_content_title_layout_splitter(powerpointSlide)
-        return splittedPowerpointSlide
-        
+
+        # Formatting the output as a dictionary
+        structured_output = {
+            "module": "Ending slide",
+            "slide": {
+                "title": splittedPowerpointSlide[0],  # Assuming the title is the first part of the tuple
+                "description": splittedPowerpointSlide[1]  # Assuming the content/description is the second part of the tuple
+            }
+        }
+
+        return structured_output
+            
 
 ################ MODULE EXTRACTION CODE ###################:
 
@@ -329,10 +339,11 @@ Here are the lesson facts :
             powerpointSlide = poweropointMethods.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines[i], slideNumber, lessonFacts, lessonDescription, powerpointPlan) # Calls function that creates powerpoint based on module name.
             print("POWERPOINT SLIDE CREATED, APPENDING...")
 
-            powerpointSlidesDetailed.append({"slide": powerpointSlide, "module": module})
+            powerpointSlidesDetailed.append(powerpointSlide) 
 
             print("POWERPOINT SLIDE APPENDED TO ARRAY")
         print("FULL POWERPOINT CREATED!")
+       
         return powerpointSlidesDetailed #Returns an array, where at [i] it is the powerpoint detailed content, and the name of the module/number that that slide is
     
 
@@ -407,9 +418,9 @@ By the end of this presentation, you should be able to:
 # print(powerpointContent)
 # powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
 # print(powerpointSlideOutlines[1])
-test = PowerpointCreatorV4()
-powerpointTest = test.stage_6_create_powerpoint(facts)
-print(powerpointTest)
+# test = PowerpointCreatorV4()
+# powerpointTest = test.stage_6_create_powerpoint(facts)
+# print(powerpointTest)
 # for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
 #     print(f"SlideModulePair #{i+1}:")
 #     print(f"  Module: {slide_module_dict['module']}")

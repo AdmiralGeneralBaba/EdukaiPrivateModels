@@ -26,8 +26,8 @@ def homework_creation(lesson) :
 @app.route('/powerpoint_creator/<lesson>')
 def powerpoint_creator(lesson):
     powerpoint_creator = PowerpointCreatorV4()
-    powerpoint_creator.stage_6_create_powerpoint(lesson)
-    return jsonify(powerpoint_creator)
+    powerpoint = powerpoint_creator.stage_6_create_powerpoint(lesson)
+    return jsonify(powerpoint)
 
 @app.route('/mcq_creator/<lesson>/<gpt_type>') 
 def mcq_creator(lesson, gpt_type) : 

@@ -187,15 +187,26 @@ Here is the slide :
         pictureQuery = gptAgent.open_ai_gpt4_call(powerpointSlide, pictureQueryPrompt, 0.0)
         return pictureQuery
     #Creates the picture search query for the 'General Content Page' slide. 
-    def stage_4_A_combined_process(self, slideNumber, powerpointSlideOutlines, lessonDescription, powerpointPlan, lessonFacts) :
+    def stage_4_A_combined_process(self, slideNumber, powerpointSlideOutlines, lessonDescription, powerpointPlan, lessonFacts):
         #'A' is 'General content page' 
         slideFacts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutlines[slideNumber], lessonFacts) # Gets slide facts
-        powerpointSlide = self.stage_4_A_slide_general_content_page(slideNumber,lessonDescription,powerpointPlan, slideFacts) # Creates slide
+        powerpointSlide = self.stage_4_A_slide_general_content_page(slideNumber, lessonDescription, powerpointPlan, slideFacts) # Creates slide
         searchQuery = self.stage_4_A_picture_query_single_picture(powerpointSlide) # Makes a search query to search online
         powerpointTitleAndContent = self.stage_4_content_title_layout_splitter(powerpointSlide) #Splits slide into a 'Title' string and 'Content' String
-        #NEED to input a stage here where it searches online for a image.
-
-        return powerpointTitleAndContent, searchQuery # Returns the splitted powerpoint slide tuple and the search query
+        
+        # Creating the structured output to match the desired format
+        structured_output = {
+            "module": "General content page",
+            "slide": {
+                "title": powerpointTitleAndContent[0], # Assuming the title is the first part of the tuple
+                "description": powerpointTitleAndContent[1], # Assuming the content/description is the second part of the tuple
+                "image_caption": searchQuery # Here, I'm considering the 'searchQuery' to represent the image caption. Adjust if needed.
+            }
+        }
+        
+        # Return the structured output
+        return structured_output
+    #stage_4_B refers to created the L.O page module
     def stage_4_B_combined_process(self, lessonFacts) : 
         #'B' is L.O page
         gptAgent = OpenAI()
@@ -214,7 +225,17 @@ Here are the lesson facts :
 """ 
         powerpointSlide = gptAgent.open_ai_gpt4_call(inputPrompt, lessonFacts, temperature)
         splittedPowerpointSlide = self.stage_4_content_title_layout_splitter(powerpointSlide)
-        return splittedPowerpointSlide
+        # Creating the structured output to match the desired format
+        structured_output = {
+            "module": "L.O page",
+            "slide": {
+                "title": splittedPowerpointSlide[0], # Assuming the title is the first part of the tuple
+                "description": splittedPowerpointSlide[1] # Assuming the content/description is the second part of the tuple
+            }
+        }
+        
+        # Return the structured output
+        return structured_output
     def stage_4_C_combined_process(self, lessonFacts) : 
         #'C' is Title Page#
         gptAgent = OpenAI()
@@ -224,7 +245,19 @@ Here are the lesson facts : """
         titlePowerpoint = gptAgent.open_ai_gpt4_call(inputPrompt, lessonFacts, temperature)
         print(titlePowerpoint)
         splitTitlePowerpoint = self.stage_4_title_subtitle_layout_spliter(titlePowerpoint)
-        return splitTitlePowerpoint
+        # Creating the structured output to match the desired format
+        structured_output = {
+            "module": "Title Page",
+            "slide": {
+                "title": splitTitlePowerpoint[0], # Assuming the title is the first part of the tuple
+                "description": splitTitlePowerpoint[1] # Assuming the subtitle/description is the second part of the tuple
+            }
+        }
+
+        # Return the structured output
+        return structured_output
+    
+#stage_4_D refers to the 'Final Slide' module
     def stage_4_D_combine_process(self, lessonFacts) : 
         gptAgent = OpenAI()
         temperature = 0.
@@ -303,12 +336,12 @@ Here are the lesson facts :
         return powerpointSlidesDetailed #Returns an array, where at [i] it is the powerpoint detailed content, and the name of the module/number that that slide is
     
 
-
+############### TESTING CODE ###################
             
 
             
 
-
+ 
 
 facts =  """1. {Auditory parts of working memory are located in the left frontal and parietal lobes.} 2. {The visual sketchpad is located in the right hemisphere of the brain.} 3. {Working memory may have co-evolved with speech.} 4. {Long-term memory is divided into different systems located in different brain networks.} 5. {Information enters sensory systems and then passes through specialized processing networks.} 6. {There are areas in the cortex that extract perceptual representations of objects.} 7. {Semantic memory stores factual knowledge organized into categories.} 8. {The brain organizes encoded information into categories for efficient memory retrieval.} 9. {Skills and emotional learning are types of long-term memory.} 10. {Different brain areas are involved in skill learning and emotional learning.} 11. {Episodic memory is used to remember personal experiences.} 12. {Episodic memory is different from learning facts because events happen only once.} 13. {Amnesic patients have deficits in episodic memory.} 14. {Damage to specific brain regions affects the formation of episodic and semantic memories.} 15. {The perirhinal cortex mediates the sense of familiarity in episodic memory.} 16. {The hippocampus encodes events and places in episodic memory.} 17. {Certain types of semantic dementia can cause breakdown of semantic memory.} 18. {Neuroscientists study neurological patients and conduct research using laboratory animals to understand the neurobiology of memory.}
  """
@@ -371,15 +404,16 @@ By the end of this presentation, you should be able to:
 # print(module)
 # powerpointContent = test.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines, slideNumber, facts,lessonDescriptionTesting,powerpointPlanTesting)
 
-# # print(powerpointContent)
+# print(powerpointContent)
 # powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
 # print(powerpointSlideOutlines[1])
 test = PowerpointCreatorV4()
 powerpointTest = test.stage_6_create_powerpoint(facts)
-for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
-    print(f"SlideModulePair #{i+1}:")
-    print(f"  Module: {slide_module_dict['module']}")
-    print(f"  Slide: {slide_module_dict['slide']}")
-    print()
+print(powerpointTest)
+# for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
+#     print(f"SlideModulePair #{i+1}:")
+#     print(f"  Module: {slide_module_dict['module']}")
+#     print(f"  Slide: {slide_module_dict['slide']}")
+#     print()
 
 

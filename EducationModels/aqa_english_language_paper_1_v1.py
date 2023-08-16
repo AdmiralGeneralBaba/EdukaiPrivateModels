@@ -337,44 +337,44 @@ def aqa_english_language_paper_1_generator(self, pdfFile, ques1Choice, titleOfBo
 
 ######################       TESTING CODE          #################
 
-path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\HoI_IV_Strategy_Guide.pdf"
-listPrompt = "list all of the facts in this piece of text. Make sure to include ALL raw information, and nothing more."
-questionPrompt = "Write a me a tailored question for the following raw fact for a flashcard."
-school = "Primary School"
-choice = 0
-paper1 = Paper1()
+# path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\HoI_IV_Strategy_Guide.pdf"
+# listPrompt = "list all of the facts in this piece of text. Make sure to include ALL raw information, and nothing more."
+# questionPrompt = "Write a me a tailored question for the following raw fact for a flashcard."
+# school = "Primary School"
+# choice = 0
+# paper1 = Paper1()
 
 
-sourceExtractorInstance = paper1.SourceExtractor()
-sourceExtractWithNum = sourceExtractorInstance.source_extraction(path)
-sourceExtract = sourceExtractWithNum[0]
-pageNumber = sourceExtractWithNum[1]
-numPages = sourceExtractWithNum[2]
-bookTitle = "Hearts Of Iron 4 Guide"
-typeBook = "textbook"
-
-
-
-print(sourceExtract)
+# sourceExtractorInstance = paper1.SourceExtractor()
+# sourceExtractWithNum = sourceExtractorInstance.source_extraction(path)
+# sourceExtract = sourceExtractWithNum[0]
+# pageNumber = sourceExtractWithNum[1]
+# numPages = sourceExtractWithNum[2]
+# bookTitle = "Hearts Of Iron 4 Guide"
+# typeBook = "textbook"
 
 
 
+# print(sourceExtract)
 
 
-question1Maker = Paper1.Question1GPT4()
-question1 = question1Maker.question_one_creator(sourceExtract)
-print(question1)
 
-paper1InstanceQues2 = paper1.Question2()
-ques2Contract = paper1InstanceQues2.combined_model(sourceExtract)
-print(ques2Contract)
 
-question3Maker = Paper1.Question3()
-question3 = question3Maker.final_model(sourceExtract, bookTitle, typeBook, pageNumber, numPages )
-print(question3)
 
-question4 =  Paper1.Question4().focus_question(sourceExtract)
-print(question4)
+# question1Maker = Paper1.Question1GPT4()
+# question1 = question1Maker.question_one_creator(sourceExtract)
+# print(question1)
 
-question5 = Paper1.Question5().final_model()
-print(question5[0], question5[1], question5[2])
+# paper1InstanceQues2 = paper1.Question2()
+# ques2Contract = paper1InstanceQues2.combined_model(sourceExtract)
+# print(ques2Contract)
+
+# question3Maker = Paper1.Question3()
+# question3 = question3Maker.final_model(sourceExtract, bookTitle, typeBook, pageNumber, numPages )
+# print(question3)
+
+# question4 =  Paper1.Question4().focus_question(sourceExtract)
+# print(question4)
+
+# question5 = Paper1.Question5().final_model()
+# print(question5[0], question5[1], question5[2])

@@ -129,20 +129,20 @@ class YearlyPlanCreatorV2() :
         return homeworkContent
 
 #######################         TESTING CODE           ########################### : 
-path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\Neuroscience.Science.of.the.Brain.pdf"
-schoolType = "High School"
-yearly_planner = YearlyPlanCreatorV2()
+# path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\Neuroscience.Science.of.the.Brain.pdf"
+# schoolType = "High School"
+# yearly_planner = YearlyPlanCreatorV2()
 
 
-lessons = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(path)
+# lessons = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(path)
 # homework = YearlyPlanCreatorV2.homework_creator_template_one(lessons[4], 1)
 
 # Loop through each lesson and print it out with its number and length
-for i, lesson in enumerate(lessons, start=1):
-    print(f"Lesson {i}:")
-    for key, value in lesson.items():
-        print(f"{key} ({len(str(value))} characters):\n{value}\n")
-# print(lessons)
+# for i, lesson in enumerate(lessons, start=1):
+#     print(f"Lesson {i}:")
+#     for key, value in lesson.items():
+#         print(f"{key} ({len(str(value))} characters):\n{value}\n")
+# # print(lessons)
 
 
 # print(homework)3

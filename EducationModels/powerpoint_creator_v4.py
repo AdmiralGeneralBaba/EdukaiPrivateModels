@@ -273,10 +273,8 @@ Here are the lesson facts :
 
                 
 
-    def stage_6_create_powerpoint(self, lesson) : 
+    def stage_6_create_powerpoint(self, lessonFacts) : 
         poweropointMethods = PowerpointCreatorV4()
-        print("EXTRACTING FACTS FROM DICTIONARY...")
-        lessonFacts = self.extract_lesson_facts(lesson)
         powerpointSlidesDetailed = []
         print("FIXED STAGES IN PROGRESS...")
         factGroupings = self.stage_1_groupings_for_facts(lessonFacts)
@@ -312,7 +310,7 @@ Here are the lesson facts :
 
 
 
-facts =  """4. Some dockyard slots will have to produce convoys to keep resources flowing in case of a blockade.5. Challenging the Royal Navy with battleships or cruisers will take a lot of time.6. Carrier research starts far behind other powers.7. Submarines are only moderately effective against large surface fleets.8. Invading the United Kingdom across the English Channel requires clearing a path for armies.9. Following the historical path of Germany and striking out for Romania's oil fields or investing in synthetic factories may reduce the need for convoys.10. Every decision in the early game connects to another decision, and many choices won't bear fruit for months or years.11. It is important to spend the early game thinking about what you want your situation to be when the world war starts.12. Key questions to consider are who the likely enemies and friends are, where to attack and defend, military priorities, turning industrial power into a war machine, the number of ships needed, and the desire for advanced weapons.13. Most nations in Hearts of Iron IV start with three research slots.14. Industrial production should be the number one focus in the early game.15. Research should focus on capability multipliers such as building factories faster and increasing factory efficiency.16. Researching technologies that speed up research is important.17. Computing, radar, atomic weapons, and rockets are research options in the electronics tab.
+facts =  """1. {Auditory parts of working memory are located in the left frontal and parietal lobes.} 2. {The visual sketchpad is located in the right hemisphere of the brain.} 3. {Working memory may have co-evolved with speech.} 4. {Long-term memory is divided into different systems located in different brain networks.} 5. {Information enters sensory systems and then passes through specialized processing networks.} 6. {There are areas in the cortex that extract perceptual representations of objects.} 7. {Semantic memory stores factual knowledge organized into categories.} 8. {The brain organizes encoded information into categories for efficient memory retrieval.} 9. {Skills and emotional learning are types of long-term memory.} 10. {Different brain areas are involved in skill learning and emotional learning.} 11. {Episodic memory is used to remember personal experiences.} 12. {Episodic memory is different from learning facts because events happen only once.} 13. {Amnesic patients have deficits in episodic memory.} 14. {Damage to specific brain regions affects the formation of episodic and semantic memories.} 15. {The perirhinal cortex mediates the sense of familiarity in episodic memory.} 16. {The hippocampus encodes events and places in episodic memory.} 17. {Certain types of semantic dementia can cause breakdown of semantic memory.} 18. {Neuroscientists study neurological patients and conduct research using laboratory animals to understand the neurobiology of memory.}
  """
 
 # groupings = test.stage_1_groupings_for_facts(facts)
@@ -358,30 +356,30 @@ By the end of this presentation, you should be able to:
 5. Understand the characteristics of strategic bombers, notably their long range and high survivability.
 # 6. Differentiate between tactical and strategic bombers based on their respective tasks and capabilities."""
 
+
+# powerpointSlide, searchQuery = test.stage_4_A_combined_process(4, powerpointSlideOutlines, lessonDescriptionTesting, powerpointPlanTesting, facts)
+# if powerpointSlide is not None:
+#     print("THIS IS THE TITLE : " + powerpointSlide[0] + "THIS IS THE CONTENT : " + powerpointSlide[1] + "THIS IS THE SEARCH QUERY" + searchQuery)
+# else:
+#     print("powerpointSlide is None")
+
+# slides = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
+# slideFacts = test.stage_4_facts_extraction_from_choices(slides[5], facts) # Gets slide facts
+# print(slideFacts)
+# slideNumber = 7
+# module = test.stage_5_extract_module(powerpointSlideOutlines[slideNumber])
+# print(module)
+# powerpointContent = test.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines, slideNumber, facts,lessonDescriptionTesting,powerpointPlanTesting)
+
+# # print(powerpointContent)
 # powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# # powerpointSlide, searchQuery = test.stage_4_A_combined_process(4, powerpointSlideOutlines, lessonDescriptionTesting, powerpointPlanTesting, facts)
-# # if powerpointSlide is not None:
-# #     print("THIS IS THE TITLE : " + powerpointSlide[0] + "THIS IS THE CONTENT : " + powerpointSlide[1] + "THIS IS THE SEARCH QUERY" + searchQuery)
-# # else:
-# #     print("powerpointSlide is None")
-
-# # slides = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# # slideFacts = test.stage_4_facts_extraction_from_choices(slides[5], facts) # Gets slide facts
-# # print(slideFacts)
-# # slideNumber = 7
-# # module = test.stage_5_extract_module(powerpointSlideOutlines[slideNumber])
-# # print(module)
-# # powerpointContent = test.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines, slideNumber, facts,lessonDescriptionTesting,powerpointPlanTesting)
-
-# # # print(powerpointContent)
-# # powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# # print(powerpointSlideOutlines[1])
-
-# powerpointTest = test.stage_6_create_powerpoint(facts)
-# for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
-#     print(f"SlideModulePair #{i+1}:")
-#     print(f"  Module: {slide_module_dict['module']}")
-#     print(f"  Slide: {slide_module_dict['slide']}")
-#     print()
+# print(powerpointSlideOutlines[1])
+test = PowerpointCreatorV4()
+powerpointTest = test.stage_6_create_powerpoint(facts)
+for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
+    print(f"SlideModulePair #{i+1}:")
+    print(f"  Module: {slide_module_dict['module']}")
+    print(f"  Slide: {slide_module_dict['slide']}")
+    print()
 
 

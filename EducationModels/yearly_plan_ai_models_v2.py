@@ -2,7 +2,6 @@ from openai_calls import OpenAI
 from info_extraction_v1 import InfoExtractorV1
 from info_extraction_v1 import SentenceIdentifier
 from homework_creator_v1 import homeworkCreatorsV1
-from powerpoint_creator_v4 import PowerpointCreatorV4
 import re
 
 class YearlyPlanCreatorV2() : 
@@ -130,12 +129,12 @@ class YearlyPlanCreatorV2() :
         return homeworkContent
 
 #######################         TESTING CODE           ########################### : 
-path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\HoI_IV_Strategy_Guide.pdf"
+path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\Neuroscience.Science.of.the.Brain.pdf"
 schoolType = "High School"
 yearly_planner = YearlyPlanCreatorV2()
 
 
-lessons = yearly_planner.yearly_plan_facts_per_lesson_pdf_input(path, 1000, 1500)
+lessons = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(path)
 # homework = YearlyPlanCreatorV2.homework_creator_template_one(lessons[4], 1)
 
 # Loop through each lesson and print it out with its number and length

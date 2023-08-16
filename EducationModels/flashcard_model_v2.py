@@ -66,8 +66,9 @@ raw facts :  """
         for answer in answerArray:
             questionsArray.append(gptAgent.open_ai_gpt_call(answer, questionPrompt, 0.5))   
         return questionsArray, answerArray
-        
-
+    
+    
+############  TESTING CODE #############
 test = FlashcardModelV2()
 infoExtractionTest = InfoExtractorV1()
 
@@ -92,7 +93,8 @@ Internationally, the French Revolution sparked ideological debates and influence
 Conclusion:
 The French Revolution was a transformative period in history, driven by social inequality, economic crises, and the spread of Enlightenment ideals. Its impact was felt not only within France but also far beyond its borders. The revolution forever altered the political and social landscape, challenging traditional authority and advocating for liberty, equality, and fraternity. Its enduring legacy can be seen in the principles that shaped modern democracies and the pursuit of individual rights and social justice. The French Revolution remains a powerful reminder of the potential for radical change when the voices of the oppressed and marginalized demand justice and freedom."""
 
-rawFacts = """ 1. {Navies primarily control sea lanes, escort or intercept trade convoys, and support overseas military action.} 2. {Fleets can perform missions in up to three contiguous sea zones.} 3. {Patrol missions spread fleets out in search of enemy ships.} 4. {Search and Destroy missions keep fleets close together to maximize killing power.} 5. {Convoy raiding missions spread fleets out to seek convoy vessels.} 6. {Convoy escort missions protect trade ships.} 7. {Hold missions stop fleets in their current sea zone to assist ground operations.} 8. {Carrier groups should not have more than four aircraft carriers to avoid air combat penalties.} 9. {A naval power should have multiple battle fleets to dominate sea lanes.} 10. {A fleet should have a mix of battleships, heavy cruisers, light cruisers, and destroyers.} 11. {Naval experience can be used to upgrade and improve vessels.} 12. {Specialized ships can be created for specific tasks.} 13. {Research priorities shift in the mid-game to focus on other aspects of the game.} 14. {Late-game is about getting more advanced weapons and tactics onto the field.} 15. {Unlocking extra research slots in the National Focus tree before the war starts should be a top priority.} 16. {Researching industrial efficiency is important for saving efficiency loss and equipping divisions faster.} 17. {Researching new infantry equipment is important for the backbone of the army.} 18. {Devoting research slots to military doctrines is recommended.}
+rawFacts = """ 1. {Auditory parts of working memory are located in the left frontal and parietal lobes.} 2. {The visual sketchpad is located in the right hemisphere of the brain.} 3. {Working memory may have co-evolved with speech.} 4. {Long-term memory is divided into different systems located in different brain networks.} 5. {Information enters sensory systems and then passes through specialized processing networks.} 6. {There are areas in the cortex that extract perceptual representations of objects.} 7. {Semantic memory stores factual knowledge organized into categories.} 8. {The brain organizes encoded information into categories for efficient memory retrieval.} 9. {Skills and emotional learning are types of long-term memory.} 10. {Different brain areas are involved in skill learning and emotional learning.} 11. {Episodic memory is used to remember personal experiences.} 12. {Episodic memory is different from learning facts because events happen only once.} 13. {Amnesic patients have deficits in episodic memory.} 14. {Damage to specific brain regions affects the formation of episodic and semantic memories.} 15. {The perirhinal cortex mediates the sense of familiarity in episodic memory.} 16. {The hippocampus encodes events and places in episodic memory.} 17. {Certain types of semantic dementia can cause breakdown of semantic memory.} 18. {Neuroscientists study neurological patients and conduct research using laboratory animals to understand the neurobiology of memory.}
+
 """
 path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\meetingminutes.pdf"
 testRaw = infoExtractionTest.renumber_facts(rawFacts)

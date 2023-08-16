@@ -6,6 +6,7 @@ import re
 class InfoExtractorV1 :        
         def __init__(self):
            self.gptAgent = OpenAI()          
+        # Current PDF extraction system - Need for it to be updated so that it is more consistent. 
         def chunker(self, path, chunkSize) :
             pdfFileObj = open(path, 'rb')
             pdfReader = PyPDF2.PdfReader(pdfFileObj) 
@@ -113,6 +114,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
         def facts_splitter_into_array(self, answerOrQuestions) :  #Splits a inputted question string or answer string, so that it is an array with individual lines for each of the answers and questions at position [i]
             # split the text into facts using regular expressions
+            # this only works questions and answers that contain this format : 1. {info here, with the brackets included} 2. {etc}
             facts = re.split(r'(?<=})', answerOrQuestions.strip())
             
             # remove leading/trailing whitespace from each fact and filter out any empty strings

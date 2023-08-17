@@ -20,7 +20,7 @@ def yearly_plan(path) :
 @app.route('/homework_creator/<lesson>')
 def homework_creation(lesson) : 
     homework_creator = homeworkCreatorsV1()
-    lesson_homework = homework_creator.homework_creator_generic(lesson)
+    lesson_homework = homework_creator.homework_creator_template_one(lesson, 1)
     return jsonify(lesson_homework)
 
 @app.route('/powerpoint_creator/<lesson>')

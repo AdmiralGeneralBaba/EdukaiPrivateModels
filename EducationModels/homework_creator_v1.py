@@ -4,15 +4,16 @@ from info_extraction_v1 import SentenceIdentifier
 import re
 
 class homeworkCreatorsV1 : 
-    
+#these take in dictionary values
+
     def homework_creator_generic(self, lesson) : 
             gpt_agent = OpenAI()
             gpt_temp = 0.8
             homework_creator_prompt = """Pretend you are a perfect, accurate homework creator employed to create a perfect piece of homework that makes sense, is to the point,
-            and helps the student learn and understand the following lesson facts in an engaging way. Your job is to assign tasks that should, overall, take no more than 1 hour to complete the whole task
+            and helps the student learn and understand the following lesson facts in an fun, engaging way. Your job is to assign tasks that should, overall, take no more than 1 hour to complete the whole task
             Use any of the top techniques you know as an expert to make the homework; however, make sure it is 100 PERCENT logical and makes sense; DO NOT make up nosense. If you do, you will be fired and killed and burned allive
-            Here are the lesson facts : """
-            lesson_facts = lesson['lesson_facts']
+            note; DO NOT LIST THE FACTS; and you should create the homework, such that everything given to you is enough material to fully create. You CANNOT create placeholders, or anything that requires more information than that provided.ere are the lesson facts : """
+            lesson_facts = lesson
             homework = gpt_agent.open_ai_gpt4_call(lesson_facts, homework_creator_prompt, gpt_temp)
             
             return homework 
@@ -95,4 +96,3 @@ class homeworkCreatorsV1 :
         else : 
             homeworkSheet = gptAgent.open_ai_gpt4_call(lesson, homeworkTemplateOneCreationPrompt) # Creates homework sheet 
             return homeworkSheet
-             #     return homeworkSheet # Returns improved homework sheet. 

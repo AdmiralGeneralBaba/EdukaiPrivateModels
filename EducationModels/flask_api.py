@@ -1,7 +1,6 @@
 import sys
 import os
 from flask import Flask, jsonify
-
 from yearly_plan_ai_models_v2 import YearlyPlanCreatorV2
 from homework_creator_v1 import homeworkCreatorsV1
 from powerpoint_creator_v4 import PowerpointCreatorV4
@@ -11,6 +10,7 @@ from flashcard_model_v2 import FlashcardModelV2
 app = Flask(__name__)
 app.debug = True
 
+#Need to find out how to take in a PDF input for this app.route path - perhaps it needs to access a database input path? search on this : 
 @app.route('/yearly_plan_creator/<path>')
 def yearly_plan(path) : 
     yearly_planner = YearlyPlanCreatorV2()

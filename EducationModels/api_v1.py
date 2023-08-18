@@ -3,6 +3,7 @@ import os
 import tempfile
 from flask import Flask, request, jsonify
 import requests
+from aqa_english_language_paper_1_v1 import aqa_english_language_paper_1_generator
 from yearly_plan_ai_models_v2 import YearlyPlanCreatorV2
 from homework_creator_v1 import homeworkCreatorsV1
 from powerpoint_creator_v4 import PowerpointCreatorV4
@@ -15,6 +16,21 @@ app.debug = True
 #Need to find out how to take in a PDF input for this app.route path - perhaps it needs to access a database input path? search on this :7
  
 #query parameter is '?pdf_url' 
+def fetch_and_process_pdf(pdf_url):
+    # Fetch the PDF from the URL
+    response = requests.get(pdf_url)
+    
+    # Check if the response is a PDF (based on Content-Type header)
+    if 'application/pdf' not in response.headers.get('Content-Type', ''):
+        return None
+
+    # Save the content to a temporary file
+    fd, tmp_filepath = tempfile.mkstemp(suffix=".pdf")
+    with os.fdopen(fd, 'wb') as tmp:
+        tmp.write(response.content)
+
+    return tmp_filepath
+
 @app.route('/yearly_plan_creator/')
 def yearly_plan():
     # Retrieve the URL from the query parameters
@@ -41,6 +57,24 @@ def yearly_plan():
 
     # Return the result
     return jsonify(yearly_plan)
+
+@app.route('/aqa_english_language_paper_1/')
+def create_exam_paper():
+    pdf_url = request.args.get('pdf_url')
+    book_title = request.args.get('book_title')
+    book_type = request.args.get('book_type')
+    
+    tmp_filepath = fetch_and_process_pdf(pdf_url)
+    if not tmp_filepath:
+        return jsonify({"error": "Invalid URL or not a PDF"}), 400
+
+    exam_paper = aqa_english_language_paper_1_generator(tmp_filepath, book_title, book_type)
+
+    # Once processing is done, delete the temporary file
+    os.remove(tmp_filepath)
+
+    return jsonify(exam_paper)
+
 @app.route('/homework_creator/<lesson>')
 def homework_creation(lesson) : 
     homework_creator = homeworkCreatorsV1()
@@ -65,6 +99,8 @@ def flashcard_creator(lesson, gpt_type) :
     flashcards = flashcard_creator.flashcard_creator_from_raw_facts(lesson, gpt_type)
     return jsonify(flashcards)
 
+# In the future, have a endpoint for each exam board 
+#inputs : pdfFile, titleOfBook, bookType
 
 @app.route('/lesson_test/<lesson>')
 def print_lesson(lesson) : 

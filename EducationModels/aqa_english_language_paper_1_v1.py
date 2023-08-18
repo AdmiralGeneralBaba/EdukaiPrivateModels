@@ -320,21 +320,39 @@ Write a story about a magical book.
             question_5 = {'introduction' : introduction, 'write_question' : writeAWhatever, 'describe_picture_question' : describe[0], 'image_url' : describe[1] }
             return question_5
             #returns an introduction string, a 'writeAWhatever' string, a 'describe' question string and a URL for a image created by DALLe for the description question
-def aqa_english_language_paper_1_generator(pdfFile, titleOfBook, bookType) : 
+def aqa_english_language_paper_1_generator(pdfFile, titleOfBook, bookType):
+    print("Initializing classes...")
     source_extractor = Paper1.SourceExtractor()
     question_1_creator = Paper1.Question1()
     question_2_creator = Paper1.Question2()
     question_3_creator = Paper1.Question3()
     question_4_creator = Paper1.Question4()
     question_5_creator = Paper1.Question5()
-    source, pageNumber, numpages = source_extractor.source_extraction(pdfFile) # Creates the extract 
-    question1 = question_1_creator.final_model(source) # Creates question 1 
-    question2 = question_2_creator.combined_model(source) # Creates question 2 
-    question3 = question_3_creator.final_model(source, titleOfBook, bookType, pageNumber, numpages) # Creates question 3
-    question4 = question_4_creator.focus_question(source) # Creates question 4 
-    question5 = question_5_creator.final_model() # Creates question 5
-    exam_paper = {'source' : source, 'question_1' : question1, 'question_2' : question2, 'question_3' : question3, 'question_4' : question4, 'question_5' : question5} 
+
+    print("Extracting source from PDF...")
+    source, pageNumber, numpages = source_extractor.source_extraction(pdfFile)  # Creates the extract
+
+    print("Generating Question 1...")
+    question1 = question_1_creator.final_model(source)  # Creates question 1
+
+    print("Generating Question 2...")
+    question2 = question_2_creator.combined_model(source)  # Creates question 2
+
+    print("Generating Question 3...")
+    question3 = question_3_creator.final_model(source, titleOfBook, bookType, pageNumber, numpages)  # Creates question 3
+
+    print("Generating Question 4...")
+    question4 = question_4_creator.focus_question(source)  # Creates question 4
+
+    print("Generating Question 5...")
+    question5 = question_5_creator.final_model()  # Creates question 5
+
+    print("Compiling exam paper...")
+    exam_paper = {'source': source, 'question_1': question1, 'question_2': question2, 'question_3': question3, 'question_4': question4, 'question_5': question5}
+
+    print("Exam paper generation complete!")
     return exam_paper
+
 
 ######################       TESTING CODE          #################
 
@@ -379,6 +397,3 @@ path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\Ho
 
 # question5 = Paper1.Question5().final_model()
 # print(question5[0], question5[1], question5[2])
-
-paper1 = aqa_english_language_paper_1_generator(path, 0, 'Hearts of Iron 4 guidebook', 'guidebook')
-print(paper1)

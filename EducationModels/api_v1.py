@@ -27,14 +27,17 @@ def yearly_plan():
     if 'application/pdf' not in response.headers.get('Content-Type', ''):
         return jsonify({"error": "Invalid URL or not a PDF"}), 400
     
-    # Save the content to a temporary file (assuming your method requires a file path)
-    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=True) as tmp:
+    # Save the content to a temporary file
+    fd, tmp_filepath = tempfile.mkstemp(suffix=".pdf")
+    with os.fdopen(fd, 'wb') as tmp:
         tmp.write(response.content)
-        tmp.flush()
 
-        # Process the PDF
-        yearly_planner = YearlyPlanCreatorV2()
-        yearly_plan = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(tmp.name)
+    # Process the PDF
+    yearly_planner = YearlyPlanCreatorV2()
+    yearly_plan = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(tmp_filepath)
+
+    # Once processing is done, delete the temporary file
+    os.remove(tmp_filepath)
 
     # Return the result
     return jsonify(yearly_plan)
@@ -69,6 +72,7 @@ def print_lesson(lesson) :
 @app.route('/test/<num>')
 def number_printer(num) :
     return num
+
 
 if __name__  == '__main__' :
     app.run()

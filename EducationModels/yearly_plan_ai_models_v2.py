@@ -1,19 +1,18 @@
 from openai_calls import OpenAI 
-from info_extraction_v1 import InfoExtractorV1
-from info_extraction_v1 import SentenceIdentifier
+from info_extraction_v1 import InfoExtractorV2
 from homework_creator_v1 import homeworkCreatorsV1
 import re
 
 class YearlyPlanCreatorV2() : 
     def yearly_plan_cleanup_facts_per_lesson(self, lessons):
-        info_extraction = InfoExtractorV1()
+        info_extraction = InfoExtractorV2()
         for lesson in lessons:
             lesson_facts = lesson["lesson_facts"]  # Extracting the 'lesson_facts'
             renumbered_lesson_facts = info_extraction.renumber_facts(lesson_facts)
             lesson["lesson_facts"] = renumbered_lesson_facts  # Assigning the renumbered facts back
         return lessons
     def yearly_plan_facts_per_lesson_pdf_input_and_chunk_lesson_sizes(self, pdf_path, chunkSize, lessonSize): 
-        infoExtract = InfoExtractorV1() # Creates the infoExtractor 
+        infoExtract = InfoExtractorV2() # Creates the infoExtractor 
         rawFacts = infoExtract.info_extractorV2(pdf_path, chunkSize) # Calls info extractor
 
         # Initialize variables
@@ -43,7 +42,9 @@ class YearlyPlanCreatorV2() :
         self.yearly_plan_cleanup_facts_per_lesson(lessons)
         return lessons
     def yearly_plan_facts_per_lesson_pdf_input_only(self, pdf_path): 
-        infoExtract = InfoExtractorV1() # Creates the infoExtractor 
+        print("Initializing InfoExtractor...")
+        infoExtract = InfoExtractorV2() # Creates the infoExtractor 
+        print("Extracting raw facts from PDF...")
         rawFacts = infoExtract.info_extractorV2(pdf_path, 2000) # Calls info extractor
 
         # Initialize variables
@@ -56,6 +57,7 @@ class YearlyPlanCreatorV2() :
         for fact in rawFacts:
             rawFactsSplit.extend(re.split('\n-|\n', fact)) # Splits up gpt-3.5's message into raw facts
 
+        print("Processing raw facts...")
         # Loop through raw facts
         for rawFact in rawFactsSplit:
             # If adding the next fact doesn't exceed the char_limit, add the fact to the current lesson
@@ -64,13 +66,17 @@ class YearlyPlanCreatorV2() :
             # If it does, append the current lesson to lessons and start a new lesson
             else:
                 lessons.append({"lesson_facts": current_lesson})
+                print(f"Finished processing lesson {lesson_count}...")
                 current_lesson = rawFact
                 lesson_count += 1  # Increment lesson_count
 
         # Append the last lesson if it's non-empty
         if current_lesson:
             lessons.append({"lesson_facts": current_lesson})
+            print(f"Finished processing lesson {lesson_count}...")
+        print("Cleaning up lessons...")
         self.yearly_plan_cleanup_facts_per_lesson(lessons)
+        print("All lessons processed successfully!")    
         return lessons
     def yearly_plan_homework_per_lesson(self, lessons) : 
         homework_creator = homeworkCreatorsV1()

@@ -1,6 +1,8 @@
 import sys
 import os
-from flask import Flask, jsonify
+import tempfile
+from flask import Flask, request, jsonify
+import requests
 from yearly_plan_ai_models_v2 import YearlyPlanCreatorV2
 from homework_creator_v1 import homeworkCreatorsV1
 from powerpoint_creator_v4 import PowerpointCreatorV4
@@ -10,13 +12,32 @@ from flashcard_model_v2 import FlashcardModelV2
 app = Flask(__name__)
 app.debug = True
 
-#Need to find out how to take in a PDF input for this app.route path - perhaps it needs to access a database input path? search on this : 
-@app.route('/yearly_plan_creator/<path>')
-def yearly_plan(path) : 
-    yearly_planner = YearlyPlanCreatorV2()
-    yearly_plan = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(path)
-    return yearly_plan 
+#Need to find out how to take in a PDF input for this app.route path - perhaps it needs to access a database input path? search on this :7
+ 
+#query parameter is '?pdf_url' 
+@app.route('/yearly_plan_creator/')
+def yearly_plan():
+    # Retrieve the URL from the query parameters
+    pdf_url = request.args.get('pdf_url')
 
+    # Fetch the PDF from the URL
+    response = requests.get(pdf_url)
+    
+    # Check if the response is a PDF (based on Content-Type header)
+    if 'application/pdf' not in response.headers.get('Content-Type', ''):
+        return jsonify({"error": "Invalid URL or not a PDF"}), 400
+    
+    # Save the content to a temporary file (assuming your method requires a file path)
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=True) as tmp:
+        tmp.write(response.content)
+        tmp.flush()
+
+        # Process the PDF
+        yearly_planner = YearlyPlanCreatorV2()
+        yearly_plan = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(tmp.name)
+
+    # Return the result
+    return jsonify(yearly_plan)
 @app.route('/homework_creator/<lesson>')
 def homework_creation(lesson) : 
     homework_creator = homeworkCreatorsV1()

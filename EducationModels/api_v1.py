@@ -33,20 +33,11 @@ def fetch_and_process_pdf(pdf_url):
 
 @app.route('/yearly_plan_creator/')
 def yearly_plan():
-    # Retrieve the URL from the query parameters
     pdf_url = request.args.get('pdf_url')
+    tmp_filepath = fetch_and_process_pdf(pdf_url)
 
-    # Fetch the PDF from the URL
-    response = requests.get(pdf_url)
-    
-    # Check if the response is a PDF (based on Content-Type header)
-    if 'application/pdf' not in response.headers.get('Content-Type', ''):
+    if not tmp_filepath:
         return jsonify({"error": "Invalid URL or not a PDF"}), 400
-    
-    # Save the content to a temporary file
-    fd, tmp_filepath = tempfile.mkstemp(suffix=".pdf")
-    with os.fdopen(fd, 'wb') as tmp:
-        tmp.write(response.content)
 
     # Process the PDF
     yearly_planner = YearlyPlanCreatorV2()
@@ -57,6 +48,7 @@ def yearly_plan():
 
     # Return the result
     return jsonify(yearly_plan)
+
 
 @app.route('/aqa_english_language_paper_1/')
 def create_exam_paper():

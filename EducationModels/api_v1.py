@@ -76,3 +76,23 @@ def number_printer(num) :
 
 if __name__  == '__main__' :
     app.run()
+# Change this API where needed, for it to be either A. accessible on the local network by all devices, or B. accessible to all devices anywhere : 
+# Here are the steps :
+
+
+# #Local Network Accessibility:
+
+# Simplicity: Easy
+# Steps:
+# Bind your Flask app to 0.0.0.0 (i.e., app.run(host='0.0.0.0')).
+# Determine your computer's local IP address.
+# Share the IP address and port with team members. They can access the Flask app using http://YOUR_LOCAL_IP:PORT/.
+# External Network Accessibility:
+
+# Simplicity: Moderate (can vary based on router and ISP)
+
+# Steps:
+
+# Configure port forwarding on your router. This involves logging into your router's admin interface and setting it to forward external requests on a particular port to your computer's IP address and the port your Flask app is running on.
+# Determine your public IP address (e.g., using "WhatIsMyIP").
+# Share the public IP address and port with external users. They can access the Flask app using http://YOUR_PUBLIC_IP:PORT/.

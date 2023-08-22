@@ -4,8 +4,8 @@ from info_extraction_v1 import SentenceIdentifier
 import re
 
 class homeworkCreatorsV1 : 
-#these take in dictionary values
-
+#from now on, they will take in the raw facts without processing them inside - this is the job of the react developers to pass in the correct value, at least for V1
+#ADD IN GPT-TYPE if else statements for all of these.
     def homework_creator_generic(self, lesson) : 
             gpt_agent = OpenAI()
             gpt_temp = 0.8
@@ -19,7 +19,7 @@ class homeworkCreatorsV1 :
             return homework 
     def homework_addon_lesson(self, lesson):
         homework = self.homework_creator_generic(lesson)
-        lesson['lesson_homework'] = homework
+        lesson = homework
         return lesson
     def homework_creator_template_one(self, lesson, gptType) : 
         gptAgent = OpenAI() # Creates a GPTAgent

@@ -132,8 +132,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
             return answerArray
         
-
-        
+       
 class InfoExtractorV2 :        
         def __init__(self):
            self.gptAgent = OpenAI()          

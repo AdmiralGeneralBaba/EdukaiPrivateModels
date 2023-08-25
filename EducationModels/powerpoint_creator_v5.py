@@ -421,7 +421,7 @@ it MUST be under 30 words
 - Cover AS MANY of the points in the questions, while keeping them short, and within the 5 quota given.
 Here are the lesson facts you need to cover :
  """
-        powerpoint_slide = gpt_agent.open_ai_gpt4_call(input_prompt, lesson_facts, temperature)
+        powerpoint_slide = gpt_agent.open_ai_gpt4_call(lesson_facts, input_prompt, temperature)
         return powerpoint_slide
     #question_module_2_bullet_questions full process : 
     def stage_4_E2_combine_process(self, lesson_facts) : 
@@ -522,7 +522,7 @@ Here are the lesson facts you need to cover :
                 return question_slide
             case "question_module_3_roleplay_questions" : 
                 powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
-                question_slide = self.stage_4_E2_combine_process(powerpoint_facts)
+                question_slide = self.stage_4_E3_combine_process(powerpoint_facts)
                 return question_slide
             case "activity_module_1_brainstorming":
                 return None

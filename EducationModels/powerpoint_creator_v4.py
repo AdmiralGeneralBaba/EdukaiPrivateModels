@@ -312,6 +312,7 @@ Here are the lesson facts : """
                 print("Final slide function calling...")
                 finalSlide = powerpointCalls.stage_4_D_combine_process(lessonFacts)
                 return finalSlide
+            
         print("Error : no module found.")
 
                 
@@ -354,7 +355,7 @@ Here are the lesson facts : """
 
  
 
-facts =  """1. {Auditory parts of working memory are located in the left frontal and parietal lobes.} 2. {The visual sketchpad is located in the right hemisphere of the brain.} 3. {Working memory may have co-evolved with speech.} 4. {Long-term memory is divided into different systems located in different brain networks.} 5. {Information enters sensory systems and then passes through specialized processing networks.} 6. {There are areas in the cortex that extract perceptual representations of objects.} 7. {Semantic memory stores factual knowledge organized into categories.} 8. {The brain organizes encoded information into categories for efficient memory retrieval.} 9. {Skills and emotional learning are types of long-term memory.} 10. {Different brain areas are involved in skill learning and emotional learning.} 11. {Episodic memory is used to remember personal experiences.} 12. {Episodic memory is different from learning facts because events happen only once.} 13. {Amnesic patients have deficits in episodic memory.} 14. {Damage to specific brain regions affects the formation of episodic and semantic memories.} 15. {The perirhinal cortex mediates the sense of familiarity in episodic memory.} 16. {The hippocampus encodes events and places in episodic memory.} 17. {Certain types of semantic dementia can cause breakdown of semantic memory.} 18. {Neuroscientists study neurological patients and conduct research using laboratory animals to understand the neurobiology of memory.}
+facts =  """1. {Brain imaging has helped identify the brain areas involved in distinct components of reading and learning tasks.} 2. {New mathematical techniques are being developed to study how different brain regions interact during complex tasks.} 3. {The BOLD signal is a reliable index of synaptic processing within a brain region.} 4. {Building brain-like machines requires understanding how real brains operate efficiently and economically.} 5. {Real brains are highly adaptable and can tolerate things going wrong.} 6. {Real brains consist of highly interconnected neuronal networks.} 7. {The challenge is to discover how real brains operate efficiently and use similar principles to build brain-like machines.} 8. {The energy cost of signaling in the brain is a major factor in the evolution of brains.} 9. {The speed of nerve impulses in biological brains is much slower than digital computers.} 10. {Biological brains are constructed as highly parallel networks, unlike silicon-based systems.} 11. {Neurally-inspired engineers use analogue coding in silicon circuits to reduce power consumption and increase speed.} 12. {Efficient coding and sparse coding are important design principles for building artificial neural networks.} 13. {Artificial neural networks can operate in the real world, in real time, and use very little power.} 14. {Artificial neural networks are often used to study learning and memory.}
  """
 
 # groupings = test.stage_1_groupings_for_facts(facts)
@@ -418,13 +419,13 @@ By the end of this presentation, you should be able to:
 # print(powerpointContent)
 # powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
 # print(powerpointSlideOutlines[1])
-# test = PowerpointCreatorV4()
-# powerpointTest = test.stage_6_create_powerpoint(facts)
-# print(powerpointTest)
-# for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
-#     print(f"SlideModulePair #{i+1}:")
-#     print(f"  Module: {slide_module_dict['module']}")
-#     print(f"  Slide: {slide_module_dict['slide']}")
-#     print()
+test = PowerpointCreatorV4()
+powerpointTest = test.stage_6_create_powerpoint(facts)
+print(powerpointTest)
+for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
+    print(f"SlideModulePair #{i+1}:")
+    print(f"  Module: {slide_module_dict['module']}")
+    print(f"  Slide: {slide_module_dict['slide']}")
+    print()
 
 

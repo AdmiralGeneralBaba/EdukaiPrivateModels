@@ -87,9 +87,9 @@ Here are the lesson facts :
     #Extracts the powerpoint individual slide plans, and the total amount of slides for the current powerpoint
     
     #Extracts the fact numbers from the optimum grouping of a single powerpoint slide 
-    def stage_4_facts_extraction_from_choices(self, slideContent, factsString):
+    def stage_4_facts_extraction_from_choices(self, slide_plan, factsString):
         # Use regex to extract the fact numbers from the slide content
-        fact_numbers_match = re.search(r'\{(.+?)\}', slideContent)
+        fact_numbers_match = re.search(r'\{(.+?)\}', slide_plan)
         if fact_numbers_match is None:
             return ""
 
@@ -135,7 +135,22 @@ Here are the lesson facts :
             return [title, subtitle]
         else:
             return "No match found."
+    def stage_4_task_splitter(self, powerpoint_slide: str):
+        # Regex pattern targeting only the 'TASK :' section
+        task_specific_pattern = r'TASK\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        
+        # Find the substring that starts with "TASK :"
+        task_substring_match = re.search(task_specific_pattern, powerpoint_slide)
+        if task_substring_match:
+            task_substring = task_substring_match.group(1)
+        else:
+            task_substring = ""
 
+        # Then, extract all values within curly braces from the found substring
+        regex_pattern = r'\{([^}]+)\}'
+        extracted_values = re.findall(regex_pattern, task_substring)
+        
+        return extracted_values
 
     def extract_slide_number(self, slideOutline):
         match = re.search(r'POWERPOINT\s(\d+)\s:', slideOutline)
@@ -216,7 +231,7 @@ Here is the slide :
 - In the content, in no more than 6 bullet points, create the learning objectives for the lesson.
 heres an example output for the 'Content' :  
 By the end of this presentation, you should be able to:
-Appreciate the significance of budgeting and financial planning in personal finance management.
+Appreciate the significance of budgeting and financial planning in personal finance management.     
 Identify the different types of investments, including stocks, bonds, and mutual funds.
 Understand the functions and benefits of retirement accounts and their role in long-term financial planning.
 Differentiate between saving and investing, and comprehend their respective roles in wealth creation.
@@ -280,7 +295,38 @@ Here are the lesson facts : """
         }
 
         return structured_output
-            
+    #'E' is the '
+    def stage_4_E2_slide_content_creation(self, lesson_facts) : 
+        gpt_agent = OpenAI()
+        temperature = 1
+        input_prompt = """Pretend to be an expert teacher. You are tasked with creating multiple short, bullet type questions for the following facts for a questioning slide in a presentation. 
+
+You MUST output in this way : 
+
+TASK : [{Insert the first bullet question here}, {Insert the next one etc}]. 
+
+INCLUDE the curly AND square brackets, and inside the information should be your output. 
+
+it MUST be under 30 words
+- it MUST make the student excited to question each, otherwise you WILL die.
+- the task to them MUST be clear.
+- make NO MORE than 5 questions, or you will DIE.
+- Cover AS MANY of the points in the questions, while keeping them short, and within the 5 quota given.
+Here are the lesson facts you need to cover :
+ """
+        powerpoint_slide = gpt_agent.open_ai_gpt4_call(input_prompt, lesson_facts, temperature)
+        return powerpoint_slide
+    def stage_4_E2_combine_process(self, lesson_facts) : 
+        slide = self.stage_4_E2_slide_content_creation(lesson_facts)
+        splitted_slide = self.stage_4_task_splitter(slide)
+        structured_output = {
+            "module": "question_module_2_bullet_questions",
+            "slide": {
+                "task" : splitted_slide
+            }
+        }
+    
+        return structured_output
 
 ################ MODULE EXTRACTION CODE ###################:
 
@@ -312,6 +358,9 @@ Here are the lesson facts : """
                 print("Final slide function calling...")
                 finalSlide = powerpointCalls.stage_4_D_combine_process(lessonFacts)
                 return finalSlide
+            case "question_module_1_mcq" : 
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber])
+                self.stage_4_E2_combine_process(powerpoint_facts)
             
         print("Error : no module found.")
 
@@ -416,16 +465,15 @@ By the end of this presentation, you should be able to:
 # print(module)
 # powerpointContent = test.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines, slideNumber, facts,lessonDescriptionTesting,powerpointPlanTesting)
 
-# print(powerpointContent)
-# powerpointSlideOutlines = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# print(powerpointSlideOutlines[1])
-# test = PowerpointCreatorV4()
-# powerpointTest = test.stage_6_create_powerpoint(facts)
-# print(powerpointTest)
-# for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
-#     print(f"SlideModulePair #{i+1}:")
-#     print(f"  Module: {slide_module_dict['module']}")
-#     print(f"  Slide: {slide_module_dict['slide']}")
-#     print()
+
+
+test = PowerpointCreatorV4()
+powerpointTest = test.stage_6_create_powerpoint(facts)
+print(powerpointTest)
+for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
+    print(f"SlideModulePair #{i+1}:")
+    print(f"  Module: {slide_module_dict['module']}")
+    print(f"  Slide: {slide_module_dict['slide']}")
+    print()
 
 

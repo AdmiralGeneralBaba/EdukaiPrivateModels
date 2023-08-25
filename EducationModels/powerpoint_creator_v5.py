@@ -101,11 +101,12 @@ ONLY output the modified plan, AND NOTHING ELSE, OR YOU WILL DIE.
 
 Provided will be the existing plan, and the lesson facts so you understand the context : 
 """
-        improved_powerpoint_plan = gptAgent.open_ai_gpt4_call(lesson_facts, prompt, stage_2_1_temp)
+        gpt_input = "FACTS : " + lesson_facts + "and here is the plan :" + powerpoint_plan
+        improved_powerpoint_plan = gptAgent.open_ai_gpt4_call(gpt_input, prompt, stage_2_1_temp)
         return improved_powerpoint_plan
     
     def stage_2_2_submodule_choice_insertion(self, powerpoint_plan, lesson_facts) : 
-        gptAgent = OpenAI()
+        gpt_agent = OpenAI()
         stage_2_1_temp = 0.91
         prompt = """ Pretend you are an expert planner for a powerpoint slide, tasked with choosing the submodules for the powerpoint plan given. 
 A submodule is a variant of the modules named in the powerpoint plan, such that they do a specific task. 
@@ -130,12 +131,15 @@ ALL of the modules listed  MUST be a submodule. You are to make the BEST possibl
 
 Here's an example of how you should change them - DO NOT SAY SUBMODULE, STILL CALL IT 'Module' OR YOU WILL BE 100 PERCENT BE GRINDED.: 
 
-POWERPOINT [i] : Module : question_module_3_roleplay_questions - {FACT NUMBERS HERE}
+POWERPOINT [i] : Module : question_module_3_roleplay_qustions - {FACT NUMBERS HERE}
 
 ONLY OUTPUT THE MODIFIED LESSON PLAN, AND NOTHING ELSE
 Here is the lesson facts and the powerpoint plan : 
-"""
-
+"""     
+        gpt_input = "POWERPOINT FACTS : " + lesson_facts + "and here is the plan : " + powerpoint_plan
+        new_powerpoint_plan = gpt_agent.open_ai_gpt4_call(gpt_input, prompt, stage_2_1_temp)
+        return new_powerpoint_plan
+    
     def stage_3_lesson_description(self, numberedFacts) : 
         gptAgent = OpenAI()
         stage3Temp = 0.49
@@ -424,8 +428,12 @@ Here are the lesson facts you need to cover :
                 finalSlide = powerpointCalls.stage_4_D_combine_process(lessonFacts)
                 return finalSlide
             case "question_module_1_mcq" : 
+                print("Need to do this part")
+            case "question_module_2_bullet_questions" : 
                 powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber])
-                self.stage_4_E2_combine_process(powerpoint_facts)
+                question_slide = self.stage_4_E2_combine_process(powerpoint_facts)
+                return question_slide
+
             
         print("Error : no module found.")
 
@@ -439,7 +447,14 @@ Here are the lesson facts you need to cover :
         print("STAGE 1 COMPLETE")
         powerpointPlan = self.stage_2_powerpoint_plan(lessonFacts, factGroupings)
         print("STAGE 2 COMPLETE")
-        print(powerpointPlan)
+        new_powerpoint_plan = self.stage_2_1_powerpoint_plan(powerpointPlan, lessonFacts)
+        print("STAGE 2.1 COMPLETE")
+        final_powerpoint_plan = self.stage_2_2_submodule_choice_insertion(new_powerpoint_plan, lessonFacts)
+        powerpointPlan = final_powerpoint_plan
+        print(final_powerpoint_plan)
+
+
+        print("STAGE 2.2 COMPLETE")
         lessonDescription = self.stage_3_lesson_description(lessonFacts)
         print("STAGE 3.1 COMPLETE")
         powerpointSlideOutlines = self.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlan)

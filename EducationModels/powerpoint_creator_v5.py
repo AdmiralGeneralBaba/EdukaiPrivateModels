@@ -71,6 +71,71 @@ Here are the lesson facts :
         gptInput = numberedFacts + optimalFactGroupings
         powerpointPlan = gptAgent.open_ai_gpt4_call(gptInput, stage2Prompt, stage2Temp)
         return powerpointPlan  
+    def stage_2_1_powerpoint_plan(self, powerpoint_plan, lesson_facts) : 
+        gptAgent = OpenAI()
+        stage_2_1_temp = 0.6
+        prompt = """Pretend you are an expert planner for a powerpoint slide, tasked with placing activity OR question slides within the basic powerpoint plan given. You are to insert question slides, where needed, with the fact numbers attached to that slide where the questions will be based off.
+
+Here are the module names; JUST print out the module name you picked ,and the facts with them. : 
+1. question_module + {Insert the fact numbers that will be covered}
+
+2. activity_module + {Insert the fact numbers that will be covered} 
+
+The question module is generally meant for only individual slides, and is meant to keep students engaged throughout.
+
+The activity module is meant to be a holistic activity for the entire lesson - USE THIS SPARINGLY, but use it AT LEAST ONCE. 
+
+Make sure the facts that are covered in the slide WAS ALREADY covered in previous slides  - if they are not, you will instantly die a painful death.
+
+Here's an example of these implemented. You are to insert these two modules INTO the powerpoint plan, where needed. 
+
+POWERPOINT 4 : Module : question_module - {Insert fact numbers here }
+
+POWERPOINT 5 : Module : activity_module - {insert fact numbers here}
+follow these tips on how to insert them:
+- each insertion MUST BE PERFECT, AND NOT FORMULAIC 
+- You can include multiple PREVIOUS slides facts into either one of these modules
+- DO NOT overload it with activities ; each is AT LEAST 5 - 10 minutes long. 
+
+ONLY output the modified plan, AND NOTHING ELSE, OR YOU WILL DIE.
+
+Provided will be the existing plan, and the lesson facts so you understand the context : 
+"""
+        improved_powerpoint_plan = gptAgent.open_ai_gpt4_call(lesson_facts, prompt, stage_2_1_temp)
+        return improved_powerpoint_plan
+    
+    def stage_2_2_submodule_choice_insertion(self, powerpoint_plan, lesson_facts) : 
+        gptAgent = OpenAI()
+        stage_2_1_temp = 0.91
+        prompt = """ Pretend you are an expert planner for a powerpoint slide, tasked with choosing the submodules for the powerpoint plan given. 
+A submodule is a variant of the modules named in the powerpoint plan, such that they do a specific task. 
+
+For each module, there are submodules. Here are the submodules for each corresponding modules : 
+
+question_module 
+submodule 1 : 'question_module_1_mcq' : a MCQ based on the facts for that slide.
+submodule 2 : 'question_module_2_bullet_questions' : short bullet questions based on facts for that lesson
+submodule 3 : 'question_module_3_roleplay_questions' : Roleplay styled questions based on the facts for that slide
+
+activity_module 
+submodule 1 : 'activity_module_1_brainstroming' : brainstorming task for students based on the facts (15 minutes)
+submodule 2 : 'activity_module_2_student_summarisation' : summarisation task for students based on facts of slide (10 minutes)
+submodule 3 : 'activity_module_3_qa_pairs' : students are told to pair up with each other, and ask questions and answer to each other. (20 minutes)
+submodule 4 : 'activity_module_4_focused_listing' : focused listing task based on facts of the slide. (10 minutes)
+
+you are to change the names of each of these modules, so that they are changed to be one of these submodules. 
+
+ALL of the modules listed  MUST be a submodule. You are to make the BEST possible choice, given the time it takes for each module, the types of facts, and the overall lesson. INTERNALLY justify WHY you chose the specific submodule, but DO NOT PRINT THIS.
+
+
+Here's an example of how you should change them - DO NOT SAY SUBMODULE, STILL CALL IT 'Module' OR YOU WILL BE 100 PERCENT BE GRINDED.: 
+
+POWERPOINT [i] : Module : question_module_3_roleplay_questions - {FACT NUMBERS HERE}
+
+ONLY OUTPUT THE MODIFIED LESSON PLAN, AND NOTHING ELSE
+Here is the lesson facts and the powerpoint plan : 
+"""
+
     def stage_3_lesson_description(self, numberedFacts) : 
         gptAgent = OpenAI()
         stage3Temp = 0.49

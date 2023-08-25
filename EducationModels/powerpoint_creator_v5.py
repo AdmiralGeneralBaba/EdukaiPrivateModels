@@ -156,6 +156,11 @@ Here is the lesson facts and the powerpoint plan :
     #Extracts the powerpoint individual slide plans, and the total amount of slides for the current powerpoint
     
     #Extracts the fact numbers from the optimum grouping of a single powerpoint slide 
+    def stage_4_extract_values_from_braces(substring: str):
+        # Extract all values within curly braces from the given substring
+        regex_pattern = r'\{([^}]+)\}'
+        return re.findall(regex_pattern, substring)
+    
     def stage_4_facts_extraction_from_choices(self, slide_plan, factsString):
         # Use regex to extract the fact numbers from the slide content
         fact_numbers_match = re.search(r'\{(.+?)\}', slide_plan)
@@ -220,6 +225,36 @@ Here is the lesson facts and the powerpoint plan :
         extracted_values = re.findall(regex_pattern, task_substring)
         
         return extracted_values
+
+    def stage_4_regex_roleplay(self, powerpoint_slide: str):
+        # Regex pattern targeting the 'ROLEPLAY' section
+        roleplay_pattern = r'ROLEPLAY\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        roleplay_match = re.search(roleplay_pattern, powerpoint_slide)
+        
+        if roleplay_match:
+            return self._extract_values_from_braces(roleplay_match.group(1))
+        else:
+            return []
+
+    def stage_4_regex_task(self, powerpoint_slide: str):
+        # Regex pattern targeting the 'TASK :' section
+        task_pattern = r'TASK\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        task_match = re.search(task_pattern, powerpoint_slide)
+        
+        if task_match:
+            return self._extract_values_from_braces(task_match.group(1))
+        else:
+            return []
+
+    def stage_4_regex_picture(self, powerpoint_slide: str):
+        # Regex pattern targeting the 'PICTURE' section
+        picture_pattern = r'PICTURE\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        picture_match = re.search(picture_pattern, powerpoint_slide)
+        
+        if picture_match:
+            return self._extract_values_from_braces(picture_match.group(1))
+        else:
+            return []
 
     def extract_slide_number(self, slideOutline):
         match = re.search(r'POWERPOINT\s(\d+)\s:', slideOutline)
@@ -365,6 +400,9 @@ Here are the lesson facts : """
 
         return structured_output
     #'E' is the '
+   
+
+    #question_module_2_bullet_questions slide creation :  
     def stage_4_E2_slide_content_creation(self, lesson_facts) : 
         gpt_agent = OpenAI()
         temperature = 1
@@ -385,6 +423,7 @@ Here are the lesson facts you need to cover :
  """
         powerpoint_slide = gpt_agent.open_ai_gpt4_call(input_prompt, lesson_facts, temperature)
         return powerpoint_slide
+    #question_module_2_bullet_questions full process : 
     def stage_4_E2_combine_process(self, lesson_facts) : 
         slide = self.stage_4_E2_slide_content_creation(lesson_facts)
         splitted_slide = self.stage_4_task_splitter(slide)
@@ -396,7 +435,54 @@ Here are the lesson facts you need to cover :
         }
     
         return structured_output
+    def stage_4_E3_slide_content_creation(self, lesson_facts) : 
+        gpt_agent = OpenAI()
+        temperature = 1
+        prompt = """Pretend to be an expert teacher. You are tasked with creating a roleplay scenario to create questions for. For these facts, you will create and put the scenario in the 'ROLEPLAY' value, then in the 'TASK' section you will insert the roleplay questions in the format given. in the 'PICTURE' section, you must make a PERFECT google search query to get an image that will help immerse them INTO the roleplay part you have given them.
+You MUST output in this way : 
 
+ROLEPLAY [{Insert a short, brief exciting description of the roleplay you will base the questions on, to engage students}]  
+TASK : [{Insert the roleplay question here}, {Insert the second roleplay question here etc}] 
+PICTURE [{Insert image to get them in the mood of the roleplay you have created.}]
+
+INCLUDE the curly AND square brackets, and inside the information should be your output. 
+
+it MUST be under 30 words
+- it MUST make the student excited to question each, otherwise you WILL die.
+- the task to them MUST be clear.
+- make NO MORE than 5 questions, or you will DIE.
+- Cover AS MANY of the points in the questions, while keeping them short, and within the 5 quota given.
+- DO NOT stretch the students too hard; it MUST be achievable with the facts given.
+Here are the lesson facts you need to cover :
+ """
+
+        slide = gpt_agent.open_ai_gpt4_call(lesson_facts, prompt, temperature)
+        return slide 
+    #splits up the inputted slide into values within the dictionary of 'slide_content'
+    def stage_4_E3_regex_split(self, slide): 
+        roleplay = self.stage_4_regex_roleplay(slide)
+        task = self.stage_4_regex_task(slide)
+        picture = self.stage_4_regex_picture(slide)
+
+        slide = {
+            "roleplay": roleplay, 
+            "task": task,
+            "picture": picture
+        }
+        
+        return slide
+    def stage_4_E3_combine_process(self, lesson_facts) : 
+        slide = self.stage_4_E3_slide_content_creation(lesson_facts)
+        slide_dict = self.stage_4_E3_regex_split(slide)
+        
+        structured_output = {
+            "module": "Ending slide",
+            "slide": slide_dict
+        }
+        return structured_output
+
+    
+  
 ################ MODULE EXTRACTION CODE ###################:
 
     #Extracts the module from a powerpoint slide, outputs the correct prompt
@@ -429,10 +515,23 @@ Here are the lesson facts you need to cover :
                 return finalSlide
             case "question_module_1_mcq" : 
                 print("Need to do this part")
+                return None
             case "question_module_2_bullet_questions" : 
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber])
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
                 question_slide = self.stage_4_E2_combine_process(powerpoint_facts)
                 return question_slide
+            case "question_module_3_roleplay_questions" : 
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+                question_slide = self.stage_4_E2_combine_process(powerpoint_facts)
+                return question_slide
+            case "activity_module_1_brainstorming":
+                return None
+            case "activity_module_2_student_summarisation":
+                return None
+            case "activity_module_3_qa_pairs":
+                return None
+            case "activity_module_4_focused_listing":
+                return None
 
             
         print("Error : no module found.")
@@ -450,14 +549,13 @@ Here are the lesson facts you need to cover :
         new_powerpoint_plan = self.stage_2_1_powerpoint_plan(powerpointPlan, lessonFacts)
         print("STAGE 2.1 COMPLETE")
         final_powerpoint_plan = self.stage_2_2_submodule_choice_insertion(new_powerpoint_plan, lessonFacts)
-        powerpointPlan = final_powerpoint_plan
         print(final_powerpoint_plan)
 
 
         print("STAGE 2.2 COMPLETE")
         lessonDescription = self.stage_3_lesson_description(lessonFacts)
         print("STAGE 3.1 COMPLETE")
-        powerpointSlideOutlines = self.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlan)
+        powerpointSlideOutlines = self.stage_3_facts_for_slide_powerpoint_extractor(final_powerpoint_plan)
         print("STAGE 3.2 COMPLETE")
         print("LOOPING STAGES IN PROGRESS...")
         for i in range(len(powerpointSlideOutlines)):
@@ -466,7 +564,7 @@ Here are the lesson facts you need to cover :
             print(powerpointSlideOutlines[i])
             module = poweropointMethods.stage_5_extract_module(powerpointSlideOutlines[i]) # Extracts module from powerpoint plan
 
-            powerpointSlide = poweropointMethods.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines[i], slideNumber, lessonFacts, lessonDescription, powerpointPlan) # Calls function that creates powerpoint based on module name.
+            powerpointSlide = poweropointMethods.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines[i], slideNumber, lessonFacts, lessonDescription, final_powerpoint_plan) # Calls function that creates powerpoint based on module name.
             print("POWERPOINT SLIDE CREATED, APPENDING...")
 
             powerpointSlidesDetailed.append(powerpointSlide) 

@@ -1,6 +1,6 @@
 from openai_calls import OpenAI
 import re
-
+from mcq_creator_v1 import McqCreatorV1
 
 class PowerpointCreatorV4 : 
     #     Fixed stages for a single lesson :
@@ -108,13 +108,13 @@ Provided will be the existing plan, and the lesson facts so you understand the c
     def stage_2_2_submodule_choice_insertion(self, powerpoint_plan, lesson_facts) : 
         gpt_agent = OpenAI()
         stage_2_1_temp = 0.91
+        #I removed this submodule from the prompt :submodule 1 : 'question_module_1_mcq' : a MCQ based on the facts for that slide.
         prompt = """ Pretend you are an expert planner for a powerpoint slide, tasked with choosing the submodules for the powerpoint plan given. 
 A submodule is a variant of the modules named in the powerpoint plan, such that they do a specific task. 
 
 For each module, there are submodules. Here are the submodules for each corresponding modules : 
 
 question_module 
-submodule 1 : 'question_module_1_mcq' : a MCQ based on the facts for that slide.
 submodule 2 : 'question_module_2_bullet_questions' : short bullet questions based on facts for that lesson
 submodule 3 : 'question_module_3_roleplay_questions' : Roleplay styled questions based on the facts for that slide
 
@@ -407,8 +407,9 @@ Here are the lesson facts : """
         }
 
         return structured_output
-    #'E' is the 'question_module'
-   
+    #'E' is the 'question_module_mcq', need to add this in later, perhaps call the mcq creator and then do something with that by creating some sort of a link, and then the slide is just a slide with a link?
+    
+  
 
     #question_module_2_bullet_questions slide creation :  
     def stage_4_E2_slide_content_creation(self, lesson_facts) : 
@@ -666,11 +667,17 @@ Here are the lesson facts you need to cover :
                 activity_slide = self.stage_4_F1_combined_process(powerpoint_facts)
                 return activity_slide
             case "activity_module_2_student_summarisation":
-                return None
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+                activity_slide = self.stage_4_F2_combined_process(powerpoint_facts)
+                return activity_slide
             case "activity_module_3_qa_pairs":
-                return None
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+                activity_slide = self.stage_4_F3_combined_process(powerpoint_facts)
+                return activity_slide
             case "activity_module_4_focused_listing":
-                return None
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+                activity_slide = self.stage_4_F4_combined_process(powerpoint_facts)
+                return activity_slide
 
             
         print("Error : no module found.")

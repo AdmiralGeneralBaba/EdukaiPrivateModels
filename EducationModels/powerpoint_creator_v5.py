@@ -126,7 +126,8 @@ submodule 4 : 'activity_module_4_focused_listing' : focused listing task based o
 
 you are to change the names of each of these modules, so that they are changed to be one of these submodules. 
 
-ALL of the modules listed  MUST be a submodule. You are to make the BEST possible choice, given the time it takes for each module, the types of facts, and the overall lesson. INTERNALLY justify WHY you chose the specific submodule, but DO NOT PRINT THIS.
+ALL of the modules listed  MUST be a submodule. You are to make the BEST possible choice, given the time it takes for each module, the types of facts, and the overall lesson. 
+- give variety where possible, to keep the student engaged. 
 
 
 Here's an example of how you should change them - DO NOT SAY SUBMODULE, STILL CALL IT 'Module' OR YOU WILL BE 100 PERCENT BE GRINDED.: 

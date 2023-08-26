@@ -255,6 +255,14 @@ Here is the lesson facts and the powerpoint plan :
             return self._extract_values_from_braces(picture_match.group(1))
         else:
             return []
+    def stage_4_regex_example(self, powerpoint_slide: str) : 
+        picture_pattern = r'EXAMPLE\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        picture_match = re.search(picture_pattern, powerpoint_slide)
+        
+        if picture_match:
+            return self._extract_values_from_braces(picture_match.group(1))
+        else:
+            return []
 
     def extract_slide_number(self, slideOutline):
         match = re.search(r'POWERPOINT\s(\d+)\s:', slideOutline)
@@ -399,7 +407,7 @@ Here are the lesson facts : """
         }
 
         return structured_output
-    #'E' is the '
+    #'E' is the 'question_module'
    
 
     #question_module_2_bullet_questions slide creation :  
@@ -435,6 +443,7 @@ Here are the lesson facts you need to cover :
         }
     
         return structured_output
+        
     def stage_4_E3_slide_content_creation(self, lesson_facts) : 
         gpt_agent = OpenAI()
         temperature = 1
@@ -471,6 +480,7 @@ Here are the lesson facts you need to cover :
         }
         
         return slide
+    # this is the question_module_3_roleplay_questions submodule
     def stage_4_E3_combine_process(self, lesson_facts) : 
         slide = self.stage_4_E3_slide_content_creation(lesson_facts)
         slide_dict = self.stage_4_E3_regex_split(slide)
@@ -480,8 +490,135 @@ Here are the lesson facts you need to cover :
             "slide": slide_dict
         }
         return structured_output
-
     
+    def stage_4_F1_slide_content_creation(self, lesson_facts) : 
+        gpt_agent = OpenAI()
+        temp = 1
+        prompt = """ I want you to pretend to be an expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable. Based on this lesson description, and the inputted facts, you are to create a SINGLE powerpoint slide based on the facts given. Assume that everything in the lesson description is covered in the other slides. Your job is to create a powerpoint slide that takes into account the slides BEFORE your slide number and nothing else.
+
+You are to create a slide asking students to brainstorm about what they have learnt. Your output should be EXACTLY like this structure : 
+TASK : [{have the brainstorming task be inside here}]. INCLUDE the curly brackets, and inside the information should be your output.
+
+it MUST be under 30 words
+- it should not be overly specific, and should be more engaging and not so monotonous 
+- it MUST make the student excited to brainstorm, otherwise you will die.
+- the task to them MUST be clear.
+Here are the lesson facts you need to cover: 
+"""
+        slide = gpt_agent.open_ai_gpt4_call(lesson_facts, prompt, temp)
+        return slide
+    def stage_4_F1_combined_process(self, lesson_facts) : 
+        slide = self.stage_4_F1_slide_content_creation(lesson_facts)
+        splitted_slide = self.stage_4_task_splitter(slide)
+        structured_output = {
+            "module": "activity_module_1_brainstroming",
+            "slide": {
+                "task" : splitted_slide
+            }
+        }
+
+        return structured_output
+    
+    def stage_4_F2_slide_content_creation(self, lesson_facts) :
+        gpt_agent = OpenAI()
+        temp = 0.5
+        prompt = """ I want you to pretend to be an expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable. Based on this lesson description, and the inputted facts, you are to create a SINGLE powerpoint slide based on the facts given. Assume that everything in the lesson description is covered in the other slides. Your job is to create a powerpoint slide that takes into account the slides BEFORE your slide number and nothing else.
+
+You are to create a slide asking students to summarize about what they have learnt. Your output should be EXACTLY like this structure : 
+TASK : [{have the summarisation task be inside here}]. INCLUDE the curly brackets, and inside the information should be your output.
+
+it MUST be under 30 words
+- it should not be overly specific, and should be more engaging and not so monotonous 
+- it MUST make the student excited to brainstorm, otherwise you will die.
+- the task to them MUST be clear.
+Here are the lesson facts you need to cover:
+"""
+
+        slide = gpt_agent.open_ai_gpt4_call(lesson_facts, prompt, temp)
+        return slide
+    def stage_4_F2_combined_process(self, lesson_facts) :
+        slide = self.stage_4_F2_slide_content_creation(lesson_facts)
+        splitted_slide = self.stage_4_task_splitter(slide)
+        structured_output = {
+            "module": "activity_module_2_student_summarisation",
+            "slide": {
+                "task" : splitted_slide
+            }
+        }
+        return structured_output
+    
+    def stage_4_F3_slide_content_creation(self, lesson_facts) :
+        gpt_agent = OpenAI()
+        temp = 0.8
+        prompt = """ I want you to pretend to be an expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable. Based on this lesson description, and the inputted facts, you are to create a SINGLE powerpoint slide based on the facts given. Assume that everything in the lesson description is covered in the other slides. Your job is to create a powerpoint slide that takes into account the slides BEFORE your slide number and nothing else.
+
+You are to create a slide asking students to pair up, and for them to ask each other questions to each other and to answer the questions from their partner. Have it be a game, almost trying to catch them out on certain sections. Include an example with your output.  Your output should be EXACTLY like this structure : 
+TASK : [{have the brainstorming task be inside here}]. EXAMPLE [{Have the example inside here, in this format: Q: "QUESTION HERE" A"ANSWER HERE"}]
+
+INCLUDE the curly brackets, and inside the information should be your output.
+
+it MUST be under 30 words
+- it should not be overly specific, and should be more engaging and not so monotonous 
+- it MUST make the student excited to question each, otherwise you WILL die.
+- the task to them MUST be clear.
+
+Here are the lesson facts you need to cover: 
+
+"""
+    
+        slide = gpt_agent.open_ai_gpt4_call(lesson_facts, prompt, temp)
+        return slide
+    def stage_4_F3_regex_split(self, slide) : 
+        task = self.stage_4_task_splitter(slide)
+        example = self.stage_4_regex_example(slide)
+
+        slide = {
+            "task" : task,
+            "example" : example
+        }
+        return slide
+    def stage_4_F3_combined_process(self, lesson_facts) : 
+        slide = self.stage_4_F3_slide_content_creation(lesson_facts)
+        slide_dict = self.stage_4_E3_regex_split(slide)
+        
+        structured_output = {
+            "module": "Ending slide",
+            "slide": slide_dict
+        }
+        return structured_output
+    def stage_4_F4_slide_content_creation(self, lesson_facts) : 
+        gpt_agent = OpenAI()
+        temp = 0.9
+        prompt = """Pretend to be an expert teacher, tasked with creating a SINGLE question task based on the facts given to you. You are to create a 'focused listing' question, that creates a question in this format : 
+'list all the possible causes of the Civil War' ‘List all the primary components of the human circulatory system.’
+‘List all the works written by William Shakespeare.’
+‘List all the planets in our solar system in order of their distance from the sun’.
+
+
+TASK : [{have the focused listing task be in here}] 
+
+INCLUDE the curly brackets, and inside the information should be your output.
+
+it MUST be under 30 words
+- it should not be overly specific, and should be more engaging and not so monotonous 
+- it MUST make the student excited to question each, otherwise you WILL die.
+- the task to them MUST be clear.
+
+Here are the lesson facts you need to cover :
+"""
+        slide = gpt_agent.open_ai_gpt4_call(lesson_facts, prompt, temp)
+        return slide
+    def stage_4_F4_combined_process(self, lesson_facts) : 
+        slide = self.stage_4_F4_slide_content_creation(lesson_facts)
+        splitted_slide = self.stage_4_task_splitter(slide)
+        structured_output = {
+            "module": "activity_module_2_student_summarisation",
+            "slide": {
+                "task" : splitted_slide
+            }
+        }
+        return structured_output
+        
   
 ################ MODULE EXTRACTION CODE ###################:
 
@@ -525,7 +662,9 @@ Here are the lesson facts you need to cover :
                 question_slide = self.stage_4_E3_combine_process(powerpoint_facts)
                 return question_slide
             case "activity_module_1_brainstorming":
-                return None
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+                activity_slide = self.stage_4_F1_combined_process(powerpoint_facts)
+                return activity_slide
             case "activity_module_2_student_summarisation":
                 return None
             case "activity_module_3_qa_pairs":

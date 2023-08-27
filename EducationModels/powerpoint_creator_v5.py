@@ -174,16 +174,11 @@ Here is the lesson facts and the powerpoint plan :
         # Create a list to store the facts for this slide
         slide_facts = []
 
-        # Split the facts string into a list of facts
-        factsList = factsString.splitlines()
-
-        # Go through the list of facts and add the ones with matching numbers to slide_facts
-        for fact in factsList:
-            # Check if line starts with a number
-            if fact.split(' ')[0].isdigit():
-                number = int(fact.split(' ')[0])  # Extract the fact number from the fact string
-                if number in fact_numbers:
-                    slide_facts.append(fact)
+        # Use regex to extract facts based on fact numbers
+        for num in fact_numbers:
+            fact_match = re.search(rf"{num}\.\s*{{(.*?)}}", factsString)
+            if fact_match:
+                slide_facts.append(f"{num}. {{{fact_match.group(1)}}}")
 
         # Join the list of facts into a single string
         slide_facts_string = ' '.join(slide_facts)
@@ -635,6 +630,7 @@ Here are the lesson facts you need to cover :
 
     def stage_5_module_powerpoint_slide_function_calls(self, module, powerpointSlideOutline, slideNumber, lessonFacts, lessonDescription, powerpointPlan) : # Calls stage_4 functions for modules based on the name of the module, use 'swtich : case' for this
         powerpointCalls = PowerpointCreatorV4()
+       
         match module : 
             case "Title Page" : 
                 print("Title page function calling...")
@@ -656,7 +652,7 @@ Here are the lesson facts you need to cover :
                 print("Need to do this part")
                 return None
             case "question_module_2_bullet_questions" : 
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 question_slide = self.stage_4_E2_combine_process(powerpoint_facts)
                 return question_slide
             case "question_module_3_roleplay_questions" : 
@@ -743,24 +739,33 @@ lessonDescriptionTesting = """The lesson outlines the different types of planes 
 
 
 
-powerpointPlanTesting = """POWERPOINT 1 : Module : Title Page - Hearts of Iron IV, An Insight on Aircraft and their Functionalities
+powerpointPlanTesting = """POWERPOINT 1 : Module : Title Page - Memory Processes in the Brain, An Overview of Memory Systems and its Functions
 
-POWERPOINT 2 : Module : L.O page - Learning objects for the lesson
+POWERPOINT 2 : Module : L.O page - Learning objects for the lesson 
 
-POWERPOINT 3 : Module : General content page - {1, 2, 3, 17}, Understanding basics of Hearts of Iron IV
+POWERPOINT 3 : Module : General content page - {1, 2, 3}, Working memory and its evolution
 
-POWERPOINT 4 : Module : General content page - {18, 19, 20, 21}, Importance and specialties of Naval Bombers
+POWERPOINT 4 : Module : question_module_2_bullet_questions - {1, 2, 3}
 
-POWERPOINT 5 : Module : General content page - {4, 5, 6, 7}, Types of fighters and their strengths
+POWERPOINT 5 : Module : General content page - {5, 6, 8}, Process and organization of sensory information
 
-POWERPOINT 6 : Module : General content page - {8, 9, 10, 11}, Role and capabilities of CAS planes
+POWERPOINT 6 : Module : question_module_3_roleplay_questions - {5, 6, 8}
 
-POWERPOINT 7 : Module : General content page - {12, 13, 14}, Tactical bombers and their functionalities
+POWERPOINT 7 : Module : General content page - {4, 9, 10}, Systems and types of long-term memory
 
-POWERPOINT 8 : Module : General content page - {15, 16}, Strategic bombers and their impact   
+POWERPOINT 8 : Module : activity_module_1_brainstroming - {1, 2, 3, 5, 6, 8, 4, 9, 10}
 
-POWERPOINT 9 : Module : Ending slide - Conclusion, Summary of the different types of aircraft in Hearts of Iron IV, their roles, and their impacts.
-"""
+POWERPOINT 9 : Module : General content page - {7, 17}, Semantic memory and its vulnerabilities
+
+POWERPOINT 10 : Module : question_module_2_bullet_questions - {7, 17}
+
+POWERPOINT 11 : Module : General content page - {11, 12, 13, 14, 15, 16}, Episodic memory and its associated brain regions
+
+POWERPOINT 12 : Module : question_module_3_roleplay_questions - {11, 12, 13, 14, 15, 16}
+
+POWERPOINT 13 : Module : General content page - {18}, Research methods in memory neuroscience
+
+POWERPOINT 14 : Module : activity_module_2_student_summarisation - {7, 17, 11, 12, 13, 14, 15, 16, 18}"""
 
 powerpointSlideTest = """TITLE : Understanding the Role of Tactical and Strategic Bombers in Hearts of Iron IV
 
@@ -775,30 +780,31 @@ By the end of this presentation, you should be able to:
 5. Understand the characteristics of strategic bombers, notably their long range and high survivability.
 # 6. Differentiate between tactical and strategic bombers based on their respective tasks and capabilities."""
 
-
-# powerpointSlide, searchQuery = test.stage_4_A_combined_process(4, powerpointSlideOutlines, lessonDescriptionTesting, powerpointPlanTesting, facts)
-# if powerpointSlide is not None:
-#     print("THIS IS THE TITLE : " + powerpointSlide[0] + "THIS IS THE CONTENT : " + powerpointSlide[1] + "THIS IS THE SEARCH QUERY" + searchQuery)
-# else:
-#     print("powerpointSlide is None")
-
-# slides = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# slideFacts = test.stage_4_facts_extraction_from_choices(slides[5], facts) # Gets slide facts
-# print(slideFacts)
-# slideNumber = 7
-# module = test.stage_5_extract_module(powerpointSlideOutlines[slideNumber])
-# print(module)
-# powerpointContent = test.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines, slideNumber, facts,lessonDescriptionTesting,powerpointPlanTesting)
-
-
-
 test = PowerpointCreatorV4()
-powerpointTest = test.stage_6_create_powerpoint(facts)
-print(powerpointTest)
-for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
-    print(f"SlideModulePair #{i+1}:")
-    print(f"  Module: {slide_module_dict['module']}")
-    print(f"  Slide: {slide_module_dict['slide']}")
-    print()
+
+
+powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
+powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[3], facts)
+print (powerpoint_slides_outline[3])
+print("""THESE ARE THE POWERPOINT FACTS : 
+      
+      
+      
+      
+      """ + powerpoint_facts)
+test_output = test.stage_4_E2_combine_process(powerpoint_facts)
+print(test_output)
+
+
+
+
+
+# powerpointTest = test.stage_6_create_powerpoint(facts)
+# print(powerpointTest)
+# for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
+#     print(f"SlideModulePair #{i+1}:")
+#     print(f"  Module: {slide_module_dict['module']}")
+#     print(f"  Slide: {slide_module_dict['slide']}")
+#     print()
 
 

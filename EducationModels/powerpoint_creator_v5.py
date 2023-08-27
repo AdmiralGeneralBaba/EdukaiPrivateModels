@@ -15,7 +15,7 @@ class PowerpointCreatorV4 :
     def stage_1_groupings_for_facts(self, numberedFacts) : 
         gptAgent = OpenAI()
         stage1Temp = 0.64
-        stage1Prompt = """Group these facts into logically consistent chunks to be used for a SINGLE  powerpoint slide - DO NOT make the facts be too long. ONLY output the numbers of the facts, and put them in curly brackets e.g {1, 5, 6} or {7, 13, 2}, and then, in your mind, INTERNALLY justify WHY you chose them.
+        stage1Prompt = """Group the inputted facts into logically consistent chunks to be used for a SINGLE  powerpoint slide - DO NOT make the facts be too long. ONLY output the numbers of the facts, and put them in curly brackets e.g {1, 5, 6} or {7, 13, 2}, and then, in your mind, INTERNALLY justify WHY you chose them.
 Then, write a short, 1 line description of the facts NEXT to the facts, like so :
 {1, 2, 3}, blah blah, 
 {4,5,6}, blah blah, 
@@ -147,8 +147,9 @@ Here is the lesson facts and the powerpoint plan :
         stage3Prompt = """These facts are included for a lesson. Summarise these facts into one,  brief line, outlining the lesson."""
         lessonDescription = gptAgent.open_ai_gpt4_call(numberedFacts, stage3Prompt, stage3Temp)
         return lessonDescription
-    def stage_3_facts_for_slide_powerpoint_extractor(self, powerpointPlan) : 
-        powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+)', powerpointPlan)
+    def stage_3_facts_for_slide_powerpoint_extractor_updated(powerpointPlan):
+        # Match either a double newline or the end of the string
+        powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+?)(?:\n\n|$)', powerpointPlan, re.DOTALL)
         return powerpointSlides
 
 
@@ -157,7 +158,7 @@ Here is the lesson facts and the powerpoint plan :
     #Extracts the powerpoint individual slide plans, and the total amount of slides for the current powerpoint
     
     #Extracts the fact numbers from the optimum grouping of a single powerpoint slide 
-    def stage_4_extract_values_from_braces(substring: str):
+    def stage_4_extract_values_from_braces(self, substring: str):
         # Extract all values within curly braces from the given substring
         regex_pattern = r'\{([^}]+)\}'
         return re.findall(regex_pattern, substring)
@@ -483,7 +484,7 @@ Here are the lesson facts you need to cover :
         slide_dict = self.stage_4_E3_regex_split(slide)
         
         structured_output = {
-            "module": "Ending slide",
+            "module": "question_module_3_roleplay_question",
             "slide": slide_dict
         }
         return structured_output
@@ -504,6 +505,7 @@ Here are the lesson facts you need to cover:
 """
         slide = gpt_agent.open_ai_gpt4_call(lesson_facts, prompt, temp)
         return slide
+    #'F1' is the 'activity_module_1_brainstroming' 
     def stage_4_F1_combined_process(self, lesson_facts) : 
         slide = self.stage_4_F1_slide_content_creation(lesson_facts)
         splitted_slide = self.stage_4_task_splitter(slide)
@@ -533,6 +535,8 @@ Here are the lesson facts you need to cover:
 
         slide = gpt_agent.open_ai_gpt4_call(lesson_facts, prompt, temp)
         return slide
+    
+    #'F2' is the 'activity_module_2_student_summarisation' 
     def stage_4_F2_combined_process(self, lesson_facts) :
         slide = self.stage_4_F2_slide_content_creation(lesson_facts)
         splitted_slide = self.stage_4_task_splitter(slide)
@@ -574,12 +578,14 @@ Here are the lesson facts you need to cover:
             "example" : example
         }
         return slide
+    
+    #'F3' is the 'activity_module_3_qa_pairs'
     def stage_4_F3_combined_process(self, lesson_facts) : 
         slide = self.stage_4_F3_slide_content_creation(lesson_facts)
         slide_dict = self.stage_4_E3_regex_split(slide)
         
         structured_output = {
-            "module": "Ending slide",
+            "module": "activity_module_3_qa_pairs",
             "slide": slide_dict
         }
         return structured_output
@@ -605,11 +611,13 @@ Here are the lesson facts you need to cover :
 """
         slide = gpt_agent.open_ai_gpt4_call(lesson_facts, prompt, temp)
         return slide
+    
+    # 'F4' is the 'activity_module_4_focused_listing'
     def stage_4_F4_combined_process(self, lesson_facts) : 
         slide = self.stage_4_F4_slide_content_creation(lesson_facts)
         splitted_slide = self.stage_4_task_splitter(slide)
         structured_output = {
-            "module": "activity_module_2_student_summarisation",
+            "module": "activity_module_4_focused_listing",
             "slide": {
                 "task" : splitted_slide
             }
@@ -630,7 +638,13 @@ Here are the lesson facts you need to cover :
 
     def stage_5_module_powerpoint_slide_function_calls(self, module, powerpointSlideOutline, slideNumber, lessonFacts, lessonDescription, powerpointPlan):
             powerpointCalls = PowerpointCreatorV4()
-        
+            print(lessonFacts)
+            print("THE SLIDE PLAN IS : " + powerpointSlideOutline[slideNumber])
+            powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
+            print("HERE ARE THE FACTS FOR THE CURRENT POWERPOINT : " + powerpoint_facts)
+            print("""
+                  These are the facts for the current powerpoint : 
+                  """ + powerpoint_facts)
             if re.search("Title Page", module):
                 print("Title page function calling...")
                 titlePage = powerpointCalls.stage_4_C_combined_process(lessonFacts)
@@ -652,32 +666,26 @@ Here are the lesson facts you need to cover :
                 return None
             elif re.search("question_module_2_bullet_questions", module):
                 print("question_module_2_bullet_questions calling...")
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 question_slide = self.stage_4_E2_combine_process(powerpoint_facts)
                 return question_slide
             elif re.search("question_module_3_roleplay_questions", module):
                 print("question_module_3_roleplay_questions calling...")
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 question_slide = self.stage_4_E3_combine_process(powerpoint_facts)
                 return question_slide
             elif re.search("activity_module_1_brainstorming", module):
                 print("activity_module_1_brainstorming calling...")
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 activity_slide = self.stage_4_F1_combined_process(powerpoint_facts)
                 return activity_slide
             elif re.search("activity_module_2_student_summarisation", module):
                 print("activity_module_2_student_summarisation calling...")
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 activity_slide = self.stage_4_F2_combined_process(powerpoint_facts)
                 return activity_slide
             elif re.search("activity_module_3_qa_pairs", module):
                 print("activity_module_3_qa_pairs calling...")
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 activity_slide = self.stage_4_F3_combined_process(powerpoint_facts)
                 return activity_slide
             elif re.search("activity_module_4_focused_listing", module):
                 print("activity_module_4_focused_listing calling... ")
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 activity_slide = self.stage_4_F4_combined_process(powerpoint_facts)
                 return activity_slide
 
@@ -691,10 +699,13 @@ Here are the lesson facts you need to cover :
         powerpointSlidesDetailed = []
         print("FIXED STAGES IN PROGRESS...")
         factGroupings = self.stage_1_groupings_for_facts(lessonFacts)
+        print(factGroupings)
         print("STAGE 1 COMPLETE")
         powerpointPlan = self.stage_2_powerpoint_plan(lessonFacts, factGroupings)
+        print(powerpointPlan)
         print("STAGE 2 COMPLETE")
         new_powerpoint_plan = self.stage_2_1_powerpoint_plan(powerpointPlan, lessonFacts)
+        print(new_powerpoint_plan)
         print("STAGE 2.1 COMPLETE")
         final_powerpoint_plan = self.stage_2_2_submodule_choice_insertion(new_powerpoint_plan, lessonFacts)
         print(final_powerpoint_plan)
@@ -729,6 +740,7 @@ Here are the lesson facts you need to cover :
             
 
  
+
 
 facts =  """1. {Auditory parts of working memory are located in the left frontal and parietal lobes.} 2. {The visual sketchpad is located in the right hemisphere of the brain.} 3. {Working memory may have co-evolved with speech.} 4. {Long-term memory is divided into different systems located in different brain networks.} 5. {Information enters sensory systems and then passes through specialized processing networks.} 6. {There are areas in the cortex that extract perceptual representations of objects.} 7. {Semantic memory stores factual knowledge organized into categories.} 8. {The brain organizes encoded information into categories for efficient memory retrieval.} 9. {Skills and emotional learning are types of long-term memory.} 10. {Different brain areas are involved in skill learning and emotional learning.} 11. {Episodic memory is used to remember personal experiences.} 12. {Episodic memory is different from learning facts because events happen only once.} 13. {Amnesic patients have deficits in episodic memory.} 14. {Damage to specific brain regions affects the formation of episodic and semantic memories.} 15. {The perirhinal cortex mediates the sense of familiarity in episodic memory.} 16. {The hippocampus encodes events and places in episodic memory.} 17. {Certain types of semantic dementia can cause breakdown of semantic memory.} 18. {Neuroscientists study neurological patients and conduct research using laboratory animals to understand the neurobiology of memory.}
  """
@@ -789,12 +801,12 @@ test = PowerpointCreatorV4()
 
 
 # powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[6], facts)
-# print (powerpoint_slides_outline[0])
+# powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[12], facts)
+# print (powerpoint_slides_outline[12])
 # print("""THESE ARE THE POWERPOINT FACTS : 
       
       
-# """ + powerpoint_facts)
+# # """ + powerpoint_facts)
 
 # for i in range(len(powerpoint_slides_outline)):
 #     print("In loop, iteration:", i)
@@ -802,8 +814,8 @@ test = PowerpointCreatorV4()
 
 
 
-
-powerpointTest = test.stage_6_create_powerpoint(facts)
+short_facts = """1. {Auditory parts of working memory are located in the left frontal and parietal lobes.} 2. {The visual sketchpad is located in the right hemisphere of the brain.} 3. {Working memory may have co-evolved with speech.}"""
+powerpointTest = test.stage_6_create_powerpoint(short_facts)
 print(powerpointTest)
 # for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
 #     print(f"SlideModulePair #{i+1}:")

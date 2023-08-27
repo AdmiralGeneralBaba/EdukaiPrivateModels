@@ -783,17 +783,17 @@ By the end of this presentation, you should be able to:
 test = PowerpointCreatorV4()
 
 
-powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[3], facts)
-print (powerpoint_slides_outline[3])
-print("""THESE ARE THE POWERPOINT FACTS : 
+# powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
+# powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[3], facts)
+# print (powerpoint_slides_outline[3])
+# print("""THESE ARE THE POWERPOINT FACTS : 
       
       
       
       
-      """ + powerpoint_facts)
-test_output = test.stage_4_E2_combine_process(powerpoint_facts)
-print(test_output)
+#       """ + powerpoint_facts)
+# test_output = test.stage_4_E2_combine_process(powerpoint_facts)
+# print(test_output)
 
 
 

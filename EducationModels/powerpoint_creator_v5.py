@@ -634,12 +634,12 @@ Here are the lesson facts you need to cover :
             return powerpointModule.group(1)
         else: 
             print("ERROR in module extraction, make sure the module output syntax is correct.")
-
+    #'powerpointSlideOutline' is the outline for a single slide and not the grouping.
     def stage_5_module_powerpoint_slide_function_calls(self, module, powerpointSlideOutline, slideNumber, lessonFacts, lessonDescription, powerpointPlan):
             powerpointCalls = PowerpointCreatorV4()
             print(lessonFacts)
-            print("THE SLIDE PLAN IS : " + powerpointSlideOutline[slideNumber])
-            powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
+            print("THE SLIDE PLAN IS : " + powerpointSlideOutline)
+            powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline, lessonFacts)
             print("HERE ARE THE FACTS FOR THE CURRENT POWERPOINT : " + powerpoint_facts)
             print("""
                   These are the facts for the current powerpoint : 
@@ -716,10 +716,15 @@ Here are the lesson facts you need to cover :
         powerpointSlideOutlines = self.stage_3_facts_for_slide_powerpoint_extractor(final_powerpoint_plan)
         print("STAGE 3.2 COMPLETE")
         print("LOOPING STAGES IN PROGRESS...")
+        for i in range(len(powerpointSlideOutlines)) : 
+            "THESE ARE THE POWERPOINT PLAN'S SECTIONS : "
+            print("NUMBER IS " + f"{i}" + powerpointSlideOutlines[i] + """
+
+""")
         for i in range(len(powerpointSlideOutlines)):
             slideNumber = i 
             print(f"CURRENT SLIDE IS {slideNumber}")
-            print(powerpointSlideOutlines[i])
+            
             module = poweropointMethods.stage_5_extract_module(powerpointSlideOutlines[i]) # Extracts module from powerpoint plan
 
             powerpointSlide = poweropointMethods.stage_5_module_powerpoint_slide_function_calls(module, powerpointSlideOutlines[i], slideNumber, lessonFacts, lessonDescription, final_powerpoint_plan) # Calls function that creates powerpoint based on module name.
@@ -799,10 +804,10 @@ By the end of this presentation, you should be able to:
 test = PowerpointCreatorV4()
 
 
-# powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[12], facts)
-# print (powerpoint_slides_outline[12])
-# print("""THESE ARE THE POWERPOINT FACTS : 
+powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
+powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[12], facts)
+print (powerpoint_slides_outline[12])
+print("""THESE ARE THE POWERPOINT FACTS : 
       
       
 # # """ + powerpoint_facts)

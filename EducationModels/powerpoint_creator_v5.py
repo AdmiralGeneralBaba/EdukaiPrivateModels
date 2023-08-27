@@ -228,7 +228,7 @@ Here is the lesson facts and the powerpoint plan :
         roleplay_match = re.search(roleplay_pattern, powerpoint_slide)
         
         if roleplay_match:
-            return self._extract_values_from_braces(roleplay_match.group(1))
+            return self.stage_4_extract_values_from_braces(roleplay_match.group(1))
         else:
             return []
 
@@ -238,7 +238,7 @@ Here is the lesson facts and the powerpoint plan :
         task_match = re.search(task_pattern, powerpoint_slide)
         
         if task_match:
-            return self._extract_values_from_braces(task_match.group(1))
+            return self.stage_4_extract_values_from_braces(task_match.group(1))
         else:
             return []
 
@@ -248,7 +248,7 @@ Here is the lesson facts and the powerpoint plan :
         picture_match = re.search(picture_pattern, powerpoint_slide)
         
         if picture_match:
-            return self._extract_values_from_braces(picture_match.group(1))
+            return self.stage_4_extract_values_from_braces(picture_match.group(1))
         else:
             return []
     def stage_4_regex_example(self, powerpoint_slide: str) : 
@@ -256,7 +256,7 @@ Here is the lesson facts and the powerpoint plan :
         picture_match = re.search(picture_pattern, powerpoint_slide)
         
         if picture_match:
-            return self._extract_values_from_braces(picture_match.group(1))
+            return self.stage_4_extract_values_from_braces(picture_match.group(1))
         else:
             return []
 
@@ -621,63 +621,68 @@ Here are the lesson facts you need to cover :
 
     #Extracts the module from a powerpoint slide, outputs the correct prompt
     def stage_5_extract_module(self, powerpoint_line):
-        pattern = r'Module : (.+?) -'
+        pattern = r'Module.*?:\s*(.+?)\s*-'
         powerpointModule = re.search(pattern, powerpoint_line)
         if powerpointModule:
-            return powerpointModule.group(1).strip() # Return the captured group, which is the module name
-        else : 
+            return powerpointModule.group(1)
+        else: 
             print("ERROR in module extraction, make sure the module output syntax is correct.")
 
-    def stage_5_module_powerpoint_slide_function_calls(self, module, powerpointSlideOutline, slideNumber, lessonFacts, lessonDescription, powerpointPlan) : # Calls stage_4 functions for modules based on the name of the module, use 'swtich : case' for this
-        powerpointCalls = PowerpointCreatorV4()
-       
-        match module : 
-            case "Title Page" : 
+    def stage_5_module_powerpoint_slide_function_calls(self, module, powerpointSlideOutline, slideNumber, lessonFacts, lessonDescription, powerpointPlan):
+            powerpointCalls = PowerpointCreatorV4()
+        
+            if re.search("Title Page", module):
                 print("Title page function calling...")
                 titlePage = powerpointCalls.stage_4_C_combined_process(lessonFacts)
                 return titlePage
-            case "L.O page" : 
+            elif re.search("L\.O page", module):
                 print("L.O page function calling...")
                 loPage = powerpointCalls.stage_4_B_combined_process(lessonFacts)
                 return loPage
-            case "General content page" : 
+            elif re.search("General content page", module):
                 print("General content page function calling...")
                 generalContentPage = powerpointCalls.stage_4_A_combined_process(slideNumber, powerpointSlideOutline, lessonDescription, powerpointPlan, lessonFacts)
                 return generalContentPage
-            case "Ending slide" : 
+            elif re.search("Ending slide", module):
                 print("Final slide function calling...")
                 finalSlide = powerpointCalls.stage_4_D_combine_process(lessonFacts)
                 return finalSlide
-            case "question_module_1_mcq" : 
+            elif re.search("question_module_1_mcq", module):
                 print("Need to do this part")
                 return None
-            case "question_module_2_bullet_questions" : 
+            elif re.search("question_module_2_bullet_questions", module):
+                print("question_module_2_bullet_questions calling...")
                 powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 question_slide = self.stage_4_E2_combine_process(powerpoint_facts)
                 return question_slide
-            case "question_module_3_roleplay_questions" : 
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+            elif re.search("question_module_3_roleplay_questions", module):
+                print("question_module_3_roleplay_questions calling...")
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 question_slide = self.stage_4_E3_combine_process(powerpoint_facts)
                 return question_slide
-            case "activity_module_1_brainstorming":
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+            elif re.search("activity_module_1_brainstorming", module):
+                print("activity_module_1_brainstorming calling...")
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 activity_slide = self.stage_4_F1_combined_process(powerpoint_facts)
                 return activity_slide
-            case "activity_module_2_student_summarisation":
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+            elif re.search("activity_module_2_student_summarisation", module):
+                print("activity_module_2_student_summarisation calling...")
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 activity_slide = self.stage_4_F2_combined_process(powerpoint_facts)
                 return activity_slide
-            case "activity_module_3_qa_pairs":
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+            elif re.search("activity_module_3_qa_pairs", module):
+                print("activity_module_3_qa_pairs calling...")
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 activity_slide = self.stage_4_F3_combined_process(powerpoint_facts)
                 return activity_slide
-            case "activity_module_4_focused_listing":
-                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber],lessonFacts)
+            elif re.search("activity_module_4_focused_listing", module):
+                print("activity_module_4_focused_listing calling... ")
+                powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline[slideNumber], lessonFacts)
                 activity_slide = self.stage_4_F4_combined_process(powerpoint_facts)
                 return activity_slide
 
             
-        print("Error : no module found.")
+            print("Error : no module found.")
 
                 
 
@@ -702,7 +707,7 @@ Here are the lesson facts you need to cover :
         print("STAGE 3.2 COMPLETE")
         print("LOOPING STAGES IN PROGRESS...")
         for i in range(len(powerpointSlideOutlines)):
-            slideNumber = i + 1 # +1 because powerpoint slides start at 1
+            slideNumber = i 
             print(f"CURRENT SLIDE IS {slideNumber}")
             print(powerpointSlideOutlines[i])
             module = poweropointMethods.stage_5_extract_module(powerpointSlideOutlines[i]) # Extracts module from powerpoint plan
@@ -784,23 +789,22 @@ test = PowerpointCreatorV4()
 
 
 # powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-# powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[3], facts)
-# print (powerpoint_slides_outline[3])
+# powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[6], facts)
+# print (powerpoint_slides_outline[0])
 # print("""THESE ARE THE POWERPOINT FACTS : 
       
       
-      
-      
-#       """ + powerpoint_facts)
-# test_output = test.stage_4_E2_combine_process(powerpoint_facts)
-# print(test_output)
+# """ + powerpoint_facts)
+
+# for i in range(len(powerpoint_slides_outline)):
+#     print("In loop, iteration:", i)
+#     print(powerpoint_slides_outline[i])
 
 
 
 
-
-# powerpointTest = test.stage_6_create_powerpoint(facts)
-# print(powerpointTest)
+powerpointTest = test.stage_6_create_powerpoint(facts)
+print(powerpointTest)
 # for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
 #     print(f"SlideModulePair #{i+1}:")
 #     print(f"  Module: {slide_module_dict['module']}")

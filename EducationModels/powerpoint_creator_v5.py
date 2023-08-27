@@ -147,11 +147,10 @@ Here is the lesson facts and the powerpoint plan :
         stage3Prompt = """These facts are included for a lesson. Summarise these facts into one,  brief line, outlining the lesson."""
         lessonDescription = gptAgent.open_ai_gpt4_call(numberedFacts, stage3Prompt, stage3Temp)
         return lessonDescription
-    def stage_3_facts_for_slide_powerpoint_extractor_updated(powerpointPlan):
+    def stage_3_facts_for_slide_powerpoint_extractor(self, powerpointPlan):
         # Match either a double newline or the end of the string
         powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+?)(?:\n\n|$)', powerpointPlan, re.DOTALL)
         return powerpointSlides
-
 
 #############     MODULE GENERIC CODE:        ###############
     # Looping stages 

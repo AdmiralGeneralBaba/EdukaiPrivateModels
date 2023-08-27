@@ -277,7 +277,7 @@ Here is the lesson facts and the powerpoint plan :
     def stage_4_A_slide_general_content_page(self, slideNumber, lessonDecription, powerpointPlan, slideFacts ) : 
         gptAgent = OpenAI()
         stage4Temp = 0.5
-        generalContentPagePrompt = """ I want you to pretend to be an expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable. Based on this lesson description, and the inputted facts, you are to create a SINGLE powerpoint slide ({SLIDE NUMBER}) based on the facts given. Assume that everything in the lesson description is covered in the other slides. Start with a UNIQUE, INTERESTING title, by doing TITLE : INSERT TITLE HERE, and then CONTENT : INSERT THE CONTENT HERE. Tips for content:
+        generalContentPagePrompt = """ I want you to pretend to be an expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable. Based on this lesson description, and the inputted facts, you are to create a SINGLE powerpoint slide  based on the facts given. Assume that everything in the lesson description is covered in the other slides. Start with a UNIQUE, INTERESTING title, by doing TITLE : INSERT TITLE HERE, and then CONTENT : INSERT THE CONTENT HERE. Tips for content:
 - Take into account the context of the overall lesson. 
 - Use examples for context/metaphors, with easy-to-understand ways of explaining them
 - Use the best techniques to help students understand the concepts
@@ -288,8 +288,9 @@ Here is the lesson facts and the powerpoint plan :
 - the whole thing should be UNDER 180 words. 
 - Use spacing where needed to increase readability
 - DO NOT JUST LIST THE FACTS
+- ALL of the information provided must be understood by the student to the level provided 
 """ 
-        gptInput = "Lesson description : {" + lessonDecription  +"}" + "Lesson Context : {" + powerpointPlan + "}" + f"SLIDE NUMBER IS {slideNumber}, " + "Lesson Facts: "  + slideFacts ## Input for GPT
+        gptInput = "Lesson description : {" + lessonDecription  +"}" + "Lesson Context : {" + powerpointPlan + "}" + f"SLIDE NUMBER IS {slideNumber + 1}, " + "Slide facts :  "  + slideFacts ## Input for GPT
         print(gptInput)
         powerpointSlide = gptAgent.open_ai_gpt4_call(gptInput, generalContentPagePrompt, stage4Temp) 
  
@@ -804,13 +805,13 @@ By the end of this presentation, you should be able to:
 test = PowerpointCreatorV4()
 
 
-powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
-powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[12], facts)
-print (powerpoint_slides_outline[12])
-print("""THESE ARE THE POWERPOINT FACTS : 
+# powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
+# powerpoint_facts = test.stage_4_facts_extraction_from_choices(powerpoint_slides_outline[12], facts)
+# print (powerpoint_slides_outline[12])
+# print("""THESE ARE THE POWERPOINT FACTS : 
       
       
-# # """ + powerpoint_facts)
+# # # """ + powerpoint_facts)
 
 # for i in range(len(powerpoint_slides_outline)):
 #     print("In loop, iteration:", i)
@@ -818,8 +819,7 @@ print("""THESE ARE THE POWERPOINT FACTS :
 
 
 
-short_facts = """1. {Auditory parts of working memory are located in the left frontal and parietal lobes.} 2. {The visual sketchpad is located in the right hemisphere of the brain.} 3. {Working memory may have co-evolved with speech.}"""
-powerpointTest = test.stage_6_create_powerpoint(short_facts)
+powerpointTest = test.stage_6_create_powerpoint(facts)
 print(powerpointTest)
 # for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
 #     print(f"SlideModulePair #{i+1}:")

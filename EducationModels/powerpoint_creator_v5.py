@@ -819,8 +819,6 @@ By the end of this presentation, you should be able to:
 
 
 
-powerpointTest = test.stage_6_create_powerpoint(facts)
-print(powerpointTest)
 # for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
 #     print(f"SlideModulePair #{i+1}:")
 #     print(f"  Module: {slide_module_dict['module']}")

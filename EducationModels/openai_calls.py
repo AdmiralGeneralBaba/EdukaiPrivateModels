@@ -72,6 +72,8 @@ class OpenAI :
         )
         image_url = response['data'][0]['url']
         return image_url
+    
+    
     async def async_open_ai_gpt_call(self, user_content, prompt=None, setTemperature=None):
         # Initialize messages
         messages = []
@@ -87,26 +89,48 @@ class OpenAI :
             messages.append({"role": "user", "content": user_content})
 
         # If setTemperature is provided, include it in the completion
-        async with aiohttp.ClientSession() as session:
-            if setTemperature:
-                response = await session.post(
-                    'https://api.openai.com/v1/engines/gpt-3.5-turbo/completions',
-                    headers={'Authorization': f'Bearer {openai.api_key}'},
-                    json={
-                        "model": "gpt-3.5-turbo",
-                        "messages": messages,
-                        "temperature": setTemperature
-                    }
-                )
-            else:
-                response = await session.post(
-                    'https://api.openai.com/v1/engines/gpt-3.5-turbo/completions',
-                    headers={'Authorization': f'Bearer {openai.api_key}'},
-                    json={
-                        "model": "gpt-3.5-turbo",
-                        "messages": messages
-                    }
-                )
-            completion = await response.json()
-            reply_content = completion['choices'][0]['message']['content']
-        return reply_content
+        if setTemperature:
+            completion = await openai.ChatCompletion.acreate(
+                model="gpt-3.5-turbo",
+                messages=messages,
+                temperature=setTemperature
+            )
+        else:
+            completion = await openai.ChatCompletion.acreate(
+                model="gpt-3.5-turbo",
+                messages=messages
+            )
+
+        reply_content = completion.choices[0].message.content
+        return reply_content  # Returning the reply_content from the function
+    import openai
+
+async def async_open_ai_gpt_call(self, user_content, prompt=None, setTemperature=None):
+    # Initialize messages
+    messages = []
+
+    # If prompt exists, add it as system message
+    if prompt:
+        messages.append({"role":"system", "content": prompt})
+
+    # Check if user_content is a list and if it contains proper structured messages
+    if isinstance(user_content, list):
+        messages.extend(user_content)
+    else:
+        messages.append({"role": "user", "content": user_content})
+
+    # If setTemperature is provided, include it in the completion
+    if setTemperature:
+        completion = await openai.ChatCompletion.acreate(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=setTemperature
+        )
+    else:
+        completion = await openai.ChatCompletion.acreate(
+            model="gpt-3.5-turbo",
+            messages=messages
+        )
+
+    reply_content = completion.choices[0].message.content
+    return reply_content  # Returning the reply_content from the function

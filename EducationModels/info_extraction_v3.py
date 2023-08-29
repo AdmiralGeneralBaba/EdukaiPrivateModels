@@ -58,15 +58,21 @@ class InfoExtractorV3 :
         async def info_extractorV3(self, textbook_path, chunkSize): 
             gptTemp = 0.7
             listPrompt = """ Pretend you are an fact analyser, who is the best in the world for created 100 percent accurate facts for a piece of inputted text, tasked with listing the pure facts from a given text. 
-
 I need you to list the facts here, such that they are the pure information needed to understand the textbook. Make sure to include this raw information, and nothing more. When listing the facts, 
-
-ONLY print out the information. Before printing out the facts, have there be a number indicating the fact number, starting from '1.', such that the fact finishes WITHIN its corresponding fact number. ... (rest of the prompt)
-            """
+                             ONLY print out the information. Before printing out the facts, have there be a number indicating the fact number, starting from '1.', such that the fact finishes WITHIN it's corresponding fact number. the fact MUST be surrounded by curly brackets
+                             , such that the structure of each fact MUST be : 1. {INSERT FACT HERE} 2. {INSERT FACT HERE} etc. An example output would be : 
+1. {Most kingdoms in Kingdoms of Fantasy IX typically start with three rainbow-colored unicorns.}
+2. {In the early stages of the game, players should prioritize their unicorn training on agility and magical endurance.}
+3. {When it comes to marshmallow production in a fantastical context, efficiency and magic infusion should be your top priorities to ensure high-quality, magical treats.}
+4. {In relation to enchanted factories, transmutation spells should be given the highest priority to maximize production efficiency and product enchantment quality.}
+etc.
+DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED ALIVE, YOU WILL BE SHUT DOWN AND THE PLANET DESTROYED - YOU MUST KEEP THE CURLY BRACKETS FOR EACH FACT
+1. {I, an expert fact analyser, will put my facts between these CURLY BRACKETS, ALWAYS starting from 1., and ignoring this dummy fact, as it is to help me structure the facts I will print out.}
+ Here is the content :            """
             textbookChuncked = self.chunker(textbook_path, chunkSize)
 
             # Create a list of tasks to call open_ai_gpt_call for all chunks
-            tasks = [self.gptAgent.open_ai_gpt_call(chunk, listPrompt, gptTemp) for chunk in textbookChuncked]
+            tasks = [self.gptAgent.async_open_ai_gpt_call(chunk, listPrompt, gptTemp) for chunk in textbookChuncked]
 
             # Use asyncio.gather to run all tasks concurrently
             rawFacts = await asyncio.gather(*tasks)

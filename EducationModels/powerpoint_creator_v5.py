@@ -637,7 +637,7 @@ Here are the lesson facts you need to cover :
             print("ERROR in module extraction, make sure the module output syntax is correct.")
     #'powerpointSlideOutline' is the outline for a single slide and not the grouping.
     def stage_5_module_powerpoint_slide_function_calls(self, module, powerpointSlideOutline, slideNumber, lessonFacts, lessonDescription, powerpointPlan):
-            powerpointCalls = PowerpointCreatorV4()
+            powerpointCalls = PowerpointCreatorV5()
             print(lessonFacts)
             print("THE SLIDE PLAN IS : " + powerpointSlideOutline)
             powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline, lessonFacts)
@@ -695,7 +695,7 @@ Here are the lesson facts you need to cover :
                 
 
     def stage_6_create_powerpoint(self, lessonFacts) : 
-        poweropointMethods = PowerpointCreatorV4()
+        poweropointMethods = PowerpointCreatorV5()
         powerpointSlidesDetailed = []
         print("FIXED STAGES IN PROGRESS...")
         factGroupings = self.stage_1_groupings_for_facts(lessonFacts)
@@ -802,7 +802,7 @@ By the end of this presentation, you should be able to:
 5. Understand the characteristics of strategic bombers, notably their long range and high survivability.
 # 6. Differentiate between tactical and strategic bombers based on their respective tasks and capabilities."""
 
-test = PowerpointCreatorV4()
+test = PowerpointCreatorV5()
 
 
 # powerpoint_slides_outline = test.stage_3_facts_for_slide_powerpoint_extractor(powerpointPlanTesting)
@@ -819,8 +819,8 @@ test = PowerpointCreatorV4()
 
 
 
-powerpointTest = test.stage_6_create_powerpoint(facts)
-print(powerpointTest)
+# powerpointTest = test.stage_6_create_powerpoint(facts)
+# print(powerpointTest)
 # for i, slide_module_dict in enumerate(powerpointTest[:10]):  # Prints the first 10 items
 #     print(f"SlideModulePair #{i+1}:")
 #     print(f"  Module: {slide_module_dict['module']}")

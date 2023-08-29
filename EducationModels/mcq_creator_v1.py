@@ -76,7 +76,6 @@ CREATE THREE FACT FAKE ANSWERS PER FACT. }
         mcq_list = []
         for q, a, fa in zip(questions, real_answers, false_answers):
             mcq_list.append({
-                'id': int(q[0]),
                 'question': q[1],
                 'real_answer': a[1],
                 'false_answers': fa[1]

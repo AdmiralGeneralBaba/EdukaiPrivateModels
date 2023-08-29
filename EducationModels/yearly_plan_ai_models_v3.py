@@ -1,19 +1,20 @@
 from openai_calls import OpenAI 
+from info_extraction_v1 import InfoExtractorV2
 from info_extraction_v3 import InfoExtractorV3
 from homework_creator_v1 import homeworkCreatorsV1
 import re
 
-class YearlyPlanCreatorV2() : 
+class YearlyPlanCreatorV3() : 
     def yearly_plan_cleanup_facts_per_lesson(self, lessons):
-        info_extraction = InfoExtractorV3()
+        info_extraction = InfoExtractorV2()
         for lesson in lessons:
             lesson_facts = lesson["lesson_facts"]  # Extracting the 'lesson_facts'
             renumbered_lesson_facts = info_extraction.renumber_facts(lesson_facts)
             lesson["lesson_facts"] = renumbered_lesson_facts  # Assigning the renumbered facts back
         return lessons
     def yearly_plan_facts_per_lesson_pdf_input_and_chunk_lesson_sizes(self, pdf_path, chunkSize, lessonSize): 
-        infoExtract = InfoExtractorV3() # Creates the infoExtractor 
-        rawFacts = infoExtract.info_extractorV3(pdf_path, chunkSize) # Calls info extractor
+        infoExtract = InfoExtractorV2() # Creates the infoExtractor 
+        rawFacts = infoExtract.info_extractorV2(pdf_path, chunkSize) # Calls info extractor
 
         # Initialize variables
         lessons = []
@@ -41,11 +42,11 @@ class YearlyPlanCreatorV2() :
             lessons.append({"lesson_facts": current_lesson})
         self.yearly_plan_cleanup_facts_per_lesson(lessons)
         return lessons
-    def yearly_plan_facts_per_lesson_pdf_input_only(self, pdf_path): 
+    async def yearly_plan_facts_per_lesson_pdf_input_only(self, pdf_path): 
         print("Initializing InfoExtractor...")
         infoExtract = InfoExtractorV3() # Creates the infoExtractor 
         print("Extracting raw facts from PDF...")
-        rawFacts = infoExtract.info_extractorV3(pdf_path, 1500) # Calls info extractor
+        rawFacts = await infoExtract.info_extractorV3(pdf_path, 1500) # Calls info extractor
 
         # Initialize variables
         lessons = []

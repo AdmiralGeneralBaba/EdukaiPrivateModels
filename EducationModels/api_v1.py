@@ -1,10 +1,12 @@
 import sys
 import os
+import asyncio
 import tempfile
 from flask import Flask, request, jsonify
 import requests
 from aqa_english_language_paper_1_v1 import aqa_english_language_paper_1_generator
 from yearly_plan_ai_models_v2 import YearlyPlanCreatorV2
+from yearly_plan_ai_models_v3 import YearlyPlanCreatorV3
 from homework_creator_v1 import homeworkCreatorsV1
 from powerpoint_creator_v5 import PowerpointCreatorV5
 from mcq_creator_v1 import McqCreatorV1
@@ -50,6 +52,25 @@ def yearly_plan():
 
     # Return the result
     return jsonify(yearly_plan)
+
+@app.route('/async_yearly_plan_creator/')
+async def async_yearly_plan():
+    pdf_url = request.args.get('pdf_url')
+    tmp_filepath = fetch_and_process_pdf(pdf_url)
+
+    if not tmp_filepath:
+        return jsonify({"error": "Invalid URL or not a PDF"}), 400
+
+    # Process the PDF
+    yearly_planner = YearlyPlanCreatorV3()
+    yearly_plan = await yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(tmp_filepath)
+
+    # Once processing is done, delete the temporary file
+    os.remove(tmp_filepath)
+
+    # Return the result
+    return jsonify(yearly_plan)
+
 
 
 @app.route('/aqa_english_language_paper_1/')

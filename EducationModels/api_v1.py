@@ -6,9 +6,10 @@ import requests
 from aqa_english_language_paper_1_v1 import aqa_english_language_paper_1_generator
 from yearly_plan_ai_models_v2 import YearlyPlanCreatorV2
 from homework_creator_v1 import homeworkCreatorsV1
-from powerpoint_creator_v4 import PowerpointCreatorV4
+from powerpoint_creator_v5 import PowerpointCreatorV5
 from mcq_creator_v1 import McqCreatorV1
 from flashcard_model_v2 import FlashcardModelV2
+import urllib
 
 app = Flask(__name__)
 app.debug = True
@@ -23,6 +24,7 @@ def fetch_and_process_pdf(pdf_url):
     # Check if the response is a PDF (based on Content-Type header)
     if 'application/pdf' not in response.headers.get('Content-Type', ''):
         return None
+
 
     # Save the content to a temporary file
     fd, tmp_filepath = tempfile.mkstemp(suffix=".pdf")
@@ -67,28 +69,30 @@ def create_exam_paper():
 
     return jsonify(exam_paper)
 
-@app.route('/homework_creator/<lesson>')
+@app.route('/homework_creator/<path:lesson>')
 def homework_creation(lesson) : 
     homework_creator = homeworkCreatorsV1()
     lesson_homework = homework_creator.homework_creator_template_one(lesson, 1)
     return jsonify(lesson_homework)
 
-@app.route('/powerpoint_creator/<lesson>')
+@app.route('/powerpoint_creator/<path:lesson>')
 def powerpoint_creator(lesson):
-    powerpoint_creator = PowerpointCreatorV4()
+    powerpoint_creator = PowerpointCreatorV5()
     powerpoint = powerpoint_creator.stage_6_create_powerpoint(lesson)
     return jsonify(powerpoint)
 
-@app.route('/mcq_creator/<lesson>/<gpt_type>') 
-def mcq_creator(lesson, gpt_type) : 
+@app.route('/mcq_creator/<path:lesson>') 
+def mcq_creator(lesson) : 
     mcq_creator = McqCreatorV1()
-    mcq = mcq_creator.mcq_creator_v1(lesson, gpt_type)
+    mcq = mcq_creator.mcq_creator_v1(lesson, 1)
     return jsonify(mcq)
 
-@app.route('/flashcards/<lesson>/<gpt_type>') 
-def flashcard_creator(lesson, gpt_type) : 
+@app.route('/flashcards/<path:lesson>')
+def flashcard_creator(lesson): 
+    # Decoding the URL encoded lesson value
     flashcard_creator = FlashcardModelV2()
-    flashcards = flashcard_creator.flashcard_creator_from_raw_facts(lesson, gpt_type)
+    # gpt_type is hard-coded to '1'
+    flashcards = flashcard_creator.flashcard_creator_from_raw_facts(lesson, '1')
     return jsonify(flashcards)
 
 # In the future, have a endpoint for each exam board 

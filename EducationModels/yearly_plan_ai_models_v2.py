@@ -45,7 +45,7 @@ class YearlyPlanCreatorV2() :
         print("Initializing InfoExtractor...")
         infoExtract = InfoExtractorV2() # Creates the infoExtractor 
         print("Extracting raw facts from PDF...")
-        rawFacts = infoExtract.info_extractorV2(pdf_path, 2000) # Calls info extractor
+        rawFacts = infoExtract.info_extractorV2(pdf_path, 1500) # Calls info extractor
 
         # Initialize variables
         lessons = []
@@ -134,16 +134,17 @@ class YearlyPlanCreatorV2() :
         
         return homeworkContent
 
-#######################         TESTING CODE           ########################### : 
+######################         TESTING CODE           ########################### : 
 # path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\Neuroscience.Science.of.the.Brain.pdf"
+# path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Private Education Models\\EdukaiPrivateModels\\maths_book_test.pdf"
 # schoolType = "High School"
 # yearly_planner = YearlyPlanCreatorV2()
 
 
-# lessons = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(path)
-# homework = YearlyPlanCreatorV2.homework_creator_template_one(lessons[4], 1)
+# lessons = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(path2)
+# # homework = YearlyPlanCreatorV2.homework_creator_template_one(lessons[4], 1)
 
-# Loop through each lesson and print it out with its number and length
+# # Loop through each lesson and print it out with its number and length
 # for i, lesson in enumerate(lessons, start=1):
 #     print(f"Lesson {i}:")
 #     for key, value in lesson.items():
@@ -151,4 +152,4 @@ class YearlyPlanCreatorV2() :
 # # print(lessons)
 
 
-# print(homework)3
+# print(homework)

@@ -2,7 +2,7 @@ from openai_calls import OpenAI
 import re
 from mcq_creator_v1 import McqCreatorV1
 
-class PowerpointCreatorV4 : 
+class PowerpointCreatorV5 : 
     #     Fixed stages for a single lesson :
 #################    FIXED STAGES FOR EVERY LESSON/POWERPOINT:  #####################
     def extract_lesson_facts(self, lesson):
@@ -207,7 +207,7 @@ Here is the lesson facts and the powerpoint plan :
             return "No match found."
     def stage_4_task_splitter(self, powerpoint_slide: str):
         # Regex pattern targeting only the 'TASK :' section
-        task_specific_pattern = r'TASK\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        task_specific_pattern = r'TASK\s*:\s*\[\s*(\{\s*[^}]*\s*\}(?:\s*,\s*\{\s*[^}]*\s*\})*)'
         
         # Find the substring that starts with "TASK :"
         task_substring_match = re.search(task_specific_pattern, powerpoint_slide)
@@ -224,7 +224,7 @@ Here is the lesson facts and the powerpoint plan :
 
     def stage_4_regex_roleplay(self, powerpoint_slide: str):
         # Regex pattern targeting the 'ROLEPLAY' section
-        roleplay_pattern = r'ROLEPLAY\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        roleplay_pattern = r'ROLEPLAY\s*:\s*\[\s*(\{\s*[^}]+\s*\}(?:\s*,\s*\{\s*[^}]+\s*\})*)]'
         roleplay_match = re.search(roleplay_pattern, powerpoint_slide)
         
         if roleplay_match:
@@ -244,7 +244,7 @@ Here is the lesson facts and the powerpoint plan :
 
     def stage_4_regex_picture(self, powerpoint_slide: str):
         # Regex pattern targeting the 'PICTURE' section
-        picture_pattern = r'PICTURE\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        picture_pattern = r'PICTURE\s*:\s*\[\s*(\{\s*[^}]*\s*\}(?:\s*,\s*\{\s*[^}]*\s*\})*)'
         picture_match = re.search(picture_pattern, powerpoint_slide)
         
         if picture_match:
@@ -252,7 +252,7 @@ Here is the lesson facts and the powerpoint plan :
         else:
             return []
     def stage_4_regex_example(self, powerpoint_slide: str) : 
-        picture_pattern = r'EXAMPLE\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
+        picture_pattern = r'EXAMPLE\s*:\s*\[\s*(\{\s*[^}]*\s*\}(?:\s*,\s*\{\s*[^}]*\s*\})*)'
         picture_match = re.search(picture_pattern, powerpoint_slide)
         
         if picture_match:

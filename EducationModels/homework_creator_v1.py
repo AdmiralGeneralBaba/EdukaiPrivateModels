@@ -1,6 +1,5 @@
 from openai_calls import OpenAI 
 from info_extraction_v1 import InfoExtractorV1
-from info_extraction_v1 import SentenceIdentifier
 import re
 
 class homeworkCreatorsV1 : 

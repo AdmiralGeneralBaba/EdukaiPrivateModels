@@ -117,7 +117,7 @@ def create_general_content_slide(service, presentation_id, title_text, content_t
     insert_text(service, presentation_id, title_text, content_text, picture_text)
     style_text(service, presentation_id)
 
-def create_title_slide(service, presentation_id, title_text, subtitle_text):
+def create_title_slide_layout(service, presentation_id, title_text, subtitle_text):
     # Define the request for creating a slide using the 'TITLE' predefined layout
     title_slide_creation_request = {
         'createSlide': {
@@ -172,4 +172,61 @@ def create_title_slide(service, presentation_id, title_text, subtitle_text):
         'slideId': new_slide_id,
         'titleId': title_id,
         'subtitleId': subtitle_id
+    }
+
+def create_title_and_body_slide_layout(service, presentation_id, title_text, body_text):
+    # Define the request for creating a slide using the 'TITLE_AND_BODY' predefined layout
+    slide_creation_request = {
+        'createSlide': {
+            'slideLayoutReference': {
+                'predefinedLayout': 'TITLE_AND_BODY'
+            }
+        }
+    }
+    
+    # Execute the request
+    response = service.presentations().batchUpdate(
+        presentationId=presentation_id,
+        body={'requests': [slide_creation_request]}
+    ).execute()
+
+    # Get the object ID of the newly created slide
+    new_slide_id = response.get('replies')[0]['createSlide']['objectId']
+    
+    # Fetch the slide details to extract the object IDs of title and body
+    slide_details = service.presentations().pages().get(
+        presentationId=presentation_id,
+        pageObjectId=new_slide_id
+    ).execute()
+
+    # Extract object IDs for title and body
+    title_id = slide_details['pageElements'][0]['objectId']
+    body_id = slide_details['pageElements'][1]['objectId']
+
+    # Populate the title and body using 'insertText' requests
+    insert_title_request = {
+        'insertText': {
+            'objectId': title_id,
+            'text': title_text,
+            'insertionIndex': 0
+        }
+    }
+    insert_body_request = {
+        'insertText': {
+            'objectId': body_id,
+            'text': body_text,
+            'insertionIndex': 0
+        }
+    }
+
+    # Execute the requests to insert title and body text
+    service.presentations().batchUpdate(
+        presentationId=presentation_id,
+        body={'requests': [insert_title_request, insert_body_request]}
+    ).execute()
+
+    return {
+        'slideId': new_slide_id,
+        'titleId': title_id,
+        'bodyId': body_id
     }

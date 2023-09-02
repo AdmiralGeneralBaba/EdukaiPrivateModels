@@ -97,8 +97,8 @@ raw facts :  """
 
 # """
 # path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\meetingminutes.pdf"
-# testRaw = infoExtractionTest.renumber_facts(rawFacts)
+# # testRaw = infoExtractionTest.renumber_facts(rawFacts)
 
 # flashcards = test.flashcard_creator_from_raw_facts(rawFacts, 1)
 # print(flashcards)
-# print(testRaw)
+# # print(testRaw)

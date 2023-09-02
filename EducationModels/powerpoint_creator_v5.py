@@ -374,7 +374,7 @@ Here are the lesson facts : """
             "module": "Title Page",
             "slide": {
                 "title": splitTitlePowerpoint[0], # Assuming the title is the first part of the tuple
-                "description": splitTitlePowerpoint[1] # Assuming the subtitle/description is the second part of the tuple
+                "subtitle": splitTitlePowerpoint[1] # Assuming the subtitle/description is the second part of the tuple
             }
         }
 

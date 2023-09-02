@@ -354,9 +354,9 @@ def aqa_english_language_paper_1_generator(pdfFile, titleOfBook, bookType):
     return exam_paper
 
 
-######################       TESTING CODE          #################
+# ######################       TESTING CODE          #################
 
-path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\HoI_IV_Strategy_Guide.pdf"
+# path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\HoI_IV_Strategy_Guide.pdf"
 # listPrompt = "list all of the facts in this piece of text. Make sure to include ALL raw information, and nothing more."
 # questionPrompt = "Write a me a tailored question for the following raw fact for a flashcard."
 # school = "Primary School"

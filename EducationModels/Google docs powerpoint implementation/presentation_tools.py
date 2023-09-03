@@ -19,7 +19,7 @@ def create_text_boxes(service, presentation_id, new_slide_id):
             'elementProperties': {
                 'pageObjectId': new_slide_id,
                 'size': {'height': {'magnitude': 320, 'unit': 'PT'}, 'width': {'magnitude': 350, 'unit': 'PT'}},
-                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 13, 'translateY': 0, 'unit': 'PT'}
+                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 11, 'translateY': 80, 'unit': 'PT'}
             }
         }
     }

@@ -1,11 +1,9 @@
 
-
-#### creates the 'General Content Page' slide outline. 
 def create_text_boxes(service, presentation_id, new_slide_id):
     # Create text boxes: title, content, and picture
     title_box_request = {
         'createShape': {
-            'objectId': 'custom_title_box_id',
+            'objectId': f'title_{new_slide_id}',  # Unique ID based on slide ID
             'shapeType': 'TEXT_BOX',
             'elementProperties': {
                 'pageObjectId': new_slide_id,
@@ -16,18 +14,18 @@ def create_text_boxes(service, presentation_id, new_slide_id):
     }
     content_box_request = {
         'createShape': {
-            'objectId': 'custom_content_box_id',
+            'objectId': f'content_{new_slide_id}',  # Unique ID based on slide ID
             'shapeType': 'TEXT_BOX',
             'elementProperties': {
                 'pageObjectId': new_slide_id,
-                'size': {'height': {'magnitude': 250, 'unit': 'PT'}, 'width': {'magnitude': 320, 'unit': 'PT'}},
-                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 20, 'translateY': 120, 'unit': 'PT'}
+                'size': {'height': {'magnitude': 320, 'unit': 'PT'}, 'width': {'magnitude': 350, 'unit': 'PT'}},
+                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 13, 'translateY': 0, 'unit': 'PT'}
             }
         }
     }
     picture_box_request = {
         'createShape': {
-            'objectId': 'custom_picture_box_id',
+            'objectId': f'picture_{new_slide_id}',  # Unique ID based on slide ID
             'shapeType': 'TEXT_BOX',
             'elementProperties': {
                 'pageObjectId': new_slide_id,
@@ -36,33 +34,32 @@ def create_text_boxes(service, presentation_id, new_slide_id):
             }
         }
     }
-    
+
     # Send the request
     service.presentations().batchUpdate(
         presentationId=presentation_id,
         body={'requests': [title_box_request, content_box_request, picture_box_request]}
     ).execute()
 
-def insert_text(service, presentation_id, title_text, content_text, picture_text):
+def insert_text(service, presentation_id, new_slide_id, title_text, content_text, picture_text):
     # Insert text into the boxes
     title_insert_request = {
         'insertText': {
-            'objectId': 'custom_title_box_id',
+            'objectId': f'title_{new_slide_id}',  # Referencing the unique ID
             'text': title_text,
             'insertionIndex': 0
         }
     }
     content_insert_request = {
         'insertText': {
-            'objectId': 'custom_content_box_id',
+            'objectId': f'content_{new_slide_id}',  # Referencing the unique ID
             'text': content_text,
             'insertionIndex': 0
         }
     }
-
     picture_insert_request = {
         'insertText': {
-            'objectId': 'custom_picture_box_id',
+            'objectId': f'picture_{new_slide_id}',  # Referencing the unique ID
             'text': picture_text,
             'insertionIndex': 0
         }
@@ -74,24 +71,24 @@ def insert_text(service, presentation_id, title_text, content_text, picture_text
         body={'requests': [title_insert_request, content_insert_request, picture_insert_request]}
     ).execute()
 
-def style_text(service, presentation_id):
+def style_text(service, presentation_id, new_slide_id):
     # Update style of title text
     title_style_update_request = {
-    'updateTextStyle': {
-        'objectId': 'custom_title_box_id',
-        'textRange': {
-            'type': 'ALL'
-        },
-        'style': {
-            'bold': True,
-            'fontSize': {
-                'magnitude': 24,  # You can adjust the font size as per your preference
-                'unit': 'PT'
-            }
-        },
-        'fields': 'bold,fontSize'
+        'updateTextStyle': {
+            'objectId': f'title_{new_slide_id}',  # Referencing the unique ID
+            'textRange': {
+                'type': 'ALL'
+            },
+            'style': {
+                'bold': True,
+                'fontSize': {
+                    'magnitude': 24,  # Adjust the font size as per preference
+                    'unit': 'PT'
+                }
+            },
+            'fields': 'bold,fontSize'
+        }
     }
-}
 
     # Send the request
     service.presentations().batchUpdate(
@@ -99,24 +96,24 @@ def style_text(service, presentation_id):
         body={'requests': [title_style_update_request]}
     ).execute()
 
-#### Creates the 'general content slide' layout :
-def create_general_content_slide(service, presentation_id, title_text, content_text="Your content here...", picture_text="Your picture here..."):
+def create_general_content_slide(service, presentation_id, title_text, content_text, picture_text):
     # Create a blank slide
     slide_creation_request = {
-    'createSlide': {
-        'slideLayoutReference': {
-            'predefinedLayout': 'BLANK'
+        'createSlide': {
+            'slideLayoutReference': {
+                'predefinedLayout': 'BLANK'
+            }
         }
     }
-}
+
     response = service.presentations().batchUpdate(presentationId=presentation_id, body={'requests': [slide_creation_request]}).execute()
     new_slide_id = response.get('replies')[0]['createSlide']['objectId']
 
     # Modularized calls
     create_text_boxes(service, presentation_id, new_slide_id)
-    insert_text(service, presentation_id, title_text, content_text, picture_text)
-    style_text(service, presentation_id)
-
+    insert_text(service, presentation_id, new_slide_id, title_text, content_text, picture_text)
+    style_text(service, presentation_id, new_slide_id)
+#### Creates the 'TITLE_SLIDE' predefined layout #### : 
 def create_title_slide_layout(service, presentation_id, title_text, subtitle_text):
     # Define the request for creating a slide using the 'TITLE' predefined layout
     title_slide_creation_request = {
@@ -174,6 +171,7 @@ def create_title_slide_layout(service, presentation_id, title_text, subtitle_tex
         'subtitleId': subtitle_id
     }
 
+#### Creates the 'TITLE_AND_BODY' predefined layout #### : 
 def create_title_and_body_slide_layout(service, presentation_id, title_text, body_text):
     # Define the request for creating a slide using the 'TITLE_AND_BODY' predefined layout
     slide_creation_request = {
@@ -231,6 +229,7 @@ def create_title_and_body_slide_layout(service, presentation_id, title_text, bod
         'bodyId': body_id
     }
 
+#### Creates the 'SECTION_HEADER' predefined layout #### : 
 def create_section_header_slide_layout(service, presentation_id, header_text):
     # Define the request for creating a slide using the 'SECTION_HEADER' predefined layout
     slide_creation_request = {

@@ -7,7 +7,7 @@ json_test = [
     "module": "Title Page",
     "slide": {
       "title": "Exploring the Complexity of Memory: Neurological Perspectives",
-      "description": "The Intricate Pathways of Memory Formation and Retrieval in the Brain"
+      "subtitle": "The Intricate Pathways of Memory Formation and Retrieval in the Brain"
     }
   },
   {
@@ -99,16 +99,34 @@ def main():
     service = authenticate()
     presentation = service.presentations().create(body={}).execute()
     presentation_id = presentation.get('presentationId')
+    
+    # Get the list of slides in the presentation.
+    slides = presentation.get('slides')
+    
+    # If there are slides in the presentation, delete the first one.
+    if slides:
+        slide_id = slides[0].get('objectId')
+        requests = [{
+            'deleteObject': {
+                'objectId': slide_id
+            }
+        }]
+        service.presentations().batchUpdate(
+            presentationId=presentation_id,
+            body={'requests': requests}
+        ).execute()
+    
+    # Now, call create_powerpoint
     create_powerpoint(service, presentation_id, json_test)
+
 
 def create_powerpoint(service, presentation_id, json_data):
     for i in range(len(json_data)):
         module_name = json_data[i]['module']
-        if module_name == 'Title page':
+        if module_name == 'Title Page':
             title = json_data[i]['slide']['title']
             subtitle = json_data[i]['slide']['subtitle']
             pt.create_title_slide_layout(service, presentation_id, title, subtitle)
-
         elif module_name == 'L.O page':
             title = json_data[i]['slide']['title']
             description = json_data[i]['slide']['description']
@@ -124,7 +142,7 @@ def create_powerpoint(service, presentation_id, json_data):
             pt.create_title_and_body_slide_layout(service, presentation_id, title, description)     
         elif module_name == 'question_module_2_bullet_questions':
             task = json_data[i]['slide']['task']
-            description = '\n'.join(task["task"])
+            description = '\n'.join(task)
             pt.create_title_and_body_slide_layout(service, presentation_id, "", description)
         elif module_name == 'question_module_3_roleplay_questions':
             roleplay = json_data[i]['slide']['roleplay'][0]
@@ -145,7 +163,6 @@ def create_powerpoint(service, presentation_id, json_data):
             pt.create_section_header_slide_layout(service, presentation_id, task) 
         else:
             print("MODULE NOT FOUND ERROR")
-            pass
     else:
         return None
 

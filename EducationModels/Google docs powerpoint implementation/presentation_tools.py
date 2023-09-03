@@ -230,3 +230,51 @@ def create_title_and_body_slide_layout(service, presentation_id, title_text, bod
         'titleId': title_id,
         'bodyId': body_id
     }
+
+def create_section_header_slide_layout(service, presentation_id, header_text):
+    # Define the request for creating a slide using the 'SECTION_HEADER' predefined layout
+    slide_creation_request = {
+        'createSlide': {
+            'slideLayoutReference': {
+                'predefinedLayout': 'SECTION_HEADER'
+            }
+        }
+    }
+    
+    # Execute the request
+    response = service.presentations().batchUpdate(
+        presentationId=presentation_id,
+        body={'requests': [slide_creation_request]}
+    ).execute()
+
+    # Get the object ID of the newly created slide
+    new_slide_id = response.get('replies')[0]['createSlide']['objectId']
+    
+    # Fetch the slide details to extract the object ID of header
+    slide_details = service.presentations().pages().get(
+        presentationId=presentation_id,
+        pageObjectId=new_slide_id
+    ).execute()
+
+    # Extract object ID for header
+    header_id = slide_details['pageElements'][0]['objectId']
+
+    # Populate the header using 'insertText' request
+    insert_header_request = {
+        'insertText': {
+            'objectId': header_id,
+            'text': header_text,
+            'insertionIndex': 0
+        }
+    }
+
+    # Execute the request to insert header text
+    service.presentations().batchUpdate(
+        presentationId=presentation_id,
+        body={'requests': [insert_header_request]}
+    ).execute()
+
+    return {
+        'slideId': new_slide_id,
+        'headerId': header_id
+    }

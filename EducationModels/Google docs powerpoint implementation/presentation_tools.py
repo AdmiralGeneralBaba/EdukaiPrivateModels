@@ -1,3 +1,27 @@
+import requests
+from selenium import webdriver
+import requests
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+
+def fetch_image_urls(query, max_links_to_fetch=2, api_key='AIzaSyAe2BL2P6DiaYaKzGVFXoolyjUt0NT7xs4', cse_id='f2a7e2726ff814997'):
+    endpoint = "https://www.googleapis.com/customsearch/v1"
+    
+    params = {
+        'q': query,
+        'key': api_key,
+        'cx': cse_id,
+        'searchType': 'image',
+        'num': max_links_to_fetch
+    }
+
+    response = requests.get(endpoint, params=params)
+    result = response.json()
+    
+    if 'items' in result:
+        return [item['link'] for item in result['items']]
+    else:
+        return []
 
 def create_text_boxes(service, presentation_id, new_slide_id):
     # Create text boxes: title, content, and picture
@@ -23,25 +47,13 @@ def create_text_boxes(service, presentation_id, new_slide_id):
             }
         }
     }
-    picture_box_request = {
-        'createShape': {
-            'objectId': f'picture_{new_slide_id}',  # Unique ID based on slide ID
-            'shapeType': 'TEXT_BOX',
-            'elementProperties': {
-                'pageObjectId': new_slide_id,
-                'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 100, 'unit': 'PT'}},
-                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 480, 'translateY': 170, 'unit': 'PT'}
-            }
-        }
-    }
-
     # Send the request
     service.presentations().batchUpdate(
         presentationId=presentation_id,
-        body={'requests': [title_box_request, content_box_request, picture_box_request]}
+        body={'requests': [title_box_request, content_box_request]}
     ).execute()
 
-def insert_text(service, presentation_id, new_slide_id, title_text, content_text, picture_text):
+def insert_text_and_image(service, presentation_id, new_slide_id, title_text, content_text, image_urls):
     # Insert text into the boxes
     title_insert_request = {
         'insertText': {
@@ -57,20 +69,49 @@ def insert_text(service, presentation_id, new_slide_id, title_text, content_text
             'insertionIndex': 0
         }
     }
+
+
+    # Use the scraped image URL for the picture box
     picture_insert_request = {
-        'insertText': {
-            'objectId': f'picture_{new_slide_id}',  # Referencing the unique ID
-            'text': picture_text,
-            'insertionIndex': 0
+        'createImage': {
+            'url': image_urls[0],  # The scraped image URL
+            'objectId': f'img_{new_slide_id}',  # Unique ID based on slide ID
+            'elementProperties': {
+                'pageObjectId': new_slide_id,
+                'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 100, 'unit': 'PT'}},
+                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 480, 'translateY': 170, 'unit': 'PT'}
+            }
         }
     }
+    increase_factor = 1.5
 
+    picture_insert_request['createImage']['elementProperties']['size']['height']['magnitude'] *= increase_factor
+    picture_insert_request['createImage']['elementProperties']['size']['width']['magnitude'] *= increase_factor
     # Send the request
-    service.presentations().batchUpdate(
-        presentationId=presentation_id,
-        body={'requests': [title_insert_request, content_insert_request, picture_insert_request]}
-    ).execute()
-
+    try: 
+        service.presentations().batchUpdate(
+                presentationId=presentation_id,
+                body={'requests': [title_insert_request, content_insert_request, picture_insert_request]}
+            ).execute()
+    except : 
+        picture_insert_request = {
+        'createImage': {
+            'url': image_urls[1],  # The scraped image URL
+            'objectId': f'img_{new_slide_id}',  # Unique ID based on slide ID
+            'elementProperties': {
+                'pageObjectId': new_slide_id,
+                'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 100, 'unit': 'PT'}},
+                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 480, 'translateY': 170, 'unit': 'PT'}
+            }
+        }
+    }
+        service.presentations().batchUpdate(
+                presentationId=presentation_id,
+                body={'requests': [title_insert_request, content_insert_request, picture_insert_request]}
+            ).execute()
+        
+        
+ 
 def style_text(service, presentation_id, new_slide_id):
     # Update style of title text
     title_style_update_request = {
@@ -96,6 +137,7 @@ def style_text(service, presentation_id, new_slide_id):
         body={'requests': [title_style_update_request]}
     ).execute()
 
+#### creates the 'general_content_slide' #### : 
 def create_general_content_slide(service, presentation_id, title_text, content_text, picture_text):
     # Create a blank slide
     slide_creation_request = {
@@ -108,11 +150,21 @@ def create_general_content_slide(service, presentation_id, title_text, content_t
 
     response = service.presentations().batchUpdate(presentationId=presentation_id, body={'requests': [slide_creation_request]}).execute()
     new_slide_id = response.get('replies')[0]['createSlide']['objectId']
-
+    
+    image_urls = fetch_image_urls(picture_text)
+    if image_urls:
+        picture_url = image_urls[0]
+        print("The image scrapped IS : " + picture_url)
+    else:
+        picture_url = "DEFAULT_IMAGE_URL"  # Use a default image URL in case scraping fails
+   
     # Modularized calls
     create_text_boxes(service, presentation_id, new_slide_id)
-    insert_text(service, presentation_id, new_slide_id, title_text, content_text, picture_text)
+    insert_text_and_image(service, presentation_id, new_slide_id, title_text, content_text, image_urls)
     style_text(service, presentation_id, new_slide_id)
+
+
+
 #### Creates the 'TITLE_SLIDE' predefined layout #### : 
 def create_title_slide_layout(service, presentation_id, title_text, subtitle_text):
     # Define the request for creating a slide using the 'TITLE' predefined layout
@@ -171,6 +223,10 @@ def create_title_slide_layout(service, presentation_id, title_text, subtitle_tex
         'subtitleId': subtitle_id
     }
 
+
+
+
+
 #### Creates the 'TITLE_AND_BODY' predefined layout #### : 
 def create_title_and_body_slide_layout(service, presentation_id, title_text, body_text):
     # Define the request for creating a slide using the 'TITLE_AND_BODY' predefined layout
@@ -228,6 +284,9 @@ def create_title_and_body_slide_layout(service, presentation_id, title_text, bod
         'titleId': title_id,
         'bodyId': body_id
     }
+
+
+
 
 #### Creates the 'SECTION_HEADER' predefined layout #### : 
 def create_section_header_slide_layout(service, presentation_id, header_text):

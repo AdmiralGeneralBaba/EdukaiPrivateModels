@@ -448,9 +448,9 @@ Here are the lesson facts you need to cover :
         prompt = """Pretend to be an expert teacher. You are tasked with creating a roleplay scenario to create questions for. For these facts, you will create and put the scenario in the 'ROLEPLAY' value, then in the 'TASK' section you will insert the roleplay questions in the format given. in the 'PICTURE' section, you must make a PERFECT google search query to get an image that will help immerse them INTO the roleplay part you have given them.
 You MUST output in this way : 
 
-ROLEPLAY : {Insert a short, brief exciting description of the roleplay you will base the questions on, to engage students}  
+ROLEPLAY : [{Insert a short, brief exciting description of the roleplay you will base the questions on, to engage students}]  
 TASK : [{Insert the roleplay question here}, {Insert the second roleplay question here etc}] 
-PICTURE : {Insert image to get them in the mood of the roleplay you have created.}
+PICTURE : [{Insert image to get them in the mood of the roleplay you have created.}]
 
 INCLUDE the curly AND square brackets, and inside the information should be your output. 
 
@@ -546,7 +546,7 @@ Here are the lesson facts you need to cover:
                 "task" : splitted_slide
             }
         }
-        return structured_output   
+        return structured_output
     
     def stage_4_F3_slide_content_creation(self, lesson_facts) :
         gpt_agent = OpenAI()
@@ -554,7 +554,7 @@ Here are the lesson facts you need to cover:
         prompt = """ I want you to pretend to be an expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable. Based on this lesson description, and the inputted facts, you are to create a SINGLE powerpoint slide based on the facts given. Assume that everything in the lesson description is covered in the other slides. Your job is to create a powerpoint slide that takes into account the slides BEFORE your slide number and nothing else.
 
 You are to create a slide asking students to pair up, and for them to ask each other questions to each other and to answer the questions from their partner. Have it be a game, almost trying to catch them out on certain sections. Include an example with your output.  Your output should be EXACTLY like this structure : 
-TASK : [{have the brainstorming task be inside here}]. EXAMPLE : {Have the example inside here, in this format: Q: "QUESTION HERE" A"ANSWER HERE"}
+TASK : [{have the brainstorming task be inside here}]. EXAMPLE : [{Have the example inside here, in this format: Q: "QUESTION HERE" A"ANSWER HERE"}]
 
 INCLUDE the curly brackets, and inside the information should be your output.
 

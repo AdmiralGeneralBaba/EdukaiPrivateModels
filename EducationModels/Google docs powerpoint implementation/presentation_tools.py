@@ -32,7 +32,7 @@ def create_text_boxes(service, presentation_id, new_slide_id):
             'elementProperties': {
                 'pageObjectId': new_slide_id,
                 'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 600, 'unit': 'PT'}},
-                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 50, 'translateY': 25, 'unit': 'PT'}
+                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 50, 'translateY': 13, 'unit': 'PT'}
             }
         }
     }
@@ -74,19 +74,15 @@ def insert_text_and_image(service, presentation_id, new_slide_id, title_text, co
     # Use the scraped image URL for the picture box
     picture_insert_request = {
         'createImage': {
-            'url': image_urls[0],  # The scraped image URL
+            'url': image_urls[1],  # The scraped image URL
             'objectId': f'img_{new_slide_id}',  # Unique ID based on slide ID
             'elementProperties': {
                 'pageObjectId': new_slide_id,
                 'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 100, 'unit': 'PT'}},
-                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 480, 'translateY': 170, 'unit': 'PT'}
+                'transform': {'scaleX': 5, 'scaleY': 5, 'translateX': 285, 'translateY': 110, 'unit': 'PT'}
             }
         }
     }
-    increase_factor = 1.5
-
-    picture_insert_request['createImage']['elementProperties']['size']['height']['magnitude'] *= increase_factor
-    picture_insert_request['createImage']['elementProperties']['size']['width']['magnitude'] *= increase_factor
     # Send the request
     try: 
         service.presentations().batchUpdate(
@@ -101,7 +97,7 @@ def insert_text_and_image(service, presentation_id, new_slide_id, title_text, co
             'elementProperties': {
                 'pageObjectId': new_slide_id,
                 'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 100, 'unit': 'PT'}},
-                'transform': {'scaleX': 1, 'scaleY': 1, 'translateX': 480, 'translateY': 170, 'unit': 'PT'}
+                'transform': {'scaleX': 5, 'scaleY': 5, 'translateX': 285, 'translateY': 110, 'unit': 'PT'}
             }
         }
     }

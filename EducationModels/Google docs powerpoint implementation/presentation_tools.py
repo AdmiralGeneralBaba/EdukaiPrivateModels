@@ -72,39 +72,32 @@ def insert_text_and_image(service, presentation_id, new_slide_id, title_text, co
 
 
     # Use the scraped image URL for the picture box
-    picture_insert_request = {
-        'createImage': {
-            'url': image_urls[1],  # The scraped image URL
-            'objectId': f'img_{new_slide_id}',  # Unique ID based on slide ID
-            'elementProperties': {
-                'pageObjectId': new_slide_id,
-                'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 100, 'unit': 'PT'}},
-                'transform': {'scaleX': 5, 'scaleY': 5, 'translateX': 285, 'translateY': 110, 'unit': 'PT'}
-            }
-        }
-    }
-    # Send the request
-    try: 
-        service.presentations().batchUpdate(
-                presentationId=presentation_id,
-                body={'requests': [title_insert_request, content_insert_request, picture_insert_request]}
-            ).execute()
-    except : 
+    for image_url in image_urls:
         picture_insert_request = {
-        'createImage': {
-            'url': image_urls[1],  # The scraped image URL
-            'objectId': f'img_{new_slide_id}',  # Unique ID based on slide ID
-            'elementProperties': {
-                'pageObjectId': new_slide_id,
-                'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 100, 'unit': 'PT'}},
-                'transform': {'scaleX': 5, 'scaleY': 5, 'translateX': 285, 'translateY': 110, 'unit': 'PT'}
+            'createImage': {
+                'url': image_url,  # The current image URL from the loop
+                'objectId': f'img_{new_slide_id}',  # Unique ID based on slide ID
+                'elementProperties': {
+                    'pageObjectId': new_slide_id,
+                    'size': {'height': {'magnitude': 50, 'unit': 'PT'}, 'width': {'magnitude': 100, 'unit': 'PT'}},
+                    'transform': {'scaleX': 5, 'scaleY': 5, 'translateX': 285, 'translateY': 110, 'unit': 'PT'}
+                }
             }
         }
-    }
-        service.presentations().batchUpdate(
+        
+        try:
+            service.presentations().batchUpdate(
                 presentationId=presentation_id,
                 body={'requests': [title_insert_request, content_insert_request, picture_insert_request]}
             ).execute()
+            break  # If successful, break out of the loop
+        except:
+            # If an error occurs, the loop will move to the next image URL
+            continue
+
+    else:
+        # This block will execute if the loop completes without a break (i.e., if all image URLs fail)
+        print("All image URLs failed!")
         
         
  

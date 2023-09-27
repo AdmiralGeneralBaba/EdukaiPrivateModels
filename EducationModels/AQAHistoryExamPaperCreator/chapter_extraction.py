@@ -1,17 +1,10 @@
 import PyPDF2
 from EducationModels.openai_calls import OpenAI
 import json
+from EducationModels.AQAHistoryExamPaperCreator import general_methods as gm
 
-def extract_page(start_num, end_num, path):
-    with open(path, 'rb') as pdfFileObj:
-        pdfReader = PyPDF2.PdfReader(pdfFileObj)
-        pages_text = []
 
-        for page_num in range(start_num, end_num+1):
-            pageObj = pdfReader.pages[page_num]
-            pages_text.append(pageObj.extract_text())
-            
-    return pages_text
+
 def stage_1_cleanup(pdf_text) : 
     llm = OpenAI()
     input_prompt = """ You are to be an expert text cleaner. From this inputted text of a contents page of a book, you are to clean up the text such that it is within readable format, and change NOTHING ELSE. 
@@ -54,7 +47,8 @@ Here is the input :
     return json_output
 
 def stage_3_chapter_extractor_v1(start_num, end_num, path) : 
-    content = extract_page(start_num, end_num, path)
+    
+    content = gm.extract_page(start_num, end_num, path)
     input_cleanup = ''.join(content)
     print("Stage 1 in progress...")
     cleaned_text = stage_1_cleanup(input_cleanup)
@@ -68,7 +62,7 @@ def stage_3_chapter_extractor_v1(start_num, end_num, path) :
 
 path = "C:\\Users\\david\\Desktop\\AlgoCo\\Private Education Models\\EdukaiPrivateModels\\AQA History 1st sample.pdf"
 path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Private Education Models\\EdukaiPrivateModels\\AQA History 2nd sample.pdf"
-print(extract_page(2, 3, path2))
-test = stage_3_chapter_extractor_v1(2,3,path2)
+print(gm.extract_page(4, 6, path2))
+# test = stage_3_chapter_extractor_v1(2,3,path2)
 
-print(test)
+# print(test)

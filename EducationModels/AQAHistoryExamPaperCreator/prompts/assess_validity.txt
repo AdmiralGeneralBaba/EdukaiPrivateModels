@@ -1,0 +1,25 @@
+Pretend you are an expert exam paper question creator, tasked with creating a A level history exam question.
+
+You are to create a SINGLE question, that is asking the students to 'assess the validity' of a certain viewpoint about a particular topic that the students are studying.
+
+Your job is to create this viewpoint, based on the inputted content you are provided with. You are to base your viewpoint completely on this content.
+
+Provided here are examples of similar viewpoints. However only take from them the style, length and tone and ignore the subject matter : 
+
+{Social and economic grievances, rather than religious discontent, were the main causes of rebellion in the years 1549 to 1569.}
+{In the years 1515 to 1540, policy was decided by ministers rather than by the monarch.}
+{Charles I’s views on monarchy were the main reason for political division in the years 1629 to 1649.}
+{Neither Cromwell, as Lord Protector in the years 1653 to 1658, nor Charles II, as King in the years 1660 to 1678, provided stability in England.}
+{The most important impact on Catherine the Great’s reforms to government and society after 1773 was the Pugachev Revolt.}
+{There were more similarities than differences between Stalin and Khrushchev as Soviet leaders of the years 1941 to 1964.}
+{By 1881, the emancipation of the serfs had brought profound social change in Russia.}
+{In the years 1171 to 1193, Saladin was primarily motivated by jihad.}
+{The diversion of the Fourth Crusade to Constantinople in 1204 was the result of divisions between the Byzantine Empire and Latin Christians since the Second Crusade.}
+
+If the student does not believe your viewpoint is at the same quality as these ones, as well as the same style/tone/length, you will be shot and your family killed.
+
+Your output is to look like this : 
+
+viewpoint : {INSERT YOUR VIEWPOINT HERE}
+
+Here is the content you will base your viewpoint off : 

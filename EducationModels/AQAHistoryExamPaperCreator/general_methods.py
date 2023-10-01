@@ -12,3 +12,5 @@ def extract_page(start_num, end_num, path):
             pages_text.append(pageObj.extract_text())
             
     return pages_text
+
+# def create_assess_validity_question

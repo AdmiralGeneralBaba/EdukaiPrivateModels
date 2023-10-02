@@ -1,9 +1,17 @@
 import PyPDF2
 from EducationModels.openai_calls import OpenAI
 import json
-from EducationModels.AQAHistoryExamPaperCreator import general_methods as gm
 
+def extract_page(start_num, end_num, path):
+    with open(path, 'rb') as pdfFileObj:
+        pdfReader = PyPDF2.PdfReader(pdfFileObj)
+        pages_text = []
 
+        for page_num in range(start_num, end_num+1):
+            pageObj = pdfReader.pages[page_num]
+            pages_text.append(pageObj.extract_text())
+            
+    return pages_text
 
 def stage_1_cleanup(pdf_text) : 
     llm = OpenAI()
@@ -15,6 +23,7 @@ Here is the input :
     temp = 0 
     cleanup = llm.open_ai_gpt3_16k_call(pdf_text, input_prompt, temp )
     return cleanup 
+
 def stage_2_json_creator(cleaned_text) : 
     llm = OpenAI()
     temp = 1
@@ -48,7 +57,7 @@ Here is the input :
 
 def stage_3_chapter_extractor_v1(start_num, end_num, path) : 
     
-    content = gm.extract_page(start_num, end_num, path)
+    content = extract_page(start_num, end_num, path)
     input_cleanup = ''.join(content)
     print("Stage 1 in progress...")
     cleaned_text = stage_1_cleanup(input_cleanup)
@@ -62,7 +71,7 @@ def stage_3_chapter_extractor_v1(start_num, end_num, path) :
 
 path = "C:\\Users\\david\\Desktop\\AlgoCo\\Private Education Models\\EdukaiPrivateModels\\AQA History 1st sample.pdf"
 path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Private Education Models\\EdukaiPrivateModels\\AQA History 2nd sample.pdf"
-print(gm.extract_page(4, 6, path2))
+# print(extract_page(4, 6, path2))
 # test = stage_3_chapter_extractor_v1(2,3,path2)
 
 # print(test)

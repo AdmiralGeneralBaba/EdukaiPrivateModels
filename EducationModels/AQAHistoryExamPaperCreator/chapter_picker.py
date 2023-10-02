@@ -1,8 +1,6 @@
 import json
 import random
 
-
-
 def stage_1_get_random_index(data):
     # Pick a random index from the JSON
     # -2 to ensure we have an index above the selected one

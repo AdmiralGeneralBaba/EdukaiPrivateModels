@@ -14,7 +14,4 @@ def aqa_history_a_level_paper_1_creator_general_questions(start_num, end_num, pa
         output_dictionary['general_questions'].append = question     
     return output_dictionary
 
-# need to create a new method down here for the 'arguements' question I will complete with teachers. 
-
-for i in range(3) : 
-    print("yes")
+# need to create a new method down here for the 'arguments' question I will complete with teachers. 

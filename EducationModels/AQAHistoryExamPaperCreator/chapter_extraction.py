@@ -71,7 +71,4 @@ def stage_3_chapter_extractor_v1(start_num, end_num, path) :
 
 path = "C:\\Users\\david\\Desktop\\AlgoCo\\Private Education Models\\EdukaiPrivateModels\\AQA History 1st sample.pdf"
 path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Private Education Models\\EdukaiPrivateModels\\AQA History 2nd sample.pdf"
-# print(extract_page(4, 6, path2))
-# test = stage_3_chapter_extractor_v1(2,3,path2)
-
-# print(test)
+print(extract_page(3, 5, path2))

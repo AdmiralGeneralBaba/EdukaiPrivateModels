@@ -28,7 +28,12 @@ def stage_3_find_page_range(data):
     
     return selected_page_number, next_page_number
 
-
+def stage_4_token_max_for_question_model_input(string_maybe_list, token_max_limit : int):
+    #converts the list of string into a single string, Need to change this for V2 
+    single_string = " ".join(string_maybe_list)
+    token_size = int(token_max_limit * 0.75)
+    new_string = single_string[:token_size]
+    return new_string
 
 data = json.loads("""[
     {"chapter_name": "Chapter 1", "page_number": 1},

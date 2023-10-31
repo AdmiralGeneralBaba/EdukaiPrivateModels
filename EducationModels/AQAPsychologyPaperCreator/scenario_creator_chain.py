@@ -164,3 +164,6 @@ Here is the user inputted query : + {INPUT USER QUERY HERE}
 """
     concept = llm.open_ai_gpt_call(input, prompt, temp)
     return concept
+
+
+#

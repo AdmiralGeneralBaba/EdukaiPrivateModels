@@ -3,6 +3,8 @@ from scenario_creator_chain import combined_scenario_creator
 from concept_identifer_chain import extract_topic_combined_stage
 from psychology_essay_scenario_question_creator import psychology_scenario_16_marker_question_creator
 
+
+# question creator, for now it is only the 16 marker scenario question
 def main() : 
     print("put your input here : ")
     query = input()

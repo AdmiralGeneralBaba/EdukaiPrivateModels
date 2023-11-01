@@ -159,7 +159,7 @@ def combined_scenario_creator(text : str, concept : str) :
     return final_scenario 
 
     
-
+################## TESTING CODE ######################
 
 # # HERE IS THE CHAIN FOR THE CONCEPT IDENTIFER PART : 
 test_text = """ 4.2 Characteristics of phobias, depression and OCD
@@ -418,4 +418,3 @@ concept = "OCD"
 
 # print(remove_terms_stage_7(terms_found, scenario, concept))
 
-print(combined_scenario_creator(test_text, concept))

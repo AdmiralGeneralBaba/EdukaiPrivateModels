@@ -1,4 +1,4 @@
-from openai_calls import OpenAI
+from EducationModels.openai_calls import OpenAI
 
 def psychology_scenario_16_marker_question_creator(scenario : str, concept : str) : 
     llm = OpenAI()

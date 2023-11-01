@@ -17,7 +17,7 @@ def main() :
     
     scenario = combined_scenario_creator(text=long_string, concept=concept)
     question = psychology_scenario_16_marker_question_creator(scenario=scenario, concept=concept)
-    exam_question = scenario + question
+    exam_question = scenario + " " + question
     return exam_question
     #TEST THIS OUT TOMORROW
 

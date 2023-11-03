@@ -50,3 +50,29 @@ Here is the scenario :
 
     exam_question = llm.open_ai_gpt4_call(scenario, prompt=prompt, setTemperature=temp)
     return exam_question
+
+def psychology_description_16_marker_question_creator(context : str, query : str) : 
+    llm = OpenAI() 
+    prompt = """You are to be an expert question creator, tasked with creating an exam question that ties as best you can to the user query given, and the contextual knowledge to base the question off of. 
+
+Given to you will be a list of facts that relate to the user's question demands; ONLY use this as the context requried to create your question
+
+the question must match the tone, length and style of the questions here, as well as perfectly relate to both the query AND the facts given.
+
+Here are example outputs you should emulate in your output : 
+
+EXAMPLE 1 : {
+Describe how situational variables have been found to affect obedience. Discuss what these situational variables tell us about why we obey.  
+}
+
+EXAMPLE 2 : { 
+Outline Lorenz’s and Harlow’s animal studies of attachment. Discuss what these studies might tell us about human attachment. }
+
+ONLY output the question generated based on both the content given AND the query.
+
+Here is the query :""" + "{" + f"{query}" + "}" +  """and here is the context to base your question off: """
+    temp = 0.9
+
+    question = llm.open_ai_gpt4_call(context, prompt, temp)
+    return question
+

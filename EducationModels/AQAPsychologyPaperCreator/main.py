@@ -5,6 +5,13 @@ from psychology_essay_scenario_question_creator import psychology_scenario_16_ma
 
 
 # question creator, for now it is only the 16 marker scenario question
+#Creates the 16_marker
+def psychology_16_mark_scenario_creator_full(text, concept) : 
+    scenario = combined_scenario_creator(text, concept)
+    question = psychology_scenario_16_marker_question_creator(scenario, concept)
+    exam_question = scenario + " " + question
+    return exam_question
+
 def main() : 
     print("put your input here : ")
     query = input()
@@ -14,11 +21,12 @@ def main() :
     #Creates the RAG context for the query
     for i in range(len(pages)) : 
         long_string = "".join(page.page_content for page in pages)
-    
-    scenario = combined_scenario_creator(text=long_string, concept=concept)
-    question = psychology_scenario_16_marker_question_creator(scenario=scenario, concept=concept)
-    exam_question = scenario + " " + question
+    exam_question = psychology_16_mark_scenario_creator_full(long_string, concept)
     return exam_question
     #TEST THIS OUT TOMORROW
 
 print(main())
+
+
+
+     

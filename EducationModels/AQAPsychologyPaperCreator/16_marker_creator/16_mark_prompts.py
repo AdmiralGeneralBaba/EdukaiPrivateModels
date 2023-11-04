@@ -76,3 +76,30 @@ Here is the query :""" + "{" + f"{query}" + "}" +  """and here is the context to
     question = llm.open_ai_gpt4_call(context, prompt, temp)
     return question
 
+def psychology_discussion_16_marker_question_creator(context : str, query : str) : 
+       llm = OpenAI() 
+       prompt = """You are to be an expert question creator, tasked with creating an exam question that ties as best you can to the user query given, and the contextual knowledge to base the question off of. 
+
+Given to you will be a list of facts that relate to the user's question demands; ONLY use this as the context requried to create your question
+
+the question must match the tone, length and style of the questions here, as well as perfectly relate to both the query AND the facts given.
+
+The question type you are to make is supposed to be a straightfoward disscusion/explaination question relating to a specific part of psychology.
+
+Here are example outputs you should emulate in your output : 
+
+EXAMPLE 1 : {
+Discuss statistical infrequency and deviation from social norms as definitions of abnormality.
+}
+
+EXAMPLE 2 : { 
+Psychologists investigating social influence have discovered several reasons why people conform. Discuss what psychological research has told us about why people conform.
+}
+
+ONLY output the question generated based on both the content given AND the query.
+
+Here is the query :""" + "{" + f"{query}" + "}" +  """and here is the context to base your question off: """
+       temp = 0.9
+
+       question = llm.open_ai_gpt4_call(context, prompt, temp)
+       return question

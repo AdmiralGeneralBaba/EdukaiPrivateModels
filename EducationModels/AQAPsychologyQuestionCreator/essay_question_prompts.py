@@ -1,4 +1,4 @@
-from EducationModels.AQAPsychologyPaperCreator.scenario_creator_chain import combined_scenario_creator
+from scenario_creator_chain import combined_scenario_creator
 from EducationModels.openai_calls import OpenAI
 
 def psychology_scenario_16_marker_question_creator(scenario : str, concept : str) : 

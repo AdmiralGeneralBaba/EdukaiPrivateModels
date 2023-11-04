@@ -1,16 +1,13 @@
+import sys
+import os
+
 from vector_database import vectorise_pdf
 from scenario_creator_chain import combined_scenario_creator
 from concept_identifer_chain import extract_topic_combined_stage
-from psychology_essay_scenario_question_creator import psychology_scenario_16_marker_question_creator
-
+from AQAPsychologyPaperCreator.16MarkerCreator
 
 # question creator, for now it is only the 16 marker scenario question
 #Creates the 16_marker
-def psychology_16_mark_scenario_creator_full(text, concept) : 
-    scenario = combined_scenario_creator(text, concept)
-    question = psychology_scenario_16_marker_question_creator(scenario, concept)
-    exam_question = scenario + " " + question
-    return exam_question
 
 def main() : 
     print("put your input here : ")

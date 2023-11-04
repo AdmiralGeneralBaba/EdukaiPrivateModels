@@ -1,3 +1,4 @@
+from EducationModels.AQAPsychologyPaperCreator.scenario_creator_chain import combined_scenario_creator
 from EducationModels.openai_calls import OpenAI
 
 def psychology_scenario_16_marker_question_creator(scenario : str, concept : str) : 
@@ -77,6 +78,8 @@ Here is the query :""" + "{" + f"{query}" + "}" +  """and here is the context to
     return question
 
 def psychology_discussion_16_marker_question_creator(context : str, query : str) : 
+       
+    
        llm = OpenAI() 
        prompt = """You are to be an expert question creator, tasked with creating an exam question that ties as best you can to the user query given, and the contextual knowledge to base the question off of. 
 
@@ -103,3 +106,10 @@ Here is the query :""" + "{" + f"{query}" + "}" +  """and here is the context to
 
        question = llm.open_ai_gpt4_call(context, prompt, temp)
        return question
+
+def psychology_16_mark_scenario_creator_full(text, concept) : 
+    scenario = combined_scenario_creator(text, concept)
+    question = psychology_scenario_16_marker_question_creator(scenario, concept)
+    exam_question = scenario + " " + question
+    return exam_question
+

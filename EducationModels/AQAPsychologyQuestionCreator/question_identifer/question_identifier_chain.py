@@ -1,4 +1,4 @@
-from openai_calls import OpenAI
+from EducationModels.openai_calls import OpenAI
 
 def psychology_question_type_identifier(query) :
     llm = OpenAI() 
@@ -30,3 +30,7 @@ Here is the user input :
     temp = 0.9
     question_type = llm.open_ai_gpt4_call(query, prompt, temp)
     return question_type
+
+
+
+print(psychology_question_type_identifier("make me a question about OCD and it's effects on people's lives"))

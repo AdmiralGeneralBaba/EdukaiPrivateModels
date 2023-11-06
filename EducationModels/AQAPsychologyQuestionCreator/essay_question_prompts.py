@@ -1,7 +1,7 @@
 from scenario_creator_chain import combined_scenario_creator
 from EducationModels.openai_calls import OpenAI
 
-def psychology_scenario_16_marker_question_creator(scenario : str, concept : str) : 
+def psychology_scenario_question_creator_helper_method(scenario : str, concept : str) : 
     llm = OpenAI()
     prompt = """You are to be an expert question creator, tasked with creating an exam question relating to the following concept { """ + f"{concept}" + """}
 
@@ -102,6 +102,7 @@ Psychologists investigating social influence have discovered several reasons why
 EXAMPLE 3 : { 
 Discuss the cognitive approach to treating depression.
 }
+
 ONLY output the question generated based on both the content given AND the query.
 
 Here is the query :""" + "{" + f"{query}" + "}" +  """and here is the context to base your question off: """
@@ -112,7 +113,7 @@ Here is the query :""" + "{" + f"{query}" + "}" +  """and here is the context to
 
 def psychology_16_mark_scenario_creator_full(text, concept) : 
     scenario = combined_scenario_creator(text, concept)
-    question = psychology_scenario_16_marker_question_creator(scenario, concept)
+    question = psychology_scenario_question_creator_helper_method(scenario, concept)
     exam_question = scenario + " " + question
     return exam_question
 

@@ -99,6 +99,9 @@ EXAMPLE 2 : {
 Psychologists investigating social influence have discovered several reasons why people conform. Discuss what psychological research has told us about why people conform.
 }
 
+EXAMPLE 3 : { 
+Discuss the cognitive approach to treating depression.
+}
 ONLY output the question generated based on both the content given AND the query.
 
 Here is the query :""" + "{" + f"{query}" + "}" +  """and here is the context to base your question off: """

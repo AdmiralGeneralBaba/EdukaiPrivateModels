@@ -32,5 +32,3 @@ Here is the user input :
     return question_type
 
 
-
-print(psychology_question_type_identifier("make me a question about OCD and it's effects on people's lives"))

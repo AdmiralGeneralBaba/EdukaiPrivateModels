@@ -1,4 +1,4 @@
-from scenario_creator_chain import combined_scenario_creator
+from EducationModels.AQAPsychologyQuestionCreator.scenario_creator_chain import combined_scenario_creator
 from EducationModels.openai_calls import OpenAI
 
 def psychology_scenario_question_creator_helper_method(scenario : str, concept : str) : 

@@ -1,3 +1,4 @@
+
 import aiohttp
 import asyncio
 import openai
@@ -66,6 +67,7 @@ class OpenAI :
         return reply_content  # Returning the reply_content from the function
     def open_ai_dalle_call_n1(self, inputPrompt) :
         response = openai.Image.create(
+            model="dall-e-3",
             prompt= inputPrompt,
             n=1,
             size="1024x1024"
@@ -73,6 +75,7 @@ class OpenAI :
         image_url = response['data'][0]['url']
         return image_url
     
+
     def open_ai_gpt3_16k_call(self, user_content, prompt=None, setTemperature=None):
         # Initialize messages
         messages = []
@@ -192,3 +195,6 @@ async def async_open_ai_gpt4_call(self, user_content, prompt=None, setTemperatur
 
     reply_content = completion.choices[0].message.content
     return reply_content  # Returning the reply_content from the function
+
+test = OpenAI()
+print(test.open_ai_dalle_call_n1("free palestine marches in central london, lifelike photorealistic. Have there be a beautiful arab girl screaming, with a palestine flag saying 'from the river to the sea palestine will be free' at a isreali women."))

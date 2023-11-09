@@ -9,7 +9,7 @@ class InfoExtractorV3 :
         def __init__(self):
            self.gptAgent = OpenAI()          
         # Current PDF extraction system - Need for it to be updated so that it is more consistent. 
-        def chunker(self, path, chunkSize) :
+        def pdf_chunker(self, path, chunkSize) :
             pdfFileObj = open(path, 'rb')
             pdfReader = PyPDF2.PdfReader(pdfFileObj) 
             pages = len(pdfReader.pages)
@@ -33,6 +33,22 @@ class InfoExtractorV3 :
                 chunks.append(' '.join(current_chunk))
                 
             pdfFileObj.close()
+            return chunks
+        
+        def string_chunker(self, text, chunkSize) :
+            chunks = []
+            current_chunk = []
+            words = text.split()
+            for word in words:
+                current_chunk.append(word)
+                if len(current_chunk) >= chunkSize: #Ajust this value to decrease/increase the word count, so that the raw facts are more/less detailed.
+                    chunks.append(' '.join(current_chunk))
+                    current_chunk = []
+                    print("Chunk Appended")
+
+            # Add the last chunk if it's not empty and has fewer than 3000 words
+            if current_chunk:
+                chunks.append(' '.join(current_chunk))
             return chunks
         
         def chunkerStringArray(self, string_array):
@@ -70,7 +86,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 1. {I, an expert fact analyser, will put my facts between these CURLY BRACKETS, ALWAYS starting from 1., and ignoring this dummy fact, as it is to help me structure the facts I will print out.}
  Here is the content :            """
             
-            textbookChunked = self.chunker(textbook_path, chunkSize)  # Array of chunks 
+            textbookChunked = self.pdf_chunker(textbook_path, chunkSize)  # Array of chunks 
             print("Created chunks of the PDF!")
 
             rawFacts = []
@@ -93,6 +109,47 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
             print("All lessons appended")
             return rawFacts
+        
+        #Takes the text inputted, puts the chunks into gpt-3.5, then returns the raw facts from the file 
+        async def text_info_extractorV3(self, text, chunkSize): 
+            gptTemp = 0.7
+            listPrompt = """ Pretend you are an fact analyser, who is the best in the world for created 100 percent accurate facts for a piece of inputted text, tasked with listing the pure facts from a given text. 
+I need you to list the facts here, such that they are the pure information needed to understand the textbook. Make sure to include this raw information, and nothing more. When listing the facts, 
+                             ONLY print out the information. Before printing out the facts, have there be a number indicating the fact number, starting from '1.', such that the fact finishes WITHIN it's corresponding fact number. the fact MUST be surrounded by curly brackets
+                             , such that the structure of each fact MUST be : 1. {INSERT FACT HERE} 2. {INSERT FACT HERE} etc. An example output would be : 
+1. {Most kingdoms in Kingdoms of Fantasy IX typically start with three rainbow-colored unicorns.}
+2. {In the early stages of the game, players should prioritize their unicorn training on agility and magical endurance.}
+3. {When it comes to marshmallow production in a fantastical context, efficiency and magic infusion should be your top priorities to ensure high-quality, magical treats.}
+4. {In relation to enchanted factories, transmutation spells should be given the highest priority to maximize production efficiency and product enchantment quality.}
+etc.
+DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED ALIVE, YOU WILL BE SHUT DOWN AND THE PLANET DESTROYED - YOU MUST KEEP THE CURLY BRACKETS FOR EACH FACT
+1. {I, an expert fact analyser, will put my facts between these CURLY BRACKETS, ALWAYS starting from 1., and ignoring this dummy fact, as it is to help me structure the facts I will print out.}
+ Here is the content :            """
+            
+            textbookChunked = self.text_chunker(text, chunkSize)  # Array of chunks 
+            print("Created chunks of the PDF!")
+
+            rawFacts = []
+            for i in range(0, len(textbookChunked), 50):
+                # Get the next batch of up to 50 chunks
+                batch = textbookChunked[i:i+50]
+                # Create a list of tasks for the current batch
+                tasks = [self.gptAgent.async_open_ai_gpt_call(chunk, listPrompt, gptTemp) for chunk in batch]
+                # Use asyncio.gather to run all tasks concurrently and extend the rawFacts list with the results
+
+                (print("Calling fact extractor GPT agents..."))
+                rawFacts.extend(await asyncio.gather(*tasks))
+
+                # Wait for one minute before processing the next batch
+                print(f"Successfully went through {i + 50} chunks!")
+
+                print("sleeping for 60 seconds...")
+                await asyncio.sleep(60)
+                print("Slept for 60 seconds!")
+
+            print("All lessons appended")
+            return rawFacts
+        
         def renumber_facts(self, input_text):
             # split the text into lines
             lines = re.split(r'(?<=})', input_text.strip())
@@ -139,21 +196,21 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
             return answerArray
 
-test = InfoExtractorV3
-path = "C:\\Users\\david\\Desktop\\Making_It_Stick.pdf"
-small_path = "C:\\Users\\david\\Downloads\\CV David Tiareh"
-medium_path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\HoI_IV_Strategy_Guide.pdf"
-big_path = "C:\\Users\\david\\Desktop\\PrinciplesOfBiology.pdf"
-async def yearly_plan_facts_per_lesson_pdf_input_only_test(pdf_path): 
-        print("Initializing InfoExtractor...")
-        infoExtract = InfoExtractorV3() # Creates the infoExtractor 
-        print("Extracting raw facts from PDF...")
-        rawFacts = await infoExtract.info_extractorV3(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
-        return rawFacts
+# test = InfoExtractorV3
+# path = "C:\\Users\\david\\Desktop\\Making_It_Stick.pdf"
+# small_path = "C:\\Users\\david\\Downloads\\CV David Tiareh"
+# medium_path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\HoI_IV_Strategy_Guide.pdf"
+# big_path = "C:\\Users\\david\\Desktop\\PrinciplesOfBiology.pdf"
+# async def yearly_plan_facts_per_lesson_pdf_input_only_test(pdf_path): 
+#         print("Initializing InfoExtractor...")
+#         infoExtract = InfoExtractorV3() # Creates the infoExtractor 
+#         print("Extracting raw facts from PDF...")
+#         rawFacts = await infoExtract.info_extractorV3(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
+#         return rawFacts
 
-async def main():
-    facts = await yearly_plan_facts_per_lesson_pdf_input_only_test(big_path)
-    print(facts)
+# async def main():
+#     facts = await yearly_plan_facts_per_lesson_pdf_input_only_test(big_path)
+#     print(facts)
 
-# This is the Python >= 3.7 way of running the main coroutine
-asyncio.run(main())
+# # This is the Python >= 3.7 way of running the main coroutine
+# asyncio.run(main())

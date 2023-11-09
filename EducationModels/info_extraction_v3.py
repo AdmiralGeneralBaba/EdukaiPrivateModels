@@ -69,13 +69,27 @@ etc.
 DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED ALIVE, YOU WILL BE SHUT DOWN AND THE PLANET DESTROYED - YOU MUST KEEP THE CURLY BRACKETS FOR EACH FACT
 1. {I, an expert fact analyser, will put my facts between these CURLY BRACKETS, ALWAYS starting from 1., and ignoring this dummy fact, as it is to help me structure the facts I will print out.}
  Here is the content :            """
-            textbookChuncked = self.chunker(textbook_path, chunkSize)
+            
+            textbookChunked = self.chunker(textbook_path, chunkSize)  # Array of chunks 
+            print("Created chunks of the PDF!")
 
-            # Create a list of tasks to call open_ai_gpt_call for all chunks
-            tasks = [self.gptAgent.async_open_ai_gpt_call(chunk, listPrompt, gptTemp) for chunk in textbookChuncked]
+            rawFacts = []
+            for i in range(0, len(textbookChunked), 50):
+                # Get the next batch of up to 50 chunks
+                batch = textbookChunked[i:i+50]
+                # Create a list of tasks for the current batch
+                tasks = [self.gptAgent.async_open_ai_gpt_call(chunk, listPrompt, gptTemp) for chunk in batch]
+                # Use asyncio.gather to run all tasks concurrently and extend the rawFacts list with the results
 
-            # Use asyncio.gather to run all tasks concurrently
-            rawFacts = await asyncio.gather(*tasks)
+                (print("Calling fact extractor GPT agents..."))
+                rawFacts.extend(await asyncio.gather(*tasks))
+
+                # Wait for one minute before processing the next batch
+                print(f"Successfully went through {i + 50} chunks!")
+
+                print("sleeping for 60 seconds...")
+                await asyncio.sleep(60)
+                print("Slept for 60 seconds!")
 
             print("All lessons appended")
             return rawFacts
@@ -115,7 +129,6 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
             facts = [fact.strip() for fact in facts if fact.strip()]
             
             return facts
-            
         def process_facts(self, facts):
             answerArray = []
 
@@ -125,3 +138,22 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
                     answerArray.append(match.group(1))
 
             return answerArray
+
+# test = InfoExtractorV3
+# path = "C:\\Users\\david\\Desktop\\Making_It_Stick.pdf"
+# small_path = "C:\\Users\\david\\Downloads\\CV David Tiareh"
+# medium_path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\HoI_IV_Strategy_Guide.pdf"
+# big_path = "C:\\Users\\david\\Desktop\\PrinciplesOfBiology.pdf"
+# async def yearly_plan_facts_per_lesson_pdf_input_only_test(pdf_path): 
+#         print("Initializing InfoExtractor...")
+#         infoExtract = InfoExtractorV3() # Creates the infoExtractor 
+#         print("Extracting raw facts from PDF...")
+#         rawFacts = await infoExtract.info_extractorV3(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
+#         return rawFacts
+
+# async def main():
+#     facts = await yearly_plan_facts_per_lesson_pdf_input_only_test(big_path)
+#     print(facts)
+
+# # This is the Python >= 3.7 way of running the main coroutine
+# asyncio.run(main())

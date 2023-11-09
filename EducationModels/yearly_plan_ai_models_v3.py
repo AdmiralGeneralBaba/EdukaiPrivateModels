@@ -46,7 +46,7 @@ class YearlyPlanCreatorV3() :
         print("Initializing InfoExtractor...")
         infoExtract = InfoExtractorV3() # Creates the infoExtractor 
         print("Extracting raw facts from PDF...")
-        rawFacts = await infoExtract.info_extractorV3(pdf_path, 1500) # Calls info extractor
+        rawFacts = await infoExtract.info_extractorV3(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
 
         # Initialize variables
         lessons = []

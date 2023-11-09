@@ -5,7 +5,7 @@ import asyncio
 import aiohttp
 
 
-class InfoExtractorV3 :        
+class InfoExtractorV4 :        
         def __init__(self):
            self.gptAgent = OpenAI()          
         # Current PDF extraction system - Need for it to be updated so that it is more consistent. 
@@ -35,7 +35,7 @@ class InfoExtractorV3 :
             pdfFileObj.close()
             return chunks
         
-        def string_chunker(self, text, chunkSize) :
+        def text_chunker(self, text, chunkSize) :
             chunks = []
             current_chunk = []
             words = text.split()
@@ -71,7 +71,7 @@ class InfoExtractorV3 :
 
             return chunks
         # Reads a pdf, inputs them into chunks into GPT-3.5, then returns the raw facts from the file.
-        async def info_extractorV3(self, textbook_path, chunkSize): 
+        async def info_extractorV4(self, textbook_path, chunkSize): 
             gptTemp = 0.7
             listPrompt = """ Pretend you are an fact analyser, who is the best in the world for created 100 percent accurate facts for a piece of inputted text, tasked with listing the pure facts from a given text. 
 I need you to list the facts here, such that they are the pure information needed to understand the textbook. Make sure to include this raw information, and nothing more. When listing the facts, 
@@ -111,7 +111,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
             return rawFacts
         
         #Takes the text inputted, puts the chunks into gpt-3.5, then returns the raw facts from the file 
-        async def text_info_extractorV3(self, text, chunkSize): 
+        async def text_info_extractorV4(self, text, chunkSize): 
             gptTemp = 0.7
             listPrompt = """ Pretend you are an fact analyser, who is the best in the world for created 100 percent accurate facts for a piece of inputted text, tasked with listing the pure facts from a given text. 
 I need you to list the facts here, such that they are the pure information needed to understand the textbook. Make sure to include this raw information, and nothing more. When listing the facts, 
@@ -126,13 +126,13 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 1. {I, an expert fact analyser, will put my facts between these CURLY BRACKETS, ALWAYS starting from 1., and ignoring this dummy fact, as it is to help me structure the facts I will print out.}
  Here is the content :            """
             
-            textbookChunked = self.text_chunker(text, chunkSize)  # Array of chunks 
+            textChunked = self.text_chunker(text, chunkSize)  # Array of chunks 
             print("Created chunks of the PDF!")
 
             rawFacts = []
-            for i in range(0, len(textbookChunked), 50):
+            for i in range(0, len(textChunked), 50):
                 # Get the next batch of up to 50 chunks
-                batch = textbookChunked[i:i+50]
+                batch = textChunked[i:i+50]
                 # Create a list of tasks for the current batch
                 tasks = [self.gptAgent.async_open_ai_gpt_call(chunk, listPrompt, gptTemp) for chunk in batch]
                 # Use asyncio.gather to run all tasks concurrently and extend the rawFacts list with the results
@@ -196,16 +196,16 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
             return answerArray
 
-# test = InfoExtractorV3
+# test = InfoExtractorV4
 # path = "C:\\Users\\david\\Desktop\\Making_It_Stick.pdf"
 # small_path = "C:\\Users\\david\\Downloads\\CV David Tiareh"
 # medium_path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\HoI_IV_Strategy_Guide.pdf"
 # big_path = "C:\\Users\\david\\Desktop\\PrinciplesOfBiology.pdf"
 # async def yearly_plan_facts_per_lesson_pdf_input_only_test(pdf_path): 
 #         print("Initializing InfoExtractor...")
-#         infoExtract = InfoExtractorV3() # Creates the infoExtractor 
+#         infoExtract = InfoExtractorV4() # Creates the infoExtractor 
 #         print("Extracting raw facts from PDF...")
-#         rawFacts = await infoExtract.info_extractorV3(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
+#         rawFacts = await infoExtract.info_extractorV4(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
 #         return rawFacts
 
 # async def main():

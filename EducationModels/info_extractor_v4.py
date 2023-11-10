@@ -148,6 +148,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
                 print("Slept for 60 seconds!")
 
             print("All lessons appended")
+            
             return rawFacts
         
         def renumber_facts(self, input_text):

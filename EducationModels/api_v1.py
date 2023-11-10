@@ -11,6 +11,7 @@ from homework_creator_v1 import homeworkCreatorsV1
 from powerpoint_creator_v5 import PowerpointCreatorV5
 from mcq_creator_v1 import McqCreatorV1
 from flashcard_model_v2 import FlashcardModelV2
+from text_processing_v1 import text_fact_transformer_V1
 import urllib
 
 app = Flask(__name__)
@@ -71,6 +72,16 @@ async def async_yearly_plan():
     # Return the result
     return jsonify(yearly_plan)
 
+
+
+@app.route('/async_text_fact_breakdown/<path:text>') 
+async def async_text_fact_breakdown(text) : 
+
+    if len(text) > 10000000 : 
+        return "too long"
+    else : 
+        text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
+        return jsonify(text_facts)
 
 
 @app.route('/aqa_english_language_paper_1/')

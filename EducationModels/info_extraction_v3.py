@@ -139,21 +139,21 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
             return answerArray
 
-test = InfoExtractorV3
-path = "C:\\Users\\david\\Desktop\\Making_It_Stick.pdf"
-small_path = "C:\\Users\\david\\Downloads\\CV David Tiareh"
-medium_path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\HoI_IV_Strategy_Guide.pdf"
-big_path = "C:\\Users\\david\\Desktop\\PrinciplesOfBiology.pdf"
-async def yearly_plan_facts_per_lesson_pdf_input_only_test(pdf_path): 
-        print("Initializing InfoExtractor...")
-        infoExtract = InfoExtractorV3() # Creates the infoExtractor 
-        print("Extracting raw facts from PDF...")
-        rawFacts = await infoExtract.info_extractorV3(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
-        return rawFacts
+# test = InfoExtractorV3
+# path = "C:\\Users\\david\\Desktop\\Making_It_Stick.pdf"
+# small_path = "C:\\Users\\david\\Downloads\\CV David Tiareh"
+# medium_path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\HoI_IV_Strategy_Guide.pdf"
+# big_path = "C:\\Users\\david\\Desktop\\PrinciplesOfBiology.pdf"
+# async def yearly_plan_facts_per_lesson_pdf_input_only_test(pdf_path): 
+#         print("Initializing InfoExtractor...")
+#         infoExtract = InfoExtractorV3() # Creates the infoExtractor 
+#         print("Extracting raw facts from PDF...")
+#         rawFacts = await infoExtract.info_extractorV3(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
+#         return rawFacts
 
-async def main():
-    facts = await yearly_plan_facts_per_lesson_pdf_input_only_test(big_path)
-    print(facts)
+# async def main():
+#     facts = await yearly_plan_facts_per_lesson_pdf_input_only_test(big_path)
+#     print(facts)
 
-# This is the Python >= 3.7 way of running the main coroutine
-asyncio.run(main())
+# # This is the Python >= 3.7 way of running the main coroutine
+# asyncio.run(main())

@@ -95,19 +95,24 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
                 batch = textbookChunked[i:i+50]
                 # Create a list of tasks for the current batch
                 tasks = [self.gptAgent.async_open_ai_gpt_call(chunk, listPrompt, gptTemp) for chunk in batch]
-                # Use asyncio.gather to run all tasks concurrently and extend the rawFacts list with the results
 
-                (print("Calling fact extractor GPT agents..."))
+                print("Calling fact extractor GPT agents...")
                 rawFacts.extend(await asyncio.gather(*tasks))
 
-                # Wait for one minute before processing the next batch
-                print(f"Successfully went through {i + 50} chunks!")
+                print(f"Successfully went through {i + len(batch)} chunks!")
 
-                print("sleeping for 60 seconds...")
-                await asyncio.sleep(60)
-                print("Slept for 60 seconds!")
+                # Check if the current batch is not the last batch
+                print(i + 50)
+                print(len(textbookChunked))
+                if i + 50 < len(textbookChunked):
+                    print("sleeping for 60 seconds...")
+                    await asyncio.sleep(60)
+                    print("Slept for 60 seconds!")
+                else:
+                    print("Last batch processed, not sleeping.")
 
             print("All lessons appended")
+            
             return rawFacts
         
         #Takes the text inputted, puts the chunks into gpt-3.5, then returns the raw facts from the file 
@@ -135,22 +140,27 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
                 batch = textChunked[i:i+50]
                 # Create a list of tasks for the current batch
                 tasks = [self.gptAgent.async_open_ai_gpt_call(chunk, listPrompt, gptTemp) for chunk in batch]
-                # Use asyncio.gather to run all tasks concurrently and extend the rawFacts list with the results
 
-                (print("Calling fact extractor GPT agents..."))
+                print("Calling fact extractor GPT agents...")
                 rawFacts.extend(await asyncio.gather(*tasks))
 
-                # Wait for one minute before processing the next batch
-                print(f"Successfully went through {i + 50} chunks!")
+                print(f"Successfully went through {i + len(batch)} chunks!")
 
-                print("sleeping for 60 seconds...")
-                await asyncio.sleep(60)
-                print("Slept for 60 seconds!")
+                # Check if the current batch is not the last batch
+                print(i + 50)
+                print(len(textChunked))
+                if i + 50 < len(textChunked):
+                    print("sleeping for 60 seconds...")
+                    await asyncio.sleep(60)
+                    print("Slept for 60 seconds!")
+                else:
+                    print("Last batch processed, not sleeping.")
 
             print("All lessons appended")
-            
+
             return rawFacts
-        
+
+                    
         def renumber_facts(self, input_text):
             # split the text into lines
             lines = re.split(r'(?<=})', input_text.strip())

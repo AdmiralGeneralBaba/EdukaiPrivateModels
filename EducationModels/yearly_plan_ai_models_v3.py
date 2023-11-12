@@ -1,6 +1,6 @@
 from openai_calls import OpenAI 
 from info_extraction_v1 import InfoExtractorV2
-from info_extraction_v3 import InfoExtractorV3
+from info_extractor_v4 import InfoExtractorV4
 from homework_creator_v1 import homeworkCreatorsV1
 import re
 
@@ -44,9 +44,9 @@ class YearlyPlanCreatorV3() :
         return lessons
     async def yearly_plan_facts_per_lesson_pdf_input_only(self, pdf_path): 
         print("Initializing InfoExtractor...")
-        infoExtract = InfoExtractorV3() # Creates the infoExtractor 
+        infoExtract = InfoExtractorV4() # Creates the infoExtractor 
         print("Extracting raw facts from PDF...")
-        rawFacts = await infoExtract.info_extractorV3(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
+        rawFacts = await infoExtract.info_extractorV4(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
 
         # Initialize variables
         lessons = []

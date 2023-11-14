@@ -16,7 +16,7 @@ local = False
 save_dir = "C:/Users/david"
 
 #Input is a string as to not cause confusion on the input.
-def transcribe_youtube_url(youtube_url :str):
+def transcribe_youtube_url(youtube_url :str, save_dir):
     # Check if youtube_url is a string
     if not isinstance(youtube_url, str):
         raise ValueError("The input must be a string representing a YouTube URL")
@@ -35,11 +35,12 @@ def powerpoint_translation(powerpoint_file_url : str) :
     data = loader.load()
     return data
 
-
 def word_document_translation(word_document_file_directory : str) : 
     loader = Docx2txtLoader(word_document_file_directory)
     data = loader.load()
     return data
+
+
 # url = "https://www.youtube.com/watch?v=IAyE9hyttq4" 
 # pp_url = "C:\\Users\\david\\Downloads\\make-it-stick-study-strategies-for-retention.pptx"
 

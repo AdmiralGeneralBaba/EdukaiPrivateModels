@@ -11,7 +11,7 @@ import asyncio
 import aiohttp
 
 
-class InfoExtractorV4 :        
+class InfoExtractorV5 :        
         def __init__(self):
            self.gptAgent = OpenAI()          
         # Current PDF extraction system - Need for it to be updated so that it is more consistent. 
@@ -77,7 +77,7 @@ class InfoExtractorV4 :
 
             return chunks
         # Reads a pdf, inputs them into chunks into GPT-3.5, then returns the raw facts from the file.
-        async def info_extractorV4(self, textbook_path, chunkSize): 
+        async def info_extractorV5(self, textbook_path, chunkSize): 
             gptTemp = 0.7
             listPrompt = """ Pretend you are an fact analyser, who is the best in the world for created 100 percent accurate facts for a piece of inputted text, tasked with listing the pure facts from a given text. 
 I need you to list the facts here, such that they are the pure information needed to understand the textbook. Make sure to include this raw information, and nothing more. When listing the facts, 
@@ -122,7 +122,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
             return rawFacts
         
         #Takes the text inputted, puts the chunks into gpt-3.5, then returns the raw facts from the file 
-        async def text_info_extractorV4(self, text, chunkSize): 
+        async def text_info_extractorV5(self, text, chunkSize): 
             gptTemp = 0.7
             listPrompt = """ Pretend you are an fact analyser, who is the best in the world for created 100 percent accurate facts for a piece of inputted text, tasked with listing the pure facts from a given text. 
 I need you to list the facts here, such that they are the pure information needed to understand the textbook. Make sure to include this raw information, and nothing more. When listing the facts, 
@@ -165,6 +165,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
             print("All lessons appended")
 
             return rawFacts
+        
         def transcribe_youtube_url(youtube_url :str, save_dir):
             # Check if youtube_url is a string
             if not isinstance(youtube_url, str):
@@ -234,22 +235,3 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
                     answerArray.append(match.group(1))
 
             return answerArray
-
-# test = InfoExtractorV4
-# path = "C:\\Users\\david\\Desktop\\Making_It_Stick.pdf"
-# small_path = "C:\\Users\\david\\Downloads\\CV David Tiareh"
-# medium_path = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\HoI_IV_Strategy_Guide.pdf"
-# big_path = "C:\\Users\\david\\Desktop\\PrinciplesOfBiology.pdf"
-# async def yearly_plan_facts_per_lesson_pdf_input_only_test(pdf_path): 
-#         print("Initializing InfoExtractor...")
-#         infoExtract = InfoExtractorV4() # Creates the infoExtractor 
-#         print("Extracting raw facts from PDF...")
-#         rawFacts = await infoExtract.info_extractorV4(pdf_path, 1200) # Calls info extractor HERE WE CAN CHANGE THE CHUNK SIZE TO BE OR LESS DETAILED.
-#         return rawFacts
-
-# async def main():
-#     facts = await yearly_plan_facts_per_lesson_pdf_input_only_test(big_path)
-#     print(facts)
-
-# # This is the Python >= 3.7 way of running the main coroutine
-# asyncio.run(main())

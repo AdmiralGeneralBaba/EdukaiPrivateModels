@@ -16,3 +16,5 @@ async def text_fact_transformer_V1(text) :
     fact_chunks = await info_extractor.text_info_extractorV4(text, 1200)
     lesson = process_text(fact_chunks)
     return lesson
+
+

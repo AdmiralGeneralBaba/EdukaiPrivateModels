@@ -3,8 +3,9 @@ from langchain.document_loaders.parsers import OpenAIWhisperParser
 from langchain.document_loaders.blob_loaders.youtube_audio import YoutubeAudioLoader
 from langchain.document_loaders import UnstructuredPowerPointLoader
 from langchain.document_loaders import Docx2txtLoader
+from langchain.document_loaders import YoutubeLoader
 from docx import Document
-from openai_calls import OpenAI
+from EducationModels.openai_calls import OpenAI
 import PyPDF2
 import re
 import asyncio
@@ -166,12 +167,13 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
             return rawFacts
         
-        def transcribe_youtube_url(youtube_url :str, save_dir):
+        # Input the youtube link, output is the string.
+        def transcribe_youtube_url(self, youtube_url :str, save_dir :str):
             # Check if youtube_url is a string
             if not isinstance(youtube_url, str):
                 raise ValueError("The input must be a string representing a YouTube URL")
-            url_array = [youtube_url]
-            loader = GenericLoader(YoutubeAudioLoader(url_array, save_dir), OpenAIWhisperParser())
+            # url_array = [youtube_url]
+            loader = YoutubeLoader.from_youtube_url(youtube_url)
             docs = loader.load()
             print(len(docs))
             combined_docs = [doc.page_content for doc in docs]
@@ -185,6 +187,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
             data = loader.load()
             return data
 
+        # Input the word document URL, and it will process it into text
         def word_document_translation(word_document_file_directory : str) : 
             loader = Docx2txtLoader(word_document_file_directory)
             data = loader.load()
@@ -226,6 +229,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
             facts = [fact.strip() for fact in facts if fact.strip()]
             
             return facts
+       
         def process_facts(self, facts):
             answerArray = []
 

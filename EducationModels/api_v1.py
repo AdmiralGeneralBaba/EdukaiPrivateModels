@@ -11,7 +11,8 @@ from homework_creator_v1 import homeworkCreatorsV1
 from powerpoint_creator_v5 import PowerpointCreatorV5
 from mcq_creator_v1 import McqCreatorV1
 from flashcard_model_v2 import FlashcardModelV2
-from text_processing_v1 import text_fact_transformer_V1
+from InfoExtractors.text_processing_v1 import text_fact_transformer_V1
+from InfoExtractors.info_extractor_v5 import InfoExtractorV5
 import urllib
 
 app = Flask(__name__)
@@ -35,24 +36,6 @@ def fetch_and_process_pdf(pdf_url):
         tmp.write(response.content)
 
     return tmp_filepath
-
-@app.route('/yearly_plan_creator/')
-def yearly_plan():
-    pdf_url = request.args.get('pdf_url')
-    tmp_filepath = fetch_and_process_pdf(pdf_url)
-
-    if not tmp_filepath:
-        return jsonify({"error": "Invalid URL or not a PDF"}), 400
-
-    # Process the PDF
-    yearly_planner = YearlyPlanCreatorV2()
-    yearly_plan = yearly_planner.yearly_plan_facts_per_lesson_pdf_input_only(tmp_filepath)
-
-    # Once processing is done, delete the temporary file
-    os.remove(tmp_filepath)
-
-    # Return the result
-    return jsonify(yearly_plan)
 
 @app.route('/async_yearly_plan_creator/')
 async def async_yearly_plan():
@@ -78,6 +61,19 @@ async def async_yearly_plan():
 async def async_text_fact_breakdown(text) : 
 
     if len(text) > 10000000 : 
+        return "too long"
+    else : 
+        text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
+        return jsonify(text_facts)
+
+@app.route('/youtube_to_text/') 
+async def async_text_fact_breakdown_youtube_url() : 
+    directory = request.args.get('directory')
+    youtube_url = request.args.get('youtube_url')
+    info_extractor = InfoExtractorV5()
+    text = info_extractor.transcribe_youtube_url(youtube_url, directory)
+                   
+    if len(text) > 100000 : 
         return "too long"
     else : 
         text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS

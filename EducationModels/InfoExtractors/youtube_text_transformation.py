@@ -10,10 +10,7 @@ from docx import Document
 
 # set a flag to switch between local and remote parsing
 # change this to True if you want to use local parsing
-local = False
 
-# 
-save_dir = "C:/Users/david"
 
 #Input is a string as to not cause confusion on the input.
 def transcribe_youtube_url(youtube_url :str, save_dir):
@@ -40,17 +37,3 @@ def word_document_translation(word_document_file_directory : str) :
     data = loader.load()
     return data
 
-
-# url = "https://www.youtube.com/watch?v=IAyE9hyttq4" 
-# pp_url = "C:\\Users\\david\\Downloads\\make-it-stick-study-strategies-for-retention.pptx"
-
-# word_path = "C:\Users\david\Desktop"
-
-
-
-# test = powerpoint_translation(pp_url)  
-
-word_path = "C:\\Users\\david\Desktop\\business-model-canvas_test.docx"
-
-test = word_document_translation(word_path)
-print(test)

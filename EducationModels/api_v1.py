@@ -13,6 +13,7 @@ from mcq_creator_v1 import McqCreatorV1
 from flashcard_model_v2 import FlashcardModelV2
 from InfoExtractors.text_processing_v1 import text_fact_transformer_V1
 from InfoExtractors.info_extractor_v5 import InfoExtractorV5
+from powerpoint_creator_v6 import PowerpointCreatorV6
 import urllib
 
 app = Flask(__name__)
@@ -104,9 +105,9 @@ def homework_creation(lesson) :
     return jsonify(lesson_homework)
 
 @app.route('/powerpoint_creator/<path:lesson>')
-def powerpoint_creator(lesson):
-    powerpoint_creator = PowerpointCreatorV5()
-    powerpoint = powerpoint_creator.stage_6_create_powerpoint(lesson)
+async def powerpoint_creator(lesson):
+    powerpoint_creator = PowerpointCreatorV6()
+    powerpoint = await powerpoint_creator.stage_6_create_powerpoint(lesson)
     return jsonify(powerpoint)
 
 @app.route('/mcq_creator/<path:lesson>') 

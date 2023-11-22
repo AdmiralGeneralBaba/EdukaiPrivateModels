@@ -27,7 +27,7 @@ I also want you to order them in the best way to learn these facts, for a powerp
 DO NOT PRINT YOUR THOUGHTS - I CANNOT STRESS THIS ENOUGH. IF YOU DO, MY FAMILY WILL DIE AND I WILL KILL YOU
 here are the facts: 
 """
-    optimalFactGroupings= gptAgent.open_ai_gpt4_turbo_call(numberedFacts, stage1Prompt, stage1Temp)
+    optimalFactGroupings= gptAgent.open_ai_gpt4_call(numberedFacts, stage1Prompt, stage1Temp)
     return optimalFactGroupings
 def stage_2_powerpoint_plan(numberedFacts, optimalFactGroupings) : 
     gptAgent = OpenAI()
@@ -46,7 +46,7 @@ Here are the modules name; JUST print out the module name you picked ,and the fa
 
 2. L.O page  + {Learning objects for the lesson} 
 
-3. General content page + {fact numbers} + {grouping description supplied in the input NEXT to the fact number groupings}
+3. general_content_page + {fact numbers} + {grouping description supplied in the input NEXT to the fact number groupings}
 
 4. Ending slide + {Ending summary title, then a comma, then the summary}
 heres an example of these implemented, DO NOT deviate from this structure: 
@@ -54,17 +54,17 @@ POWERPOINT 1 : Module : Title Page - Hearts of Iron IV, An Insight on Aircraft a
 
 POWERPOINT 2 : Module : L.O page - Learning objects for the lesson
 
-POWERPOINT 3 : Module : General content page - {1, 2, 3, 17}, Understanding basics of Hearts of Iron IV
+POWERPOINT 3 : Module : general_content_page - {1, 2, 3, 17}, Understanding basics of Hearts of Iron IV
 
-POWERPOINT 4 : Module : General content page - {18, 19, 20, 21}, Importance and specialties of Naval Bombers
+POWERPOINT 4 : Module : general_content_page - {18, 19, 20, 21}, Importance and specialties of Naval Bombers
 
-POWERPOINT 5 : Module : General content page - {4, 5, 6, 7}, Types of fighters and their strengths
+POWERPOINT 5 : Module : general_content_page - {4, 5, 6, 7}, Types of fighters and their strengths
 
-POWERPOINT 6 : Module : General content page - {8, 9, 10, 11}, Role and capabilities of CAS planes
+POWERPOINT 6 : Module : general_content_page - {8, 9, 10, 11}, Role and capabilities of CAS planes
 
-POWERPOINT 7 : Module : General content page - {12, 13, 14}, Tactical bombers and their functionalities
+POWERPOINT 7 : Module : general_content_page - {12, 13, 14}, Tactical bombers and their functionalities
 
-POWERPOINT 8 : Module : General content page - {15, 16}, Strategic bombers and their impact   
+POWERPOINT 8 : Module : general_content_page - {15, 16}, Strategic bombers and their impact   
 
 POWERPOINT 9 : Module : Ending slide - Conclusion, Summary of the different types of aircraft in Hearts of Iron IV, their roles, and their impacts.
 Here are the lesson facts : 
@@ -72,7 +72,108 @@ Here are the lesson facts :
     gptInput = numberedFacts + optimalFactGroupings
     powerpointPlan = gptAgent.open_ai_gpt4_call(gptInput, stage2Prompt, stage2Temp)
     return powerpointPlan  
-def stage_2_1_powerpoint_plan(powerpoint_plan, lesson_facts) : 
+
+# stage_2_3 performs the difficulty calcluation for each of the sub-topics, and inputs them into the powerpoint plan.
+#This replaces the fact numbers with text to be inputted into the difficulty calculation
+def stage_2_1_replace_fact_numbers_with_texts(fact_groupings : str, facts : str):
+    # Parse the facts string to create a mapping of fact number to fact text
+    facts = re.findall(r'(\d+)\. \{([^}]+)\}', facts)
+    fact_map = {num: fact for num, fact in facts}
+
+    # Function to replace fact numbers with texts
+    def replace_fact(match):
+        fact_nums = match.group(1).split(', ')
+        facts = [fact_map[num.strip()] for num in fact_nums if num.strip() in fact_map]
+        return "{" + '; '.join(facts) + "}, " + match.group(2)
+
+    # Replace fact numbers in the input string
+    return re.sub(r'\{([\d, ]+)\}, ([^\n]+)', replace_fact, fact_groupings)
+
+
+# Takes an inputted fact groupings + their sub topic title, and evaluates each of it's difficulties, and returns the string output. 
+def stage_2_1_difficulty_calculation(fact_groupings, facts) : 
+
+    subtopics_to_evaluate = stage_2_1_replace_fact_numbers_with_texts(fact_groupings, facts)
+    llm = OpenAI()
+    temp = 0.8
+    prompt = """Based on the inputted facts and their topics, I want you to classify them into three levels of difficulty, 'EASY', 'MEDIUM' or 'HARD', respective to someone seeing this content for the first time.
+
+Your output MUST look like this. KEEP the curly brackets:
+INSERT TOPIC HERE : {INSERT DIFFICULTY HERE}
+INSERT 2nd TOPIC HERE : {INSERT DIFFICULTY HERE}
+etc
+
+Here are the topics, and their corresponding facts :
+"""
+    difficulty_evaluation = llm.open_ai_gpt4_call(subtopics_to_evaluate, prompt, temp)
+    return difficulty_evaluation
+
+
+#stage_2_3 adds in the difficulty value into the powerpoint slides : 
+
+
+# This creates a dictionary for the difficulty calculation output.
+def stage_2_1_create_dictionary(difficulty_calculation):
+    # Split the string by newlines to get each topic and difficulty
+    items = difficulty_calculation.split('\n')
+    dictionary = {}
+
+    # Process each item and add to dictionary
+    for item in items:
+        # Split the item into key and value
+        key, value = item.split(' : ')
+        key = key.strip()  # Remove leading/trailing whitespace
+        value = value.strip('{} ')  # Remove curly brackets and trailing whitespace
+        dictionary[key] = value
+    
+    return dictionary
+
+# This creates the modified powerpoint plan by inputing the dictionary and using that to find the topic, and add on the difficutly calculated. 
+def stage_2_1_difficulty_calculation_addon_powerpoint_plan(powerpoint_plan, difficulty_calculation_dictionary):
+    modified_plan = powerpoint_plan
+    for topic, difficulty in difficulty_calculation_dictionary.items():
+        # Use regex to find each occurrence of the topic in the plan
+        modified_plan = re.sub(f'({topic})', r'\1 {' + difficulty + '}', modified_plan)
+
+    return modified_plan
+
+def stage_2_1_submodule_insertion_content_pages(powerpoint_plan) : 
+    llm = OpenAI()
+    prompt = """Pretend you are an expert planner for a powerpoint slide, tasked with choosing the submodules for the powerpoint plan given. 
+A submodule is a variant of the modules named in the powerpoint plan, such that they do a specific task. 
+
+For the module given, there are submodules that corrospond to the difficulty level of the slide.
+
+The module you will change is the 'general_content_page' : 
+
+The submodules for the 'EASY' difficulty are :
+'general_content_page_easy_bullet_points' 
+
+The submodules for the 'MEDIUM difficulty are : 
+'general_content_page_easy_bullet_points' 
+
+the submodules for the 'HARD' difficulty are : 
+'general_content _page_hard_slide_breakup'
+
+Here is the current powerpoint plan; you MUST change all of the 'general_content_page' modules with the best one that fits, according to the ones you can choose within their difficulty level. You are to return ONLY the new, improved powerpoint plan, and NOTHING ELSE.  : 
+
+"""
+    temp = 0
+    powerpoint_plan_with_content_modules = llm.open_ai_gpt_call(powerpoint_plan, prompt, temp)
+    return powerpoint_plan_with_content_modules
+
+#Method combines all of 2_1 difficulty calculation and general content page addons to create the new powerpoint update.
+def stage_2_1_final_difficulty_calculation_method(powerpoint_plan, fact_groupings, facts) : 
+    difficulty_calculation = stage_2_1_difficulty_calculation(fact_groupings, facts)
+    difficulty_dictionary = stage_2_1_create_dictionary(difficulty_calculation)
+    powerpoint_difficulty_addon = stage_2_1_difficulty_calculation_addon_powerpoint_plan(powerpoint_plan, difficulty_dictionary)
+    final_powerpoint_plan  = stage_2_1_submodule_insertion_content_pages(powerpoint_difficulty_addon)
+    return final_powerpoint_plan
+
+
+
+
+def stage_2_2_question_activity_addon_powerpoint_plan(powerpoint_plan, lesson_facts) : 
     gptAgent = OpenAI()
     stage_2_1_temp = 0.6
     prompt = """Pretend you are an expert planner for a powerpoint slide, tasked with placing activity OR question slides within the basic powerpoint plan given. You are to insert question slides, where needed, with the fact numbers attached to that slide where the questions will be based off.
@@ -106,7 +207,8 @@ Provided will be the existing plan, and the lesson facts so you understand the c
     improved_powerpoint_plan = gptAgent.open_ai_gpt4_call(gpt_input, prompt, stage_2_1_temp)
     return improved_powerpoint_plan
 
-def stage_2_2_submodule_choice_insertion(powerpoint_plan, lesson_facts) : 
+
+def stage_2_2_question_activity_submodule_choice_insertion(powerpoint_plan, lesson_facts) : 
     gpt_agent = OpenAI()
     stage_2_1_temp = 0.91
     #I removed this submodule from the prompt :submodule 1 : 'question_module_1_mcq' : a MCQ based on the facts for that slide.
@@ -143,98 +245,39 @@ Here is the lesson facts and the powerpoint plan :
     return new_powerpoint_plan
 
 
-# stage_2_3 performs the difficulty calcluation for each of the sub-topics, and inputs them into the powerpoint plan.
-#This replaces the fact numbers with text to be inputted into the difficulty calculation
-def stage_2_3_replace_fact_numbers_with_texts(fact_groupings : str, facts : str):
-    # Parse the facts string to create a mapping of fact number to fact text
-    facts = re.findall(r'(\d+)\. \{([^}]+)\}', facts)
-    fact_map = {num: fact for num, fact in facts}
-
-    # Function to replace fact numbers with texts
-    def replace_fact(match):
-        fact_nums = match.group(1).split(', ')
-        facts = [fact_map[num.strip()] for num in fact_nums if num.strip() in fact_map]
-        return "{" + '; '.join(facts) + "}, " + match.group(2)
-
-    # Replace fact numbers in the input string
-    return re.sub(r'\{([\d, ]+)\}, ([^\n]+)', replace_fact, fact_groupings)
-
-
-# Takes an inputted fact groupings + their sub topic title, and evaluates each of it's difficulties, and returns the string output. 
-def stage_2_3_difficulty_calculation(fact_groupings, facts) : 
-
-    subtopics_to_evaluate = stage_2_3_replace_fact_numbers_with_texts(fact_groupings, facts)
-    llm = OpenAI()
-    temp = 0.8
-    prompt = """Based on the inputted facts and their topics, I want you to classify them into three levels of difficulty, 'EASY', 'MEDIUM' or 'HARD', respective to someone seeing this content for the first time.
-
-Your output MUST look like this. KEEP the curly brackets:
-INSERT TOPIC HERE : {INSERT DIFFICULTY HERE}
-INSERT 2nd TOPIC HERE : {INSERT DIFFICULTY HERE}
-etc
-
-Here are the topics, and their corresponding facts :
-"""
-    difficulty_evaluation = llm.open_ai_gpt4_call(subtopics_to_evaluate, prompt, temp)
-    return difficulty_evaluation
-
-
-#stage_2_3 adds in the difficulty value into the powerpoint slides : 
-
-
-# This creates a dictionary for the difficulty calculation output.
-def stage_2_3_create_dictionary(difficulty_calculation):
-    # Split the string by newlines to get each topic and difficulty
-    items = difficulty_calculation.split('\n')
-    dictionary = {}
-
-    # Process each item and add to dictionary
-    for item in items:
-        # Split the item into key and value
-        key, value = item.split(' : ')
-        key = key.strip()  # Remove leading/trailing whitespace
-        value = value.strip('{} ')  # Remove curly brackets and trailing whitespace
-        dictionary[key] = value
+# Combined method of stage_2_2
+def stage_2_2_final_question_activity_addition(powerpoint_plan, lesson_facts) : 
+    ques_and_activity_addon_powerpoint_plan = stage_2_2_question_activity_addon_powerpoint_plan(powerpoint_plan,lesson_facts)
+    ques_activity_submodule_powerpoint_plan = stage_2_2_question_activity_submodule_choice_insertion(ques_and_activity_addon_powerpoint_plan, lesson_facts)
+    return ques_activity_submodule_powerpoint_plan
     
-    return dictionary
-
-# This creates the modified powerpoint plan by inputing the dictionary and using that to find the topic, and add on the difficutly calculated. 
-def stage_2_3_modify_powerpoint_plan(powerpoint_plan, difficulty_calculation_dictionary):
-    modified_plan = powerpoint_plan
-    for topic, difficulty in difficulty_calculation_dictionary.items():
-        # Use regex to find each occurrence of the topic in the plan
-        modified_plan = re.sub(f'({topic})', r'\1 {' + difficulty + '}', modified_plan)
-
-    return modified_plan
-
-def stage_2_4_submodule_insertion_content_pages(powerpoint_plan) : 
-    llm = OpenAI()
-    prompt = """Pretend you are an expert planner for a powerpoint slide, tasked with choosing the submodules for the powerpoint plan given. 
-A submodule is a variant of the modules named in the powerpoint plan, such that they do a specific task. 
-
-For the module given, there are submodules that corrospond to the difficulty level of the slide.
-
-The module you will change is the 'general_content_page' : 
-
-The submodules for the 'EASY' difficulty are :
-'general_content_page_easy_bullet_points' 
-
-The submodules for the 'MEDIUM difficulty are : 
-'general_content_page_easy_bullet_points' 
-
-the submodules for the 'HARD' difficulty are : 
-'general_content _page_hard_slide_breakup'
-
-Here is the current powerpoint plan; you MUST change all of the 'general_content_page' modules with the best one that fits, according to the ones you can choose within their difficulty level. You are to return ONLY the new, improved powerpoint plan, and NOTHING ELSE.  : 
-
-"""
-    temp = 0
-    powerpoint_plan_with_content_modules = llm.open_ai_gpt_call(powerpoint_plan, prompt, temp)
-    return powerpoint_plan_with_content_modules
-
-def stage_3_facts_for_slide_powerpoint_extractor(powerpointPlan):
-    # Match either a double newline or the end of the string
-    powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+?)(?:\n\n|$)', powerpointPlan, re.DOTALL)
-    return powerpointSlides
 
 
+
+    ### Combined powerpoint plan creator : 
+def stage_3_powerpoint_plan_creator(lesson_facts : str, question_activity_choice : bool) : 
+    print("FIXED STAGES IN PROGRESS...")
+    fact_groupings = stage_1_groupings_for_facts(lesson_facts)
+    print(fact_groupings)
+    print("STAGE 1 COMPLETE")
+    powerpoint_plan = stage_2_powerpoint_plan(lesson_facts, fact_groupings)
+    print(powerpoint_plan)
+    print("STAGE 2 IN PROGRESS")
+    powerpoint_plan_difficulty_addon = stage_2_1_final_difficulty_calculation_method(powerpoint_plan, fact_groupings, lesson_facts)
+    print("STAGE 2 COMPLETE")
+
+    print("CHOOSING WHETHER QUESTION MODULES SHOULD BE ADDED...")
+    if question_activity_choice == True : 
+        question_addon_powerpoint_plan = stage_2_2_final_question_activity_addition(powerpoint_plan_difficulty_addon, lesson_facts)
+        print("ADDED QUESTION MODULE")
+        return question_addon_powerpoint_plan
+    else : 
+        print("NO ADDITION NEEDED, RETURNING PLAN")
+        return powerpoint_plan_difficulty_addon
+
+
+    
+
+test_Facts = "1. {National Focus trees are divided into categories and offer capability multipliers and political/diplomatic decisions.} 2. {Capability multipliers in National Focuses can increase industrial output and research speed.} 3. {Some National Focuses unlock extra research slots.} 4. {Certain National Focus branches offer free civilian factories, military factories, dockyards, infrastructure, or forts.} 5. {Italy starts at war and Japan should push for the Chinese War as soon as is practicable.} 6. {Most National Focus trees will have branches devoted to the three major arms of the military – army, navy and air force.} 7. {There may be a National Focus option for your army that will speed up how quickly you can research Battlefield Doctrines and another that will help you research fighter planes.} 8. {Some nations will have the ability to choose a focus that dramatically increases the production of strategic resources, usually steel or oil.} 9. {The ability to build factories or other structures more quickly is a capability multiplier, but it is probably the lowest priority for a National Focus in the early game.} 10. {Many National Focus trees will have two or three branches that are policy-oriented.} 11. {France has a divided population that weakens its National Unity and keeps it from mobilizing a lot of its population for war.} 12. {It is often vital for a hobbled nation to get any starting penalties removed as quickly as possible.}"
+
+print(stage_3_powerpoint_plan_creator(test_Facts, True))

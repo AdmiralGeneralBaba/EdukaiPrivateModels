@@ -17,7 +17,7 @@ from powerpoint_creator_v6 import PowerpointCreatorV6
 import urllib
 
 app = Flask(__name__)
-app.debug = True
+
 
 #Need to find out how to take in a PDF input for this app.route path - perhaps it needs to access a database input path? search on this :7
  

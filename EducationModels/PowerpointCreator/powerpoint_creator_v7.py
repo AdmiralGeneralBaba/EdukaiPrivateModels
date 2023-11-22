@@ -3,7 +3,7 @@ from EducationModels.openai_calls import OpenAI
 import re
 from powerpoint_plan_creator_v7 import stage_3_powerpoint_plan_creator
 
-class PowerpointCreatorV6 : 
+class PowerpointCreatorV7 : 
     #     Fixed stages for a single lesson :
 #################    FIXED STAGES FOR EVERY LESSON/POWERPOINT:  #####################
     
@@ -506,7 +506,7 @@ Here are the lesson facts you need to cover :
             print("ERROR in module extraction, make sure the module output syntax is correct.")
     #'powerpointSlideOutline' is the outline for a single slide and not t5he grouping.
     async def stage_5_module_powerpoint_slide_function_calls(self, module, powerpointSlideOutline, slideNumber, lessonFacts, lessonDescription, powerpointPlan):
-            powerpointCalls = PowerpointCreatorV6()
+            powerpointCalls = PowerpointCreatorV7()
             print(lessonFacts)
             print("THE SLIDE PLAN IS : " + powerpointSlideOutline)
             powerpoint_facts = self.stage_4_facts_extraction_from_choices(powerpointSlideOutline, lessonFacts)
@@ -554,7 +554,7 @@ Here are the lesson facts you need to cover :
                 
 
     async def stage_6_create_powerpoint(self, lessonFacts : str, question_choice : bool) : 
-        poweropointMethods = PowerpointCreatorV6()
+        poweropointMethods = PowerpointCreatorV7()
         powerpointSlidesDetailed = []
         
         final_powerpoint_plan = stage_3_powerpoint_plan_creator(lessonFacts, question_choice)

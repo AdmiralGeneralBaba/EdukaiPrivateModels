@@ -21,7 +21,7 @@ Then, write a short, 1 line description of the facts NEXT to the facts, like so 
 {1, 2, 3}, blah blah, 
 {4,5,6}, blah blah, 
 etc
-also, each section HAS  to be between 2 -  5 facts, and no more/less than that. IF IT'S LES S OR MORE THAN THAT YOU DIE.
+also, each section HAS  to be between 2 -  5 facts, and no more/less than that. IF IT'S LESS OR MORE THAN THAT YOU DIE.
 For example, you can't output 'these facts are about the...'. Say this in your mind, you must ONLY output the numbers, e.g {1,6,5}
 I also want you to order them in the best way to learn these facts, for a powerpoint
 DO NOT PRINT YOUR THOUGHTS - I CANNOT STRESS THIS ENOUGH. IF YOU DO, MY FAMILY WILL DIE AND I WILL KILL YOU
@@ -42,13 +42,13 @@ POWERPOINT 1 : {your output}
 POWERPOINT 2 : {your output} 
 etc 
 Here are the modules name; JUST print out the module name you picked ,and the facts with them. : 
-1. Title Page  {no facts needed - just create a title and subtitle separated by a comma}
+1. title_page  {no facts needed - just create a title and subtitle separated by a comma}
 
-2. L.O page  + {Learning objects for the lesson} 
+2. lo_page  + {Learning objects for the lesson} 
 
 3. general_content_page + {fact numbers} + {grouping description supplied in the input NEXT to the fact number groupings}
 
-4. Ending slide + {Ending summary title, then a comma, then the summary}
+4. ending_slide + {Ending summary title, then a comma, then the summary}
 heres an example of these implemented, DO NOT deviate from this structure: 
 POWERPOINT 1 : Module : Title Page - Hearts of Iron IV, An Insight on Aircraft and their Functionalities
 
@@ -159,7 +159,7 @@ Here is the current powerpoint plan; you MUST change all of the 'general_content
 
 """
     temp = 0
-    powerpoint_plan_with_content_modules = llm.open_ai_gpt_call(powerpoint_plan, prompt, temp)
+    powerpoint_plan_with_content_modules = llm.open_ai_gpt4_call(powerpoint_plan, prompt, temp)
     return powerpoint_plan_with_content_modules
 
 #Method combines all of 2_1 difficulty calculation and general content page addons to create the new powerpoint update.
@@ -169,9 +169,6 @@ def stage_2_1_final_difficulty_calculation_method(powerpoint_plan, fact_grouping
     powerpoint_difficulty_addon = stage_2_1_difficulty_calculation_addon_powerpoint_plan(powerpoint_plan, difficulty_dictionary)
     final_powerpoint_plan  = stage_2_1_submodule_insertion_content_pages(powerpoint_difficulty_addon)
     return final_powerpoint_plan
-
-
-
 
 def stage_2_2_question_activity_addon_powerpoint_plan(powerpoint_plan, lesson_facts) : 
     gptAgent = OpenAI()
@@ -206,7 +203,6 @@ Provided will be the existing plan, and the lesson facts so you understand the c
     gpt_input = "FACTS : " + lesson_facts + "and here is the plan :" + powerpoint_plan
     improved_powerpoint_plan = gptAgent.open_ai_gpt4_call(gpt_input, prompt, stage_2_1_temp)
     return improved_powerpoint_plan
-
 
 def stage_2_2_question_activity_submodule_choice_insertion(powerpoint_plan, lesson_facts) : 
     gpt_agent = OpenAI()
@@ -255,6 +251,7 @@ def stage_2_2_final_question_activity_addition(powerpoint_plan, lesson_facts) :
 
 
     ### Combined powerpoint plan creator : 
+
 def stage_3_powerpoint_plan_creator(lesson_facts : str, question_activity_choice : bool) : 
     print("FIXED STAGES IN PROGRESS...")
     fact_groupings = stage_1_groupings_for_facts(lesson_facts)
@@ -275,3 +272,7 @@ def stage_3_powerpoint_plan_creator(lesson_facts : str, question_activity_choice
         print("NO ADDITION NEEDED, RETURNING PLAN")
         return powerpoint_plan_difficulty_addon
 
+
+
+facts = "1. {Artillery should be attached to motorized and infantry divisions.} 2. {Artillery research should not be neglected.} 3. {There are key values to consider when designing divisions.} 4. {The official Iron IV division statistics can be found at the wiki page: http://www.hoi4wiki.com/Land_warfare.} 5. {Organization refers to how combat ready a unit is and how long it can stay in the field before retreating.} 6. {HP, or Hit Points, represents the number of hits a unit can take before being destroyed.} 7. {Reconnaissance gives a unit an edge in battle by allowing it to choose suitable tactics.} 8. {Supply Use indicates how many supplies a unit consumes in a day.} 9. {Soft attack refers to the number of attacks per round on enemy infantry and support units.} 10. {Hard attack refers to the number of attacks per round on enemy tanks or forts.} 11. {Combat Width determines the number of attacks a division can make against enemy divisions in a round.} 12. {Divisions should prioritize either firepower or staying power when designing them.} 13. {Germany, in the early game, should prioritize strong attacks in their infantry divisions.} 14. {The Soviet Union should prioritize staying power in their divisions due to a wide front and manpower shortages.} 15. {Divisions with good speed and firepower are useful for encircling enemies.} 16. {At least three or four infantry divisions should be trained by a great power.}"
+print(stage_3_powerpoint_plan_creator(facts, False))

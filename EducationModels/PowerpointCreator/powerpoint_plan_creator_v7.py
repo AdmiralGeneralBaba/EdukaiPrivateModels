@@ -150,10 +150,10 @@ The submodules for the 'EASY' difficulty are :
 'general_content_page_easy_bullet_points' 
 
 The submodules for the 'MEDIUM difficulty are : 
-'general_content_page_easy_bullet_points' 
+'general_content_page_medium_slide_breakup' 
 
 the submodules for the 'HARD' difficulty are : 
-'general_content _page_hard_slide_breakup'
+'general_content_page_hard_slide_breakup'
 
 Here is the current powerpoint plan; you MUST change all of the 'general_content_page' modules with the best one that fits, according to the ones you can choose within their difficulty level. You are to return ONLY the new, improved powerpoint plan, and NOTHING ELSE.  : 
 
@@ -275,9 +275,3 @@ def stage_3_powerpoint_plan_creator(lesson_facts : str, question_activity_choice
         print("NO ADDITION NEEDED, RETURNING PLAN")
         return powerpoint_plan_difficulty_addon
 
-
-    
-
-test_Facts = "1. {National Focus trees are divided into categories and offer capability multipliers and political/diplomatic decisions.} 2. {Capability multipliers in National Focuses can increase industrial output and research speed.} 3. {Some National Focuses unlock extra research slots.} 4. {Certain National Focus branches offer free civilian factories, military factories, dockyards, infrastructure, or forts.} 5. {Italy starts at war and Japan should push for the Chinese War as soon as is practicable.} 6. {Most National Focus trees will have branches devoted to the three major arms of the military – army, navy and air force.} 7. {There may be a National Focus option for your army that will speed up how quickly you can research Battlefield Doctrines and another that will help you research fighter planes.} 8. {Some nations will have the ability to choose a focus that dramatically increases the production of strategic resources, usually steel or oil.} 9. {The ability to build factories or other structures more quickly is a capability multiplier, but it is probably the lowest priority for a National Focus in the early game.} 10. {Many National Focus trees will have two or three branches that are policy-oriented.} 11. {France has a divided population that weakens its National Unity and keeps it from mobilizing a lot of its population for war.} 12. {It is often vital for a hobbled nation to get any starting penalties removed as quickly as possible.}"
-
-print(stage_3_powerpoint_plan_creator(test_Facts, True))

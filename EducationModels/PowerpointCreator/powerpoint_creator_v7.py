@@ -520,9 +520,18 @@ Here are the lesson facts you need to cover :
             elif re.search("L\.O page", module):
                 loPage = await powerpointCalls.stage_4_B_combined_process(lessonFacts)
                 return loPage
-            elif re.search("General content page", module):
-                generalContentPage = await powerpointCalls.stage_4_A_combined_process(slideNumber, powerpointSlideOutline, lessonDescription, powerpointPlan, lessonFacts)
-                return generalContentPage
+            elif re.search("general_content_page_easy_bullet_points", module):
+                #Need to insert method fro the easy_bullet_points submodule
+                string = "easy_slide"
+                return string
+            elif re.search("general_content_page_medium_slide_breakup", module) : 
+                #Need to insert method for the hard_slide_breakup submodule
+                string = "medium_slide"
+                return string
+            elif re.search("general_content_page_hard_slide_breakup", module) : 
+                #Need to insert method for the hard_slide_breakup submodule
+                string = "hard_slide"
+                return string
             elif re.search("Ending slide", module):
                 finalSlide = await powerpointCalls.stage_4_D_combine_process(lessonFacts)
                 return finalSlide

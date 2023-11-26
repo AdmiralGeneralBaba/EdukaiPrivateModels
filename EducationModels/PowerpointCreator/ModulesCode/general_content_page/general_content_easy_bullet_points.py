@@ -30,15 +30,15 @@ def create_input_prompt(powerpoint_plan, slide_number) :
     return prompt
 
 
-def general_content_easy_bullet_points_content_creation(input_prompt, slide_fact) : 
+async def general_content_easy_bullet_points_content_creation(input_prompt, slide_fact) : 
     llm = OpenAI()
     temp = 1
-    content_output = llm.open_ai_gpt4_call(slide_fact, input_prompt, temp)
+    content_output = await llm.async_open_ai_gpt4_call(slide_fact, input_prompt, temp)
     return content_output
 
-def general_content_easy_bullet_points_final_method(slide_facts, powerpoint_plan, slide_number) :
+async def general_content_easy_bullet_points_final_method(slide_facts, powerpoint_plan, slide_number) :
     prompt = create_input_prompt(powerpoint_plan,slide_number )
-    content = general_content_easy_bullet_points_content_creation(prompt, slide_facts)
+    content = await general_content_easy_bullet_points_content_creation(prompt, slide_facts)
     extracted_content = extract_content_TITLE_CONTENT_PICTURE(content) 
 
     structured_output = {

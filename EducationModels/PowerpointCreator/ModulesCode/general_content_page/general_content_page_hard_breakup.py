@@ -6,25 +6,6 @@ from regexing_code import stage_4_convert_to_separate_numbers
 from regexing_code import extract_fact_with_number_and_brackets
 
 
-def extract_data_v2(text):
-    # Define the regex patterns for TITLE, CONTENT, and PICTURE with optional spaces
-    title_pattern = r"TITLE\s*\{(.*?)\}"
-    content_pattern = r"CONTENT\s*\{(.*?)\}"
-    picture_pattern = r"PICTURE\s*\{(.*?)\}"
-
-    # Extract the text using the patterns
-    title_text = re.search(title_pattern, text)
-    content_text = re.search(content_pattern, text)
-    picture_text = re.search(picture_pattern, text)
-
-    # Prepare the dictionary to return
-    data_dict = {
-        "TITLE": title_text.group(1) if title_text else None,
-        "CONTENT": content_text.group(1) if content_text else None,
-        "PICTURE": picture_text.group(1) if picture_text else None
-    }
-
-    return data_dict
 
 def create_input_prompt(powerpoint_plan : str, fact_groupings_with_facts : str) : 
     prompt = """I want you to pretend to be an expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable and understandable.
@@ -84,14 +65,19 @@ def general_content_page_hard_breakup_final_method(slide_facts, fact_groupings, 
 facts = "1. {Artillery research should not be neglected.} 2. {There are key values to consider when designing divisions.} 3. {Iron IV division statistics can be found at the official wiki on the website http://www.hoi4wiki.com/Land_warfare.} 4. {Organization refers to how combat ready a unit is and how long it can stay in the field before retreating.} 5. {HP, or Hit Points, represents the number of hits a unit can take before being destroyed.} 6. {Reconnaissance gives a unit an edge in battle by allowing it to choose suitable tactics.} 7. {Supply Use indicates how many supplies a unit consumes in a day.} 8. {Soft attack refers to the number of attacks per round made on an enemy's infantry and support units.} 9. {Hard attack refers to the number of attacks per round made on an enemy's tanks or forts.} 10. {Combat Width determines the number of attacks a division can make against enemy divisions in a round of battle.} 11. {When designing divisions, there is a trade-off between firepower and staying power.} 12. {Primary attacking units should emphasize firepower, while defensive units should emphasize staying power.} 13. {The decision on what to emphasize in divisions depends on the long-term plan.} 14. {Germany needs strong attack divisions in the early game, filling them with mechanics, logistics experts, and artillery.} 15. {The Soviet Union prioritizes staying power until later in the war when offensive operations become possible.}"
 
 def general_content_page_hard_breakup_implementation_method(slide_facts, fact_groupings, powerpoint_plan) : 
-
+    collection_of_hard_breakup_slides = []
     numbers_array = stage_4_convert_to_separate_numbers(fact_groupings)
-    
+    # Finish this foff
     for i in range(len(numbers_array)) : 
         slide_fact_number = numbers_array[i]
         slide_fact = extract_fact_with_number_and_brackets(slide_fact_number, slide_facts)
-        general_content_page_hard_breakup_content_creation()
 
+        #Generates the slide to
+        slide_to_append = general_content_page_hard_breakup_content_creation(slide_facts, fact_groupings, slide_fact, powerpoint_plan)
+        
+        #This appends the collection of hard breakup slides into a single long list of module values.
+        collection_of_hard_breakup_slides.append(slide_to_append)
+    return collection_of_hard_breakup_slides
 
 
         

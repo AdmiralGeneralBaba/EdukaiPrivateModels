@@ -114,21 +114,22 @@ def extract_slide_number(self, slideOutline):
         return "No match found."
     
 def extract_content_TITLE_CONTENT_PICTURE(text):
-    # Define the regex patterns for TITLE, CONTENT, and PICTURE with optional spaces
-    title_pattern = r"TITLE\s*\{(.*?)\}"
-    content_pattern = r"CONTENT\s*\{(.*?)\}"
-    picture_pattern = r"PICTURE\s*\{(.*?)\}"
+    # Define the regex patterns for TITLE, CONTENT, and PICTURE with optional spaces and additional text
+    # Using re.DOTALL to allow for multiline content
+    title_pattern = r"TITLE\s*:\s*\{(.*?)\}"
+    content_pattern = r"CONTENT\s*:\s*\{(.*?)\}"
+    picture_pattern = r"PICTURE\s*:\s*\{(.*?)\}"
 
-    # Extract the text using the patterns
-    title_text = re.search(title_pattern, text)
-    content_text = re.search(content_pattern, text)
-    picture_text = re.search(picture_pattern, text)
+    # Extract the text using the patterns with re.DOTALL flag
+    title_text = re.search(title_pattern, text, re.DOTALL)
+    content_text = re.search(content_pattern, text, re.DOTALL)
+    picture_text = re.search(picture_pattern, text, re.DOTALL)
 
     # Prepare the dictionary to return
     data_dict = {
-        "TITLE": title_text.group(1) if title_text else None,
-        "CONTENT": content_text.group(1) if content_text else None,
-        "PICTURE": picture_text.group(1) if picture_text else None
+        "TITLE": title_text.group(1).strip() if title_text else None,
+        "CONTENT": content_text.group(1).strip() if content_text else None,
+        "PICTURE": picture_text.group(1).strip() if picture_text else None
     }
 
     return data_dict
@@ -153,3 +154,23 @@ def stage_4_convert_to_separate_numbers(numbers_string: str):
         return []
 
     return [num.strip() for num in numbers_string.split(',')]
+
+def extract_fact_with_number_and_brackets(fact_number: str, facts_list: str):
+    """
+    Extracts a specific fact, including its number and curly braces, from a list of facts based on the fact number.
+
+    Parameters:
+    fact_number (str): The number of the fact to be extracted.
+    facts_list (str): A string containing all facts, each numbered and enclosed in curly braces.
+
+    Returns:
+    str: The extracted fact with number and curly braces, or an empty string if the fact number is not found.
+    """
+    # Regex pattern to match the entire fact including the number and curly braces
+    pattern = rf"({fact_number}\.\s*\{{.*?\}})"
+    match = re.search(pattern, facts_list)
+
+    if match:
+        return match.group(1)
+    else:
+        return ""  # Return an empty string if no match is found

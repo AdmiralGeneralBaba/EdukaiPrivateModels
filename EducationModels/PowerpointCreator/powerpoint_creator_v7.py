@@ -21,10 +21,10 @@ def stage_3_lesson_description(numberedFacts) :
     stage3Prompt = """These facts are included for a lesson. Summarise these facts into one,  brief line, outlining the lesson."""
     lessonDescription = gptAgent.open_ai_gpt4_call(numberedFacts, stage3Prompt, stage3Temp)
     return lessonDescription
-def stage_3_facts_for_slide_powerpoint_extractor(powerpointPlan):
+def stage_3_slides_powerpoint_extractor(powerpoint_plan):
     # Match either a double newline or the end of the string
-    powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+?)(?:\n\n|$)', powerpointPlan, re.DOTALL)
-    return powerpointSlides
+    powerpoint_slides = re.findall(r'(POWERPOINT \d+ : .+?)(?:\n\n|$)', powerpoint_plan, re.DOTALL)
+    return powerpoint_slides
 
 
 
@@ -35,8 +35,8 @@ def stage_3_facts_for_slide_powerpoint_extractor(powerpointPlan):
 
 #Extracts the fact numbers from the optimum grouping of a single powerpoint slide 
 def stage_4_extract_values_from_braces(substring: str):
-    # Extract all values within curly braces from the given substring
-    regex_pattern = r'\{([^}]+)\}'
+    # Extract only numbers within curly braces from the given substring
+    regex_pattern = r'\{(\d+(?:, \d+)*)\}'
     return re.findall(regex_pattern, substring)
 
 def stage_4_facts_extraction_from_choices(slide_plan, factsString):
@@ -284,7 +284,7 @@ async def stage_6_create_powerpoint(lessonFacts : str, question_choice : bool) :
     print(final_powerpoint_plan)
 
     lessonDescription = stage_3_lesson_description(lessonFacts)
-    powerpointSlideOutlines = stage_3_facts_for_slide_powerpoint_extractor(final_powerpoint_plan)
+    powerpointSlideOutlines = stage_3_slides_powerpoint_extractor(final_powerpoint_plan)
 
     slide_creation_tasks = []
     for i, slide_outline in enumerate(powerpointSlideOutlines):

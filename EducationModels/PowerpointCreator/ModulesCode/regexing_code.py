@@ -1,11 +1,11 @@
 import re
 
-def stage_4_extract_values_from_braces(self, substring: str):
+def stage_4_extract_values_from_braces(substring: str):
     # Extract all values within curly braces from the given substring
     regex_pattern = r'\{([^}]+)\}'
     return re.findall(regex_pattern, substring)
 
-def stage_4_facts_extraction_from_choices(self, slide_plan, factsString):
+def stage_4_facts_extraction_from_choices(slide_plan, factsString):
     # Use regex to extract the fact numbers from the slide content
     fact_numbers_match = re.search(r'\{(.+?)\}', slide_plan)
     if fact_numbers_match is None:
@@ -48,7 +48,8 @@ def stage_4_title_subtitle_layout_spliter(self, powerpointSlide):
         return [title, subtitle]
     else:
         return "No match found."
-def stage_4_task_splitter(self, powerpoint_slide: str):
+    
+def stage_4_task_splitter(powerpoint_slide: str):
     # Regex pattern targeting only the 'TASK :' section
     task_specific_pattern = r'TASK\s*:\s*\[\s*(\{\s*[^}]*\s*\}(?:\s*,\s*\{\s*[^}]*\s*\})*)'
     
@@ -131,3 +132,24 @@ def extract_content_TITLE_CONTENT_PICTURE(text):
     }
 
     return data_dict
+
+def stage_4_replace_fact_numbers_with_text(fact_groupings : str, facts : str):
+    # Parse the facts string to create a mapping of fact number to fact text
+    facts = re.findall(r'(\d+)\. \{([^}]+)\}', facts)
+    fact_map = {num: fact for num, fact in facts}
+
+    # Function to replace fact numbers with texts
+    def replace_fact(match):
+        fact_nums = match.group(1).split(', ')
+        facts = [fact_map[num.strip()] for num in fact_nums if num.strip() in fact_map]
+        return "{" + '; '.join(facts) + "}, " + match.group(2)
+
+    # Replace fact numbers in the input string
+    return re.sub(r'\{([\d, ]+)\}, ([^\n]+)', replace_fact, fact_groupings)
+
+def stage_4_convert_to_separate_numbers(numbers_string: str):
+
+    if not numbers_string:
+        return []
+
+    return [num.strip() for num in numbers_string.split(',')]

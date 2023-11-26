@@ -274,5 +274,37 @@ def stage_3_powerpoint_plan_creator(lesson_facts : str, question_activity_choice
 
 
 
-facts = "1. {Artillery should be attached to motorized and infantry divisions.} 2. {Artillery research should not be neglected.} 3. {There are key values to consider when designing divisions.} 4. {The official Iron IV division statistics can be found at the wiki page: http://www.hoi4wiki.com/Land_warfare.} 5. {Organization refers to how combat ready a unit is and how long it can stay in the field before retreating.} 6. {HP, or Hit Points, represents the number of hits a unit can take before being destroyed.} 7. {Reconnaissance gives a unit an edge in battle by allowing it to choose suitable tactics.} 8. {Supply Use indicates how many supplies a unit consumes in a day.} 9. {Soft attack refers to the number of attacks per round on enemy infantry and support units.} 10. {Hard attack refers to the number of attacks per round on enemy tanks or forts.} 11. {Combat Width determines the number of attacks a division can make against enemy divisions in a round.} 12. {Divisions should prioritize either firepower or staying power when designing them.} 13. {Germany, in the early game, should prioritize strong attacks in their infantry divisions.} 14. {The Soviet Union should prioritize staying power in their divisions due to a wide front and manpower shortages.} 15. {Divisions with good speed and firepower are useful for encircling enemies.} 16. {At least three or four infantry divisions should be trained by a great power.}"
-print(stage_3_powerpoint_plan_creator(facts, False))
+# facts = "1. {Artillery should be attached to motorized and infantry divisions.} 2. {Artillery research should not be neglected.} 3. {There are key values to consider when designing divisions.} 4. {The official Iron IV division statistics can be found at the wiki page: http://www.hoi4wiki.com/Land_warfare.} 5. {Organization refers to how combat ready a unit is and how long it can stay in the field before retreating.} 6. {HP, or Hit Points, represents the number of hits a unit can take before being destroyed.} 7. {Reconnaissance gives a unit an edge in battle by allowing it to choose suitable tactics.} 8. {Supply Use indicates how many supplies a unit consumes in a day.} 9. {Soft attack refers to the number of attacks per round on enemy infantry and support units.} 10. {Hard attack refers to the number of attacks per round on enemy tanks or forts.} 11. {Combat Width determines the number of attacks a division can make against enemy divisions in a round.} 12. {Divisions should prioritize either firepower or staying power when designing them.} 13. {Germany, in the early game, should prioritize strong attacks in their infantry divisions.} 14. {The Soviet Union should prioritize staying power in their divisions due to a wide front and manpower shortages.} 15. {Divisions with good speed and firepower are useful for encircling enemies.} 16. {At least three or four infantry divisions should be trained by a great power.}"
+# print(stage_3_powerpoint_plan_creator(facts, False))
+
+
+test_powerpoint_plan = """ POWERPOINT 1 : Module : Title Page - Hearts of Iron IV, A Comprehensive Look at Division Designs and Strategies
+
+POWERPOINT 2 : Module : L.O page - Learning objects for the lesson
+
+POWERPOINT 3 : Module : general_content_page_medium_slide_breakup - {1, 2, 12}, Artillery and Division Design Strategy {MEDIUM}
+
+POWERPOINT 4 : Module : general_content_page_easy_bullet_points - {3, 4}, Key Division Design Values and Resources {EASY}
+
+POWERPOINT 5 : Module : general_content_page_medium_slide_breakup - {5, 6, 7, 8}, Unit Characteristics {MEDIUM}
+
+POWERPOINT 6 : Module : general_content_page_hard_slide_breakup - {9, 10, 11}, Attack Types and Combat Width {HARD}
+
+POWERPOINT 7 : Module : general_content_page_hard_slide_breakup - {13, 14, 15, 16}, Division Design Examples by Country {HARD}
+
+POWERPOINT 8 : Module : Ending slide - Conclusion, Summary of the importance of understanding division designs in Hearts of Iron IV a"""
+
+def stage_3_facts_for_slide_powerpoint_extractor(powerpointPlan):
+    # Match either a double newline or the end of the string
+    powerpointSlides = re.findall(r'(POWERPOINT \d+ : .+?)(?:\n\n|$)', powerpointPlan, re.DOTALL)
+    return powerpointSlides
+
+# print(stage_3_facts_for_slide_powerpoint_extractor(test_powerpoint_plan))
+
+test = "POWERPOINT 3 : Module : general_content_page_medium_slide_breakup - {1, 2, 12}, Artillery and Division Design Strategy {MEDIUM}"
+def stage_4_extract_values_from_braces(substring: str):
+    # Extract only numbers within curly braces from the given substring
+    regex_pattern = r'\{(\d+(?:, \d+)*)\}'
+    return re.findall(regex_pattern, substring)
+
+print(stage_4_extract_values_from_braces(test))

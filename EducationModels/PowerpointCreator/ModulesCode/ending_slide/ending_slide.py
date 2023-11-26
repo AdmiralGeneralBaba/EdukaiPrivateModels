@@ -1,6 +1,6 @@
 from EducationModels.openai_calls import OpenAI
 from regexing_code import *
-async def stage_4_ending_slide_combine_process(self, lessonFacts):
+async def stage_4_ending_slide_combine_process(lessonFacts):
     gptAgent = OpenAI()
     temperature = 0.
     inputPrompt = """I want you to pretend to be a expert teacher, making a perfectly constructed FINAL powerpoint slide for your students, so that it is easily readable. Using the inputted facts, you are to create a SINGLE powerpoint slide. Start with a title for the Ending slide, by doing 'TITLE : INSERT TITLE HERE', and then 'CONTENT : INSERT THE CONTENT HERE'. 

@@ -4,7 +4,7 @@ from regexing_code import extract_content_TITLE_CONTENT_PICTURE
 from regexing_code import stage_4_replace_fact_numbers_with_text
 from regexing_code import stage_4_convert_to_separate_numbers
 from regexing_code import extract_fact_with_number_and_brackets
-
+import asyncio
 
 
 def create_input_prompt(powerpoint_plan : str, fact_groupings_with_facts : str) : 
@@ -30,13 +30,13 @@ Here is the fact you will explain : """
     return prompt
 
 
-def general_content_page_hard_breakup_content_creation(input_prompt, slide_fact) : 
+async def general_content_page_hard_breakup_content_creation(input_prompt, slide_fact) : 
     llm = OpenAI()
     temp = 1
-    content_output = llm.open_ai_gpt4_call(slide_fact, input_prompt, temp)
+    content_output = await llm.async_open_ai_gpt4_call(slide_fact, input_prompt, temp)
     return content_output
 
-def general_content_page_hard_breakup_final_method(slide_facts, fact_groupings, slide_fact, powerpoint_plan) :
+async def general_content_page_hard_breakup_final_method(slide_facts, fact_groupings, slide_fact, powerpoint_plan) :
     # inclues the facts as they are instead of just numbers
     fact_groupings_input = stage_4_replace_fact_numbers_with_text(fact_groupings, slide_facts)
 
@@ -44,7 +44,7 @@ def general_content_page_hard_breakup_final_method(slide_facts, fact_groupings, 
     input_prompt = create_input_prompt(powerpoint_plan, fact_groupings_input)
 
     #creates the content : 
-    content = general_content_page_hard_breakup_content_creation(input_prompt, slide_fact)
+    content = await general_content_page_hard_breakup_content_creation(input_prompt, slide_fact)
 
     # extracts the content and puts it in a dictionary : 
     extracted_content = extract_content_TITLE_CONTENT_PICTURE(content) 
@@ -64,21 +64,20 @@ def general_content_page_hard_breakup_final_method(slide_facts, fact_groupings, 
 
 facts = "1. {Artillery research should not be neglected.} 2. {There are key values to consider when designing divisions.} 3. {Iron IV division statistics can be found at the official wiki on the website http://www.hoi4wiki.com/Land_warfare.} 4. {Organization refers to how combat ready a unit is and how long it can stay in the field before retreating.} 5. {HP, or Hit Points, represents the number of hits a unit can take before being destroyed.} 6. {Reconnaissance gives a unit an edge in battle by allowing it to choose suitable tactics.} 7. {Supply Use indicates how many supplies a unit consumes in a day.} 8. {Soft attack refers to the number of attacks per round made on an enemy's infantry and support units.} 9. {Hard attack refers to the number of attacks per round made on an enemy's tanks or forts.} 10. {Combat Width determines the number of attacks a division can make against enemy divisions in a round of battle.} 11. {When designing divisions, there is a trade-off between firepower and staying power.} 12. {Primary attacking units should emphasize firepower, while defensive units should emphasize staying power.} 13. {The decision on what to emphasize in divisions depends on the long-term plan.} 14. {Germany needs strong attack divisions in the early game, filling them with mechanics, logistics experts, and artillery.} 15. {The Soviet Union prioritizes staying power until later in the war when offensive operations become possible.}"
 
-def general_content_page_hard_breakup_implementation_method(slide_facts, fact_groupings, powerpoint_plan) : 
-    collection_of_hard_breakup_slides = []
+async def general_content_page_hard_breakup_implementation_method(slide_facts, fact_groupings, powerpoint_plan) : 
     numbers_array = stage_4_convert_to_separate_numbers(fact_groupings)
+    tasks = []
     # Finish this foff
     for i in range(len(numbers_array)) : 
         slide_fact_number = numbers_array[i]
         slide_fact = extract_fact_with_number_and_brackets(slide_fact_number, slide_facts)
 
         #Generates the slide to
-        slide_to_append = general_content_page_hard_breakup_content_creation(slide_facts, fact_groupings, slide_fact, powerpoint_plan)
-        
+        task = general_content_page_hard_breakup_content_creation(slide_facts, fact_groupings, slide_fact, powerpoint_plan)
+        tasks.append(task)
         #This appends the collection of hard breakup slides into a single long list of module values.
-        collection_of_hard_breakup_slides.append(slide_to_append)
-    return collection_of_hard_breakup_slides
-
+    slides = asyncio.gather(*tasks)
+    return slides
 
         
 

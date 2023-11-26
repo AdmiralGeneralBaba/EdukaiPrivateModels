@@ -1,5 +1,4 @@
 from EducationModels.openai_calls import OpenAI
-import re
 from regexing_code import extract_content_TITLE_CONTENT_PICTURE
 
 

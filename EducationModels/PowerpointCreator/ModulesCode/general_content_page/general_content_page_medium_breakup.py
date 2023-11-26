@@ -4,7 +4,7 @@ from EducationModels.PowerpointCreator.ModulesCode.regexing_code  import extract
 from EducationModels.PowerpointCreator.ModulesCode.regexing_code import stage_4_replace_fact_numbers_with_text
 from EducationModels.PowerpointCreator.ModulesCode.regexing_code import stage_4_convert_to_separate_numbers
 from EducationModels.PowerpointCreator.ModulesCode.regexing_code import extract_fact_with_number_and_brackets
-
+import asyncio
 
 
 def create_input_prompt(powerpoint_plan : str, fact_groupings_with_facts : str) : 
@@ -31,13 +31,13 @@ Here is the fact you will explain : """
 
 
 
-def general_content_page_medium_breakup_content_creation(input_prompt, slide_fact) : 
+async def general_content_page_medium_breakup_content_creation(input_prompt, slide_fact) : 
     llm = OpenAI()
     temp = 1
-    content_output = llm.open_ai_gpt4_call(slide_fact, input_prompt, temp)
+    content_output = await llm.async_open_ai_gpt4_call(slide_fact, input_prompt, temp)
     return content_output
 
-def general_content_page_medium_breakup_final_creation_method(slide_facts, fact_groupings, slide_fact, powerpoint_plan) :
+async def general_content_page_medium_breakup_final_creation_method(slide_facts, fact_groupings, slide_fact, powerpoint_plan) :
     # inclues the facts as they are instead of just numbers
     fact_groupings_input = stage_4_replace_fact_numbers_with_text(fact_groupings, slide_facts)
 
@@ -45,7 +45,8 @@ def general_content_page_medium_breakup_final_creation_method(slide_facts, fact_
     input_prompt = create_input_prompt(powerpoint_plan, fact_groupings_input)
 
     #creates the content : 
-    content = general_content_page_medium_breakup_content_creation(input_prompt, slide_fact)
+    content = await general_content_page_medium_breakup_content_creation(input_prompt, slide_fact)
+
     print("Here is the content : ", content)
     # extracts the content and puts it in a dictionary : 
     extracted_content = extract_content_TITLE_CONTENT_PICTURE(content) 
@@ -62,19 +63,25 @@ def general_content_page_medium_breakup_final_creation_method(slide_facts, fact_
     }
     return structured_output
 
-def general_content_page_medium_breakup_final_method_looping(slide_facts, fact_groupings, powerpoint_plan) : 
+async def general_content_page_medium_breakup_final_method_looping(slide_facts, fact_groupings, powerpoint_plan) : 
     collection_of_hard_breakup_slides = []
     numbers_array = stage_4_convert_to_separate_numbers(fact_groupings)
+    tasks = []
     # Finish this foff
     for i in range(len(numbers_array)) :
         slide_fact_number = numbers_array[i]
         slide_fact = extract_fact_with_number_and_brackets(slide_fact_number, slide_facts)
 
         #Generates the slide to append
-        slide_to_append = general_content_page_medium_breakup_final_creation_method(slide_facts, fact_groupings, slide_fact, powerpoint_plan)
+        task= general_content_page_medium_breakup_final_creation_method(slide_facts, fact_groupings, slide_fact, powerpoint_plan)
         
+        tasks.append(task)
         #This appends the collection of hard breakup slides into a single long list of module values.
-        collection_of_hard_breakup_slides.append(slide_to_append)
+        
+    slides = await asyncio.gather(*tasks)
+    for slide in slides : 
+        collection_of_hard_breakup_slides.append(slide)
+    
     return collection_of_hard_breakup_slides
 
 ######################### Testing code #################################
@@ -128,7 +135,7 @@ PICTURE : {"Hearts of Iron IV military production"}"""
 # extract_test = extract_content_TITLE_CONTENT_PICTURE(wrong_test)
 # print(extract_test)
 
-print(general_content_page_medium_breakup_final_method_looping(test_facts, fact_groupings, powerpoint_plan))
+asyncio.run(general_content_page_medium_breakup_final_method_looping(test_facts, fact_groupings, powerpoint_plan))
 # {1, 11}, Strategies for offensive combat effectiveness 
 # {2, 6, 7}, Managing military production and division development
 # {3, 4}, Deploying units in response to immediate threats

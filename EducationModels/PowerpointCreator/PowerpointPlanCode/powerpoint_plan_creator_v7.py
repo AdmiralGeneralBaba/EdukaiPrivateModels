@@ -278,7 +278,7 @@ def stage_3_powerpoint_plan_creator(lesson_facts : str, question_activity_choice
 # print(stage_3_powerpoint_plan_creator(facts, False))
 
 
-test_powerpoint_plan = """ POWERPOINT 1 : Module : Title Page - Hearts of Iron IV, A Comprehensive Look at Division Designs and Strategies
+test_powerpoint_plan = """ POWERPOINT 1  : Module : Title Page - Hearts of Iron IV, A Comprehensive Look at Division Designs and Strategies
 
 POWERPOINT 2 : Module : L.O page - Learning objects for the lesson
 

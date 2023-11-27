@@ -15,7 +15,7 @@ from InfoExtractors.text_processing_v1 import text_fact_transformer_V1
 from InfoExtractors.info_extractor_v5 import InfoExtractorV5
 from powerpoint_creator_v6 import PowerpointCreatorV6
 import urllib
-from PowerpointCreator import powerpoint_creator_v7
+
 
 app = Flask(__name__)
 
@@ -107,7 +107,7 @@ def homework_creation(lesson) :
 
 @app.route('/powerpoint_creator/<path:lesson>')
 async def powerpoint_creator(lesson):
-    powerpoint_creator = powerpoint_creator_v7
+    powerpoint_creator = PowerpointCreatorV6()
     powerpoint = await powerpoint_creator.stage_6_create_powerpoint(lesson)
     return jsonify(powerpoint)
 

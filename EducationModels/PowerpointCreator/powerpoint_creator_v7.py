@@ -1,17 +1,21 @@
 import asyncio
+
 from EducationModels.openai_calls import OpenAI
 import re
 from PowerpointPlanCode import powerpoint_plan_creator_v7
 from ModulesCode.title_page import title_page
 from ModulesCode.ending_slide import ending_slide
 from ModulesCode.lo_page import lo_page
-from ModulesCode.question_module import question_module_2_bullet_questions
-from ModulesCode.question_module import question_module_3_roleplay_question
+from ModulesCode.question_module.question_module_2_bullet_questions import question_module_2_bullet_questions
+from ModulesCode.question_module.question_module_3_roleplay_question import question_module_3_roleplay_question
 
-from ModulesCode.activity_module import activity_module_1_brainstorming
-from ModulesCode.activity_module import activity_module_2_student_summarisation
-from ModulesCode.activity_module import activity_module_3_qa_pairs
-from ModulesCode.activity_module import activity_module_4_focused_listing
+from ModulesCode.activity_module.activity_module_1_brainstorming import activity_module_1_brainstorming
+from ModulesCode.activity_module.activity_module_2_student_summarisation import activity_module_2_student_summarisation
+from ModulesCode.activity_module.activity_module_3_qa_pairs import activity_module_3_qa_pairs
+from ModulesCode.activity_module.activity_module_4_focused_listing import activity_module_4_focused_listing
+from ModulesCode.general_content_page.general_content_page_hard_breakup import general_content_page_hard_breakup_implementation_method
+from ModulesCode.general_content_page.general_content_page_medium_breakup import general_content_page_medium_breakup_final_method_looping
+from ModulesCode.general_content_page.general_content_easy_bullet_points import general_content_easy_bullet_points_final_method
 #     Fixed stages for a single lesson :
 #################    FIXED STAGES FOR EVERY LESSON/POWERPOINT:  #####################
 
@@ -60,6 +64,15 @@ def stage_4_facts_extraction_from_choices(slide_plan, factsString):
     # Join the list of facts into a single string
     slide_facts_string = ' '.join(slide_facts)
     return slide_facts_string
+
+def stage_4_extract_fact_groupings(slide_plan):
+    # Use regex to extract the fact numbers from the slide content
+    fact_numbers_match = re.search(r'\{(.+?)\}', slide_plan)
+    if fact_numbers_match is None:
+        return ""
+
+    fact_numbers = fact_numbers_match.group(1)
+    return fact_numbers
 
 
 def stage_4_content_title_layout_splitter(powerpointSlide):
@@ -238,17 +251,17 @@ async def stage_5_module_powerpoint_slide_function_calls(module, powerpointSlide
             loPage = await lo_page(lessonFacts)
             return loPage
         elif re.search("general_content_page_easy_bullet_points", module):
-            #Need to insert method fro the easy_bullet_points submodule
-            string = "easy_slide"
-            return string
+            fact_groupings = stage_4_extract_fact_groupings(powerpointSlideOutline)
+            bullet_slide = general_content_easy_bullet_points_final_method(fact_groupings, powerpointPlan, slideNumber, lessonFacts)
+            return bullet_slide
         elif re.search("general_content_page_medium_slide_breakup", module) : 
-            #Need to insert method for the hard_slide_breakup submodule
-            string = "medium_slide"
-            return string
+            fact_groupings =  stage_4_extract_fact_groupings(powerpointSlideOutline)
+            medium_breakup_slides = general_content_page_medium_breakup_final_method_looping(powerpoint_facts, fact_groupings, powerpointPlan)
+            return medium_breakup_slides
         elif re.search("general_content_page_hard_slide_breakup", module) : 
-            #Need to insert method for the hard_slide_breakup submodule
-            string = "hard_slide"
-            return string
+            fact_groupings =  stage_4_extract_fact_groupings(powerpointSlideOutline)
+            hard_breakup_slides = general_content_page_hard_breakup_implementation_method(powerpoint_facts, fact_groupings, powerpointPlan)
+            return hard_breakup_slides
         elif re.search("ending_slide", module):
             finalSlide = await ending_slide(lessonFacts)
             return finalSlide

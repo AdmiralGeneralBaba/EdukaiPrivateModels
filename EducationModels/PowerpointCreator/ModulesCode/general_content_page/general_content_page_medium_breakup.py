@@ -64,7 +64,6 @@ async def general_content_page_medium_breakup_final_creation_method(slide_facts,
     return structured_output
 
 async def general_content_page_medium_breakup_final_method_looping(slide_facts, fact_groupings, powerpoint_plan) : 
-    collection_of_hard_breakup_slides = []
     numbers_array = stage_4_convert_to_separate_numbers(fact_groupings)
     tasks = []
     # Finish this foff
@@ -79,10 +78,7 @@ async def general_content_page_medium_breakup_final_method_looping(slide_facts, 
         #This appends the collection of hard breakup slides into a single long list of module values.
         
     slides = await asyncio.gather(*tasks)
-    for slide in slides : 
-        collection_of_hard_breakup_slides.append(slide)
-    
-    return collection_of_hard_breakup_slides
+    return slides
 
 ######################### Testing code #################################
 
@@ -113,7 +109,6 @@ POWERPOINT 10 : Module: Module 2 Bullet Questions - {5, 8, 9, 10}
 
 POWERPOINT 11 : Module: Module 1 Brainstorming - {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}"""
 
-# print(general_content_page_medium_breakup_final_method_looping(test_facts, fact_groupings, powerpoint_plan))
 output = """Fact 2 : {The game's military production utilizes a prioritized "Production Line" system, where production efficiency works over time and affects the total output.}
 
 TITLE : {Understand the Production Line System in Hearts of Iron IV}
@@ -122,21 +117,15 @@ PICTURE : {Hearts of Iron IV Production Line System}"""
 
 
 
-# test_output = general_content_page_medium_breakup_final_method_looping(test_facts,fact_groupings, powerpoint_plan)
-# print(test_output)
-
-wrong_test = """TITLE : {Strategic Military Production: Simultaneous Construction of Infantry, Motorized/Mechanized, and Tank Divisions}
-
-CONTENT : {Fact: It is essential to have multiple-lines of infantry, motorized/mechanized, and tank divisions under construction simultaneously.
-
-Explanation: In the context of the military strategy game, 'Hearts of Iron IV', strategic resource and military production management is key. One efficient strategy is to have various types of units - Infantry, Motorized or Mechanized, and Tanks - under simultaneous construction. This approach allows for a comprehensive military force ready to tackle diverse battlefield scenarios. Infantry essential for holding lines and direct combat, motorized/mechanized units provide rapid mobility and flexibility, and tank divisions specialise in breakthroughs and dealing large scale damage. By constructing them all at once, it ensures your army remains diverse and prepared for any eventuality.}
-
-PICTURE : {"Hearts of Iron IV military production"}"""
-# extract_test = extract_content_TITLE_CONTENT_PICTURE(wrong_test)
-# print(extract_test)
 
 asyncio.run(general_content_page_medium_breakup_final_method_looping(test_facts, fact_groupings, powerpoint_plan))
-# {1, 11}, Strategies for offensive combat effectiveness 
+
+
+
+
+
+
+# {1, 11}, Strategies for offensive combat effectivaeness 
 # {2, 6, 7}, Managing military production and division development
 # {3, 4}, Deploying units in response to immediate threats
 # {5, 8, 9, 10}, Resource and unit type management for sustained military operations

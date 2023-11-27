@@ -293,7 +293,7 @@ async def stage_6_create_powerpoint(lessonFacts : str, question_choice : bool) :
   
     powerpointSlidesDetailed = []
     
-    final_powerpoint_plan = powerpoint_plan_creator_v7.stage_3_powerpoint_plan_creator(lessonFacts, question_choice)
+    final_powerpoint_plan = stage_3_powerpoint_plan_creator(lessonFacts, question_choice)
     print(final_powerpoint_plan)
 
     lessonDescription = stage_3_lesson_description(lessonFacts)

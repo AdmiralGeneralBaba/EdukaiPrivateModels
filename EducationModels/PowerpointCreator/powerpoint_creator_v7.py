@@ -266,22 +266,22 @@ async def stage_5_module_powerpoint_slide_function_calls(module, powerpointSlide
             finalSlide = await ending_slide(lessonFacts)
             return finalSlide
         elif re.search("question_module_2_bullet_questions", module):
-            question_slide = await question_module_2_bullet_questions(powerpoint_facts)
+            question_slide = await stage_4_question_module_2_bullet_questions_combined_process(powerpoint_facts)
             return question_slide
         elif re.search("question_module_3_roleplay_questions", module):
-            question_slide = await question_module_3_roleplay_question(powerpoint_facts)
+            question_slide = await stage_4_question_module_3_roleplay_question_combine_process(powerpoint_facts)
             return question_slide
         elif re.search("activity_module_1_brainstorming", module):
-            activity_slide = await activity_module_1_brainstorming(powerpoint_facts)
+            activity_slide = await stage_4_activity_module_1_brainstorming_combined_process(powerpoint_facts)
             return activity_slide
         elif re.search("activity_module_2_student_summarisation", module):
-            activity_slide = await activity_module_2_student_summarisation(powerpoint_facts)
+            activity_slide = await stage_4_activity_module_2_student_summarisation_combined_process(powerpoint_facts)
             return activity_slide
         elif re.search("activity_module_3_qa_pairs", module):
-            activity_slide = await activity_module_3_qa_pairs(powerpoint_facts)
+            activity_slide = await stage_4_activity_module_3_qa_pairs_slide_combined_process(powerpoint_facts)
             return activity_slide
         elif re.search("activity_module_4_focused_listing", module):
-            activity_slide = await activity_module_4_focused_listing(powerpoint_facts)
+            activity_slide = await stage_4_activity_module_4_focused_listing_combined_process(powerpoint_facts)
             return activity_slide
 
         

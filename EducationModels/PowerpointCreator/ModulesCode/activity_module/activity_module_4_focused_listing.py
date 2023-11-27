@@ -25,7 +25,7 @@ Here are the lesson facts you need to cover :
     return slide
 
 # 'F4' is the 'activity_module_4_focused_listing'
-async def stage_4_activity_module_4_focused_listing_combined_process(self, lesson_facts) : 
+async def stage_4_activity_module_4_focused_listing_combined_process(lesson_facts) : 
     slide = await stage_4_activity_module_4_focused_listing_content_creation(lesson_facts)
     splitted_slide = stage_4_task_splitter(slide)
     structured_output = {

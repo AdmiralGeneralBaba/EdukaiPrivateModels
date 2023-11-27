@@ -3,9 +3,9 @@ import asyncio
 from EducationModels.openai_calls import OpenAI
 import re
 from PowerpointPlanCode.powerpoint_plan_creator_v7 import stage_3_powerpoint_plan_creator
-from ModulesCode.title_page import title_page
-from ModulesCode.ending_slide import ending_slide
-from ModulesCode.lo_page import lo_page
+from ModulesCode.title_page.title_page import *
+from ModulesCode.ending_slide.ending_slide import *
+from ModulesCode.lo_page.lo_page import *
 from ModulesCode.question_module.question_module_2_bullet_questions import *
 from ModulesCode.question_module.question_module_3_roleplay_question import *
 
@@ -245,10 +245,10 @@ async def stage_5_module_powerpoint_slide_function_calls(module, powerpointSlide
                 These are the facts for the current powerpoint : 
                 """ + powerpoint_facts)
         if re.search("title_page", module):
-            titlePage = await title_page(lessonFacts)
+            titlePage = await stage_4_title_page_combined_process(lessonFacts)
             return titlePage
         elif re.search("lo_page", module):
-            loPage = await lo_page(lessonFacts)
+            loPage = await stage_4_lo_page_combined_process(lessonFacts)
             return loPage
         elif re.search("general_content_page_easy_bullet_points", module):
             fact_groupings = stage_4_extract_fact_groupings(powerpointSlideOutline)
@@ -263,7 +263,7 @@ async def stage_5_module_powerpoint_slide_function_calls(module, powerpointSlide
             hard_breakup_slides = general_content_page_hard_breakup_implementation_method(powerpoint_facts, fact_groupings, powerpointPlan)
             return hard_breakup_slides
         elif re.search("ending_slide", module):
-            finalSlide = await ending_slide(lessonFacts)
+            finalSlide = await stage_4_ending_slide_combine_process(lessonFacts)
             return finalSlide
         elif re.search("question_module_2_bullet_questions", module):
             question_slide = await stage_4_question_module_2_bullet_questions_combined_process(powerpoint_facts)

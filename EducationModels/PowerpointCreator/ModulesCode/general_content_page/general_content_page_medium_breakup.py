@@ -47,10 +47,9 @@ async def general_content_page_medium_breakup_final_creation_method(slide_facts,
     #creates the content : 
     content = await general_content_page_medium_breakup_content_creation(input_prompt, slide_fact)
 
-    print("Here is the content : ", content)
+
     # extracts the content and puts it in a dictionary : 
     extracted_content = extract_content_TITLE_CONTENT_PICTURE(content) 
-    print(extracted_content)
 
     #puts that into the structured output here : 
     structured_output = {

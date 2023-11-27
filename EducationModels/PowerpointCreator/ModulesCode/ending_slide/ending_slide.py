@@ -1,5 +1,5 @@
 from EducationModels.openai_calls import OpenAI
-from regexing_code import *
+from EducationModels.PowerpointCreator.ModulesCode.regexing_code import *
 async def stage_4_ending_slide_combine_process(lessonFacts):
     gptAgent = OpenAI()
     temperature = 0.

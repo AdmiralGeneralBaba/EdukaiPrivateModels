@@ -1,5 +1,5 @@
 from EducationModels.openai_calls import OpenAI
-from regexing_code import *
+from EducationModels.PowerpointCreator.ModulesCode.regexing_code import *
 
 
 async def stage_4_question_module_2_bullet_questions_content_creation(lesson_facts) : 

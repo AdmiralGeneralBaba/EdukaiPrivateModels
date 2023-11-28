@@ -105,10 +105,15 @@ def homework_creation(lesson) :
     lesson_homework = homework_creator.homework_creator_template_one(lesson, 1)
     return jsonify(lesson_homework)
 
-@app.route('/powerpoint_creator/<path:lesson>')
-async def powerpoint_creator(lesson):
-
-    powerpoint = await stage_6_create_powerpoint(lesson)
+@app.route('/powerpoint_creator/')
+async def powerpoint_creator():
+    lesson_facts = request.args.get('lesson_facts')
+    question_choice = request.args.get('question_addition_choice')
+    # inputted '1' = True, I.E they want questions and activities included. 0 = False/no questions and activities.
+    if question_choice == 1 : 
+        powerpoint = await stage_6_create_powerpoint(lesson_facts, True)
+    else :
+        powerpoint = await stage_6_create_powerpoint(lesson_facts, False)
     return jsonify(powerpoint)
 
 @app.route('/mcq_creator/<path:lesson>') 

@@ -56,7 +56,7 @@ async def general_content_page_hard_breakup_content_creation_final_method(slide_
           
           
           
-          """ + extracted_content)
+          """, extracted_content)
     #puts that into the structured output here : 
     structured_output = {
         "module" : "general_content_page_hard_breakup",

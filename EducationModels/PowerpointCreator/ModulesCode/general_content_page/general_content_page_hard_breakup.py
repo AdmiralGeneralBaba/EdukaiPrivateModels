@@ -42,10 +42,21 @@ async def general_content_page_hard_breakup_content_creation_final_method(slide_
 
     #creates the content : 
     content = await general_content_page_hard_breakup_content_creation(input_prompt, slide_fact)
+   
+
+    # extracts the content and puts it in a dictionary : 
+  
 
     # extracts the content and puts it in a dictionary : 
     extracted_content = extract_content_TITLE_CONTENT_PICTURE(content) 
-
+    print("""HERE IS THE EXTRATED CONTENT FOR THE MEDIUM BREAKUP SLIDE :
+          
+          
+          
+          
+          
+          
+          """ + extracted_content)
     #puts that into the structured output here : 
     structured_output = {
         "module" : "general_content_page_hard_breakup",

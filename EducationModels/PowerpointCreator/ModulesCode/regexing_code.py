@@ -114,11 +114,10 @@ def extract_slide_number(slideOutline):
         return "No match found."
     
 def extract_content_TITLE_CONTENT_PICTURE(text):
-    # Define the regex patterns for TITLE, CONTENT, and PICTURE
-    # Using re.DOTALL to allow for multiline content and relaxing the pattern to match various punctuation
-    title_pattern = r"TITLE\s*\{\s*(.*?)\s*\}"
-    content_pattern = r"CONTENT\s*\{\s*(.*?)\s*\}"
-    picture_pattern = r"PICTURE\s*\{\s*(.*?)\s*\}"
+    # Adjusted regex patterns to account for optional spaces around the colon
+    title_pattern = r"TITLE\s*:\s*\{\s*(.*?)\s*\}"
+    content_pattern = r"CONTENT\s*:\s*\{\s*(.*?)\s*\}"
+    picture_pattern = r"PICTURE\s*:\s*\{\s*(.*?)\s*\}"
 
     # Extract the text using the patterns with re.DOTALL flag
     title_text = re.search(title_pattern, text, re.DOTALL)

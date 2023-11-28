@@ -12,7 +12,7 @@ You will be given the powerpoint plan for the lesson, the lesson description, as
 In your output, you are to give a title, content both stating + explaining the fact with as much detail you think is needed to understand the topic, and a picture query search term to help the student understand the topic better. Use teaching techniques to help students digest the concept.
 
 your output MUST look like this : 
-
+ 
 TITLE : {INSERT TITLE FOR THE CONCEPT HERE, WITH THE CURLY BRACKETS}
 CONTENT : {INSERT CONTENT HERE WITH THE CURLY BRACKETS} 
 PICTURE : {INSERT SEARCH TERM TO SEARCH UP TO FIND THE PERFECT PICTURE TO AID A STUDENT'S UNDERSTANDING}

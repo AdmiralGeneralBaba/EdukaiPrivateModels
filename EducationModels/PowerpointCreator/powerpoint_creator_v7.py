@@ -45,7 +45,7 @@ def stage_4_extract_values_from_braces(substring: str):
 
 def stage_4_facts_extraction_from_choices(slide_plan, factsString):
     # Use regex to extract the fact numbers from the slide content
-    fact_numbers_match = re.search(r'\{(.+?)\}', slide_plan)
+    fact_numbers_match = re.search(r'\{(\d+(?:,\s*\d+)*)\}', slide_plan)
     if fact_numbers_match is None:
         return ""
 

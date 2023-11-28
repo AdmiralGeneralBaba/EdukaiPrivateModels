@@ -1,6 +1,6 @@
 from EducationModels.openai_calls import OpenAI
 
-async def stage_4_lo_page_combined_process(self, lessonFacts):
+async def stage_4_lo_page_combined_process(lessonFacts):
         gptAgent = OpenAI()
         temperature = 0.5
         inputPrompt = """I want you to pretend to be a expert teacher, making a perfectly constructed powerpoint slide for your students, so that it is easily readable. Using the inputted facts, you are to create a SINGLE powerpoint slide at {SLIDE NUMBER}. Start with a title for the L.O page, by doing 'TITLE : INSERT TITLE HERE', and then 'CONTENT : INSERT THE CONTENT HERE'. 

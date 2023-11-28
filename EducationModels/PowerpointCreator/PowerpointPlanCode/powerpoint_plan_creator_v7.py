@@ -50,9 +50,9 @@ Here are the modules name; JUST print out the module name you picked ,and the fa
 
 4. ending_slide + {Ending summary title, then a comma, then the summary}
 heres an example of these implemented, DO NOT deviate from this structure: 
-POWERPOINT 1 : Module : Title Page - Hearts of Iron IV, An Insight on Aircraft and their Functionalities
+POWERPOINT 1 : Module : title_page - Hearts of Iron IV, An Insight on Aircraft and their Functionalities
 
-POWERPOINT 2 : Module : L.O page - Learning objects for the lesson
+POWERPOINT 2 : Module : lo_page - Learning objects for the lesson
 
 POWERPOINT 3 : Module : general_content_page - {1, 2, 3, 17}, Understanding basics of Hearts of Iron IV
 
@@ -66,7 +66,7 @@ POWERPOINT 7 : Module : general_content_page - {12, 13, 14}, Tactical bombers an
 
 POWERPOINT 8 : Module : general_content_page - {15, 16}, Strategic bombers and their impact   
 
-POWERPOINT 9 : Module : Ending slide - Conclusion, Summary of the different types of aircraft in Hearts of Iron IV, their roles, and their impacts.
+POWERPOINT 9 : Module : ending_slide - Conclusion, Summary of the different types of aircraft in Hearts of Iron IV, their roles, and their impacts.
 Here are the lesson facts : 
 """      
     gptInput = numberedFacts + optimalFactGroupings

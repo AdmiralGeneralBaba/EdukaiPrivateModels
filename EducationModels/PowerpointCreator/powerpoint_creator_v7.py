@@ -252,15 +252,15 @@ async def stage_5_module_powerpoint_slide_function_calls(module, powerpointSlide
             return loPage
         elif re.search("general_content_page_easy_bullet_points", module):
             fact_groupings = stage_4_extract_fact_groupings(powerpointSlideOutline)
-            bullet_slide = general_content_easy_bullet_points_final_method(fact_groupings, powerpointPlan, slideNumber, lessonFacts)
+            bullet_slide = await general_content_easy_bullet_points_final_method(fact_groupings, powerpointPlan, slideNumber, lessonFacts)
             return bullet_slide
         elif re.search("general_content_page_medium_slide_breakup", module) : 
             fact_groupings =  stage_4_extract_fact_groupings(powerpointSlideOutline)
-            medium_breakup_slides = general_content_page_medium_breakup_final_method_looping(powerpoint_facts, fact_groupings, powerpointPlan)
+            medium_breakup_slides = await general_content_page_medium_breakup_final_method_looping(powerpoint_facts, fact_groupings, powerpointPlan)
             return medium_breakup_slides
         elif re.search("general_content_page_hard_slide_breakup", module) : 
             fact_groupings =  stage_4_extract_fact_groupings(powerpointSlideOutline)
-            hard_breakup_slides = general_content_page_hard_breakup_implementation_method(powerpoint_facts, fact_groupings, powerpointPlan)
+            hard_breakup_slides = await general_content_page_hard_breakup_implementation_method(powerpoint_facts, fact_groupings, powerpointPlan)
             return hard_breakup_slides
         elif re.search("ending_slide", module):
             finalSlide = await stage_4_ending_slide_combine_process(lessonFacts)
@@ -309,5 +309,8 @@ async def stage_6_create_powerpoint(lessonFacts : str, question_choice : bool) :
     return powerpointSlidesDetailed
 
 
-        
+test_facts = "1. {The aggressiveness of offensive objectives should be considered, depending on the strength of the opponent.} 2. {Regularly editing land divisions is important as new research is unlocked and experience is accumulated from combat.} 3. {If you need bodies to stop the German or Soviet advance, set the deployment option for your units so that they are deployed as soon as they equipped.} 4. {These green troops will not be as effective as fully trained units will be, but they will be more effective than nothing.} 5. {If you have adjusted your conscription law to either Extensive Conscription or Service by Requirement, then manpower will probably not be an issue in the near term.} 6. {Have multiple lines of infantry, motorized/mechanized, and tank divisions under construction simultaneously.} 7. {A major power should be able to have six to eight infantry divisions being assembled alongside two to three tank divisions and two to three motorized/mechanized divisions.} 8. {You probably do not need to have an infinite stream of mountain or marine units.} 9. {Set limited production runs for these if you didn’t build enough in the pre-game.} 10. {A dozen mountain divisions should be enough in most instances, and only Japan and the United States will need more than 20 marine divisions.} 11. {If your attack line means you have to deal with enemy forts, your attacks will be more successful if they are accompanied by engineer support units, artillery, heavy tanks, and anti-tank support battalions.}"
 
+
+
+print(asyncio.run(stage_6_create_powerpoint(test_facts, False)))

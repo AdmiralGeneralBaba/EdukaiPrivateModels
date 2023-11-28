@@ -28,7 +28,7 @@ def stage_4_facts_extraction_from_choices(slide_plan, factsString):
     return slide_facts_string
 
 
-def stage_4_content_title_layout_splitter(self, powerpointSlide):
+def stage_4_content_title_layout_splitter(powerpointSlide):
     match = re.search(r"TITLE\s*:\s*((?:.|\s)*?)\s*CONTENT\s*:\s*((?:.|\s)*)", powerpointSlide, re.IGNORECASE)
     if match:
         title, content = match.groups()
@@ -38,7 +38,7 @@ def stage_4_content_title_layout_splitter(self, powerpointSlide):
 
 
 
-def stage_4_title_subtitle_layout_spliter(self, powerpointSlide):
+def stage_4_title_subtitle_layout_spliter(powerpointSlide):
     match = re.search(r"TITLE\s*:\s*(.+)\s*\n\s*SUBTITLE\s*:\s*(.+)", powerpointSlide)
 
     if match:
@@ -66,45 +66,45 @@ def stage_4_task_splitter(powerpoint_slide: str):
     
     return extracted_values
 
-def stage_4_regex_roleplay(self, powerpoint_slide: str):
+def stage_4_regex_roleplay(powerpoint_slide: str):
     # Regex pattern targeting the 'ROLEPLAY' section
     roleplay_pattern = r'ROLEPLAY\s*:\s*\[\s*(\{\s*[^}]+\s*\}(?:\s*,\s*\{\s*[^}]+\s*\})*)]'
     roleplay_match = re.search(roleplay_pattern, powerpoint_slide)
     
     if roleplay_match:
-        return self.stage_4_extract_values_from_braces(roleplay_match.group(1))
+        return stage_4_extract_values_from_braces(roleplay_match.group(1))
     else:
         return []
 
-def stage_4_regex_task(self, powerpoint_slide: str):
+def stage_4_regex_task(powerpoint_slide: str):
     # Regex pattern targeting the 'TASK :' section
     task_pattern = r'TASK\s*:\s*\[(\{[^}]+\}(?:,\s?\{[^}]+\})*)\]'
     task_match = re.search(task_pattern, powerpoint_slide)
     
     if task_match:
-        return self.stage_4_extract_values_from_braces(task_match.group(1))
+        return stage_4_extract_values_from_braces(task_match.group(1))
     else:
         return []
 
-def stage_4_regex_picture(self, powerpoint_slide: str):
+def stage_4_regex_picture(powerpoint_slide: str):
     # Regex pattern targeting the 'PICTURE' section
     picture_pattern = r'PICTURE\s*:\s*\[\s*(\{\s*[^}]*\s*\}(?:\s*,\s*\{\s*[^}]*\s*\})*)'
     picture_match = re.search(picture_pattern, powerpoint_slide)
     
     if picture_match:
-        return self.stage_4_extract_values_from_braces(picture_match.group(1))
+        return stage_4_extract_values_from_braces(picture_match.group(1))
     else:
         return []
-def stage_4_regex_example(self, powerpoint_slide: str) : 
+def stage_4_regex_example(powerpoint_slide: str) : 
     picture_pattern = r'EXAMPLE\s*:\s*\[\s*(\{\s*[^}]*\s*\}(?:\s*,\s*\{\s*[^}]*\s*\})*)'
     picture_match = re.search(picture_pattern, powerpoint_slide)
     
     if picture_match:
-        return self.stage_4_extract_values_from_braces(picture_match.group(1))
+        return stage_4_extract_values_from_braces(picture_match.group(1))
     else:
         return []
 
-def extract_slide_number(self, slideOutline):
+def extract_slide_number(slideOutline):
     match = re.search(r'POWERPOINT\s(\d+)\s:', slideOutline)
 
     if match:

@@ -75,15 +75,6 @@ def stage_4_extract_fact_groupings(slide_plan):
     return fact_numbers
 
 
-def stage_4_content_title_layout_splitter(powerpointSlide):
-    match = re.search(r"TITLE\s*:\s*((?:.|\s)*?)\s*CONTENT\s*:\s*((?:.|\s)*)", powerpointSlide, re.IGNORECASE)
-    if match:
-        title, content = match.groups()
-        return title.strip(), content.strip()
-    else:
-        print("No match found in the provided slide content.")
-
-
 
 def stage_4_title_subtitle_layout_spliter(powerpointSlide):
     match = re.search(r"TITLE\s*:\s*(.+)\s*\n\s*SUBTITLE\s*:\s*(.+)", powerpointSlide)

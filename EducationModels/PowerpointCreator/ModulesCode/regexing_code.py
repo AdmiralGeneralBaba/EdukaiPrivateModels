@@ -174,3 +174,11 @@ def extract_fact_with_number_and_brackets(fact_number: str, facts_list: str):
         return match.group(1)
     else:
         return ""  # Return an empty string if no match is found
+    
+def stage_4_content_title_layout_splitter(powerpointSlide):
+    match = re.search(r"TITLE\s*:\s*((?:.|\s)*?)\s*CONTENT\s*:\s*((?:.|\s)*)", powerpointSlide, re.IGNORECASE)
+    if match:
+        title, content = match.groups()
+        return title.strip(), content.strip()
+    else:
+        print("No match found in the provided slide content.")

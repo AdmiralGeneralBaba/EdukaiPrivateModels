@@ -1,5 +1,5 @@
 from EducationModels.openai_calls import OpenAI
-
+from EducationModels.PowerpointCreator.ModulesCode.regexing_code import stage_4_content_title_layout_splitter
 async def stage_4_lo_page_combined_process(lessonFacts):
         gptAgent = OpenAI()
         temperature = 0.5
@@ -16,7 +16,7 @@ Understand the implications of tax planning strategies for individual taxpayers 
 Here are the lesson facts :
 """  # Your existing prompt
         powerpointSlide = await gptAgent.async_open_ai_gpt4_call(inputPrompt, lessonFacts, temperature)
-        splittedPowerpointSlide = self.stage_4_content_title_layout_splitter(powerpointSlide)
+        splittedPowerpointSlide = stage_4_content_title_layout_splitter(powerpointSlide)
         structured_output = {
             "module": "lo_page",
             "slide": {

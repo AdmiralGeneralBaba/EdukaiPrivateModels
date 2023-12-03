@@ -2,20 +2,21 @@ import asyncio
 
 from EducationModels.openai_calls import OpenAI
 import re
-from PowerpointPlanCode.powerpoint_plan_creator_v7 import stage_3_powerpoint_plan_creator
-from ModulesCode.title_page.title_page import *
-from ModulesCode.ending_slide.ending_slide import *
-from ModulesCode.lo_page.lo_page import *
-from ModulesCode.question_module.question_module_2_bullet_questions import *
-from ModulesCode.question_module.question_module_3_roleplay_question import *
+from PowerpointCreator.PowerpointPlanCode.powerpoint_plan_creator_v7 import stage_3_powerpoint_plan_creator
+from PowerpointCreator.ModulesCode.title_page.title_page import *
+from PowerpointCreator.ModulesCode.ending_slide.ending_slide import *
+from PowerpointCreator.ModulesCode.lo_page.lo_page import *
+from PowerpointCreator.ModulesCode.question_module.question_module_2_bullet_questions import *
+from PowerpointCreator.ModulesCode.question_module.question_module_3_roleplay_question import *
 
-from ModulesCode.activity_module.activity_module_1_brainstorming import *
-from ModulesCode.activity_module.activity_module_2_student_summarisation import *
-from ModulesCode.activity_module.activity_module_3_qa_pairs import *
-from ModulesCode.activity_module.activity_module_4_focused_listing import *
-from ModulesCode.general_content_page.general_content_page_hard_breakup import general_content_page_hard_breakup_implementation_method
-from ModulesCode.general_content_page.general_content_page_medium_breakup import general_content_page_medium_breakup_final_method_looping
-from ModulesCode.general_content_page.general_content_easy_bullet_points import general_content_easy_bullet_points_final_method
+from PowerpointCreator.ModulesCode.activity_module.activity_module_1_brainstorming import *
+from PowerpointCreator.ModulesCode.activity_module.activity_module_2_student_summarisation import *
+from PowerpointCreator.ModulesCode.activity_module.activity_module_3_qa_pairs import *
+from PowerpointCreator.ModulesCode.activity_module.activity_module_4_focused_listing import *
+from PowerpointCreator.ModulesCode.general_content_page.general_content_page_hard_breakup import general_content_page_hard_breakup_implementation_method
+from PowerpointCreator.ModulesCode.general_content_page.general_content_page_medium_breakup import general_content_page_medium_breakup_final_method_looping
+from PowerpointCreator.ModulesCode.general_content_page.general_content_easy_bullet_points import general_content_easy_bullet_points_final_method
+
 #     Fixed stages for a single lesson :
 #################    FIXED STAGES FOR EVERY LESSON/POWERPOINT:  #####################
 
@@ -299,8 +300,8 @@ async def stage_6_create_powerpoint(lessonFacts : str, question_choice : bool) :
     powerpointSlidesDetailed = await asyncio.gather(*slide_creation_tasks)
     return powerpointSlidesDetailed
 
-test_facts = "1. {The aggressiveness of offensive objectives should be considered, depending on the strength of the opponent.} 2. {Regularly editing land divisions is important as new research is unlocked and experience is accumulated from combat.} 3. {If you need bodies to stop the German or Soviet advance, set the deployment option for your units so that they are deployed as soon as they equipped.} 4. {These green troops will not be as effective as fully trained units will be, but they will be more effective than nothing.} 5. {If you have adjusted your conscription law to either Extensive Conscription or Service by Requirement, then manpower will probably not be an issue in the near term.} 6. {Have multiple lines of infantry, motorized/mechanized, and tank divisions under construction simultaneously.} 7. {A major power should be able to have six to eight infantry divisions being assembled alongside two to three tank divisions and two to three motorized/mechanized divisions.} 8. {You probably do not need to have an infinite stream of mountain or marine units.} 9. {Set limited production runs for these if you didn’t build enough in the pre-game.} 10. {A dozen mountain divisions should be enough in most instances, and only Japan and the United States will need more than 20 marine divisions.} 11. {If your attack line means you have to deal with enemy forts, your attacks will be more successful if they are accompanied by engineer support units, artillery, heavy tanks, and anti-tank support battalions.}"
+# test_facts = "1. {The aggressiveness of offensive objectives should be considered, depending on the strength of the opponent.} 2. {Regularly editing land divisions is important as new research is unlocked and experience is accumulated from combat.} 3. {If you need bodies to stop the German or Soviet advance, set the deployment option for your units so that they are deployed as soon as they equipped.} 4. {These green troops will not be as effective as fully trained units will be, but they will be more effective than nothing.} 5. {If you have adjusted your conscription law to either Extensive Conscription or Service by Requirement, then manpower will probably not be an issue in the near term.} 6. {Have multiple lines of infantry, motorized/mechanized, and tank divisions under construction simultaneously.} 7. {A major power should be able to have six to eight infantry divisions being assembled alongside two to three tank divisions and two to three motorized/mechanized divisions.} 8. {You probably do not need to have an infinite stream of mountain or marine units.} 9. {Set limited production runs for these if you didn’t build enough in the pre-game.} 10. {A dozen mountain divisions should be enough in most instances, and only Japan and the United States will need more than 20 marine divisions.} 11. {If your attack line means you have to deal with enemy forts, your attacks will be more successful if they are accompanied by engineer support units, artillery, heavy tanks, and anti-tank support battalions.}"
 
 
 
-print(asyncio.run(stage_6_create_powerpoint(test_facts, False)))
+# print(asyncio.run(stage_6_create_powerpoint(test_facts, False)))

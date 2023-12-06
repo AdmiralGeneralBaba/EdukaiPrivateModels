@@ -17,9 +17,10 @@ from powerpoint_creator_v6 import PowerpointCreatorV6
 import urllib
 from EducationModels.PowerpointCreator.powerpoint_creator_v7 import stage_6_create_powerpoint
 
+from flask_cors import CORS
+
 app = Flask(__name__)
-
-
+CORS(app)
 #Need to find out how to take in a PDF input for this app.route path - perhaps it needs to access a database input path? search on this :7
  
 #query parameter is '?pdf_url' 

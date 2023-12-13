@@ -19,10 +19,10 @@ async def mcq_question_creator(answers, gpt_type) : #Creates the questions for t
 5. {Who painted the "Starry Night"?}
 
  Here are the raw facts :  """ 
-        if gpt_type == 0 :
-            questions = await gptAgent.async_open_ai_gpt_call(answers, prompt, gptTemperature)
-        else : 
-            questions = await gptAgent.async_open_ai_gpt4_call(answers, prompt, gptTemperature)
+        # if gpt_type == 0 :
+        #     questions = await gptAgent.async_open_ai_gpt_call(answers, prompt, gptTemperature)
+        # else : 
+        questions = await gptAgent.async_open_ai_gpt4_call(answers, prompt, gptTemperature)
         renumberedQuestions = infoExtractorV1.renumber_facts(questions) 
         return renumberedQuestions
 async def mcq_false_answers_creator(questions, answers, gpt_type) : 

@@ -51,6 +51,30 @@ class InfoExtractorV4 :
                 chunks.append(' '.join(current_chunk))
             return chunks
         
+        def fact_text_chunker(self, text, chunkSize) : 
+            chunks = []
+            current_chunk = ''
+            facts = re.findall(r'(\d+\.\s*\{.*?\})', text)
+            
+            for fact in facts:
+                if len(current_chunk) + len(fact) < chunkSize or not current_chunk:
+                    # If adding the fact to the current chunk doesn't exceed the size limit,
+                    # or if the current chunk is empty, add the fact to the current chunk.
+                    current_chunk += fact + ' '
+                else:
+                    # Otherwise, the current chunk is full. Add it to the chunks list.
+                    chunks.append(current_chunk)
+                    current_chunk = fact + ' '  # Start a new chunk with the current fact.
+            
+            if current_chunk:
+                # Don't forget to add the last chunk if it's not empty.
+                chunks.append(current_chunk)
+            
+            return chunks
+
+# Example usage:
+
+        
         def chunkerStringArray(self, string_array):
             chunks = []
             current_chunk = []

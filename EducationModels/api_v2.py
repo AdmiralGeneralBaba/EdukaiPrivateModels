@@ -9,7 +9,7 @@ from yearly_plan_ai_models_v2 import YearlyPlanCreatorV2
 from yearly_plan_ai_models_v3 import YearlyPlanCreatorV3
 from homework_creator_v1 import homeworkCreatorsV1
 from powerpoint_creator_v5 import PowerpointCreatorV5
-from mcq_creator_v1 import McqCreatorV1
+from mcq_creator_v1 import mcq_creator_v1
 from flashcard_model_v2 import FlashcardModelV2
 from InfoExtractors.text_processing_v1 import text_fact_transformer_V1
 from InfoExtractors.info_extractor_v5 import InfoExtractorV5
@@ -127,9 +127,8 @@ async def powerpoint_creator_v1(lesson):
 
 
 @app.route('/mcq_creator/<path:lesson>') 
-def mcq_creator(lesson) : 
-    mcq_creator = McqCreatorV1()
-    mcq = mcq_creator.mcq_creator_v1(lesson, 0)
+async def mcq_creator(lesson) : 
+    mcq = await mcq_creator_v1(lesson, 1)
     return jsonify(mcq)
 
 @app.route('/flashcards/<path:lesson>')

@@ -1,6 +1,5 @@
 from openai_calls import OpenAI
 import re
-from mcq_creator_v1 import McqCreatorV1
 
 class PowerpointCreatorV5 : 
     #     Fixed stages for a single lesson :

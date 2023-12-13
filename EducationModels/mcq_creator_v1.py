@@ -1,10 +1,11 @@
 from openai_calls import OpenAI
 from info_extraction_v1 import InfoExtractorV1
+import asyncio
 import re
 
 ## Creates multiple choice questions based on inputted raw facts. ##
 class McqCreatorV1 : 
-    def mcq_question_creator(self, answers, gpt_type) : #Creates the questions for the given answers
+    async def mcq_question_creator(self, answers, gpt_type) : #Creates the questions for the given answers
         print("Creating MCQ questions...")
         infoExtractor = InfoExtractorV1()
         gptAgent = OpenAI()
@@ -19,12 +20,12 @@ class McqCreatorV1 :
 
  Here are the raw facts :  """ 
         if gpt_type == 0 :
-            questions = gptAgent.open_ai_gpt_call(answers, prompt, gptTemperature)
+            questions = await gptAgent.async_open_ai_gpt_call(answers, prompt, gptTemperature)
         else : 
-            questions = gptAgent.open_ai_gpt4_call(answers, prompt, gptTemperature)
+            questions = await gptAgent.async_open_ai_gpt4_call(answers, prompt, gptTemperature)
         renumberedQuestions = infoExtractor.renumber_facts(questions) 
         return renumberedQuestions
-    def mcq_false_answers_creator(self, questions, answers, gpt_type) : 
+    async def mcq_false_answers_creator(self, questions, answers, gpt_type) : 
         gpt_agent = OpenAI()
         gpt_temperature = 0.88
         prompt = """ Pretend you are an expert MCQ distractor writer. I want to create 3 false answers for EACH of these facts, as similar to the given true answer in length and content, in regards to the question and true answer given.
@@ -55,9 +56,9 @@ CREATE THREE FACT FAKE ANSWERS PER FACT. }
 
         gpt_input = 'Questions {' + questions + '}' + ' Answers {' + answers + '}'
         if gpt_type == 0 :
-            false_answers = gpt_agent.open_ai_gpt_call(gpt_input, prompt, gpt_temperature)
+            false_answers = await gpt_agent.async_open_ai_gpt_call(gpt_input, prompt, gpt_temperature)
         else : 
-            false_answers = gpt_agent.open_ai_gpt4_call(gpt_input, prompt, gpt_temperature)
+            false_answers = await gpt_agent.async_open_ai_gpt4_call(gpt_input, prompt, gpt_temperature)
         return false_answers
     
     def extract_questions(self, text):
@@ -88,9 +89,11 @@ CREATE THREE FACT FAKE ANSWERS PER FACT. }
         mcq_list = self.create_mcq_list(extracted_questions, extracted_answers, extracted_false_answers)
         return mcq_list
 
-    def mcq_creator_v1(self, real_answers, gpt_type) : 
-        questions = self.mcq_question_creator(real_answers, gpt_type)
-        false_answers = self.mcq_false_answers_creator(questions, real_answers, gpt_type)
+    async def mcq_creator_v1(self, real_answers, gpt_type) : 
+        questions = await self.mcq_question_creator(real_answers, gpt_type)
+        questions = asyncio.gather(*questions)
+        false_answers = await self.mcq_false_answers_creator(questions, real_answers, gpt_type)
+        false_answers = asyncio.gather(false_answers)
         mcq_list = self.extraction_and_creation_mcq_list(questions, real_answers, false_answers)
         return mcq_list
         

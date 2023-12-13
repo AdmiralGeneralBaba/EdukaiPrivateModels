@@ -16,7 +16,7 @@ from InfoExtractors.info_extractor_v5 import InfoExtractorV5
 from powerpoint_creator_v6 import PowerpointCreatorV6
 import urllib
 from EducationModels.PowerpointCreator.powerpoint_creator_v7 import stage_6_create_powerpoint
-
+from EducationModels import powerpoint_creator_v6
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -39,7 +39,7 @@ def fetch_and_process_pdf(pdf_url):
         tmp.write(response.content)
 
     return tmp_filepath
-
+    
 @app.route('/async_yearly_plan_creator/')
 async def async_yearly_plan():
     pdf_url = request.args.get('pdf_url')
@@ -71,7 +71,8 @@ async def async_text_fact_breakdown(text) :
 
 @app.route('/youtube_to_text/') 
 async def async_text_fact_breakdown_youtube_url() : 
-    directory = request.args.get('directory')
+    # directory = request.args.get('directory')
+    directory = r"C:\Users\david\Downloads\Youtube"
     youtube_url = request.args.get('youtube_url')
     info_extractor = InfoExtractorV5()
     text = info_extractor.transcribe_youtube_url(youtube_url, directory)
@@ -106,8 +107,8 @@ def homework_creation(lesson) :
     lesson_homework = homework_creator.homework_creator_template_one(lesson, 1)
     return jsonify(lesson_homework)
 
-@app.route('/powerpoint_creator/')
-async def powerpoint_creator():
+@app.route('/powerpoint_creator_v2/')
+async def powerpoint_creator_v2():
     lesson_facts = request.args.get('lesson_facts')
     question_choice = request.args.get('question_addition_choice')
     # inputted '1' = True, I.E they want questions and activities included. 0 = False/no questions and activities.
@@ -117,10 +118,18 @@ async def powerpoint_creator():
         powerpoint = await stage_6_create_powerpoint(lesson_facts, False)
     return jsonify(powerpoint)
 
+
+@app.route('/powerpoint_creator_v1/<path:lesson>')
+async def powerpoint_creator_v1(lesson):
+    powerpoint_creator = PowerpointCreatorV6()
+    powerpoint = await powerpoint_creator.stage_6_create_powerpoint(lesson)
+    return jsonify(powerpoint)
+
+
 @app.route('/mcq_creator/<path:lesson>') 
 def mcq_creator(lesson) : 
     mcq_creator = McqCreatorV1()
-    mcq = mcq_creator.mcq_creator_v1(lesson, 1)
+    mcq = mcq_creator.mcq_creator_v1(lesson, 0)
     return jsonify(mcq)
 
 @app.route('/flashcards/<path:lesson>')

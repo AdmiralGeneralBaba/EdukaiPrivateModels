@@ -72,8 +72,6 @@ class InfoExtractorV4 :
             
             return chunks
 
-# Example usage:
-
         
         def chunkerStringArray(self, string_array):
             chunks = []

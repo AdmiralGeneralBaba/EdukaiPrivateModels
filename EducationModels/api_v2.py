@@ -136,7 +136,7 @@ def flashcard_creator(lesson):
     # Decoding the URL encoded lesson value
     flashcard_creator = FlashcardModelV2()
     # gpt_type is hard-coded to '1'
-    flashcards = flashcard_creator.flashcard_creator_from_raw_facts(lesson, '1')
+    flashcards = flashcard_creator.flashcard_creator_from_raw_facts(lesson, '0')
     return jsonify(flashcards)
 
 # In the future, have a endpoint for each exam board 

@@ -63,7 +63,7 @@ async def async_yearly_plan():
 @app.route('/async_text_fact_breakdown/<path:text>') 
 async def async_text_fact_breakdown(text) : 
 
-    if len(text) > 10000000 : 
+    if len(text) > 1000000000 : 
         return "too long"
     else : 
         text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS

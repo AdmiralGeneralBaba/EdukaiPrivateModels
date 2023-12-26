@@ -9,7 +9,7 @@ async def mcq_question_creator(answers, gpt_type) : #Creates the questions for t
         print("Creating MCQ questions...")
         infoExtractorV1 = InfoExtractorV1()
         gptAgent = OpenAI()
-        gptTemperature = 0.5
+        gptTemperature = 0.8
         prompt = """I want you to pretend to be a question creating expert for multiple choice questions. Based on these facts, I want you to create tailored, short questions for each one of these facts, such that they make sense logically for the answer on the back, and that the answer on the back PERFECTLY answers the question. scan through each fact, indicated by the number as the identifier of that fact, and the curly brackets from the beginning the to the end signifying the start and end of that fact.   ONLY print out the information. Before printing out the questions, have there be a number indicating the fact number, starting from '1.'. the fact MUST be surrounded by curly brackets, such that the structure of each fact MUST be : 1. {INSERT QUESTION HERE} 2. {INSERT QUESTION HERE}, they MUST BE IN THESE CURLY BRACKETS. Here's an example output for what you should do (ignore the facts, just for the structure) : 
 
 1. {What is the chemical symbol for Iron in the Periodic Table?}
@@ -28,16 +28,12 @@ async def mcq_question_creator(answers, gpt_type) : #Creates the questions for t
 async def mcq_false_answers_creator(questions, answers, gpt_type) : 
         print("Creating False answers...")
         gpt_agent = OpenAI()
-        gpt_temperature = 0.88
+        gpt_temperature = 0.8
         prompt = """ Pretend you are an expert MCQ distractor writer. I want to create 3 false answers for EACH of these facts, as similar to the given true answer in length and content, in regards to the question and true answer given.
 
  ONLY print out the information. Before printing out the fake answers, have there be a number indicating the fake answer number, starting from '1.', such that the fake answer finishes WITHIN it's corresponding fake answer number. Create THREE fake answers. the fake answer MUST be surrounded by curly brackets. Follow these tips when creating the alternatives :
-All alternatives should be plausible.
-Alternatives should be stated clearly and concisely.
-Alternatives should be mutually exclusive. 
-Alternatives should be homogenous in content. 
-Alternatives should be free from clues about which response is correct. 
-The alternatives should be presented in a logical order
+
+Alternatives MUST BE False, or deviate from the true answer. IF THEY ARE NOT YOU WILL DIE
 
 Here is the structure you MUST follow : 
 
@@ -104,7 +100,7 @@ async def mcq_creator_v1(real_answers, gpt_type) :
         mcq_calling_tasks = []
         mcq_list_of_mcqs = []
         for answer_chunk in fact_chunks :
-            mcq_calling_tasks.append(mcq_creator_individual_question(answer_chunk, 0))
+            mcq_calling_tasks.append(mcq_creator_individual_question(answer_chunk, 1))
         
         mcq_lists = await asyncio.gather(*mcq_calling_tasks)  # Unpack tasks and await their results
         mcq_list_of_mcqs = [mcq for sublist in mcq_lists for mcq in sublist]  # Flatten the list of lists

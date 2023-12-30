@@ -1,3 +1,4 @@
+import tempfile
 from langchain.document_loaders.generic import GenericLoader
 from langchain.document_loaders.parsers import OpenAIWhisperParser
 from langchain.document_loaders.blob_loaders.youtube_audio import YoutubeAudioLoader
@@ -10,6 +11,9 @@ import PyPDF2
 import re
 import asyncio
 import aiohttp
+import os
+from langchain.document_loaders import UnstructuredPowerPointLoader
+
 
 
 class InfoExtractorV5 :        
@@ -182,6 +186,24 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
             return text
 
         # Input the powerpoint URL - Need to have this stored on the cloud, then use the address as the input for this method : 
+
+        # have the input for this method be the processed file from request.args.get['file'] or something, then extrac tthe info from the FormData object
+        def process_file(file) : 
+            temp_path = tempfile.mkdtemp()
+
+            secure_filename = secure_filename(file.filename)
+
+            full_path =  os.path.join(temp_path, secure_filename)
+
+            file.save(full_path)
+
+            return full_path
+        
+        def process_powerpoint(directory_path) : 
+            loader = UnstructuredPowerPointLoader(directory_path)
+            data = loader.load()
+            return data
+            
         def powerpoint_translation(powerpoint_file_url : str) : 
             loader = UnstructuredPowerPointLoader(powerpoint_file_url)
             data = loader.load()

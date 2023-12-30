@@ -18,11 +18,12 @@ async def mcq_question_creator(answers, gpt_type) : #Creates the questions for t
 4. {What is the capital of Australia?}
 5. {Who painted the "Starry Night"?}
 
+When creating the question, make sure it does not reveal the answer or the student will be very sad. 
  Here are the raw facts :  """ 
         # if gpt_type == 0 :
         #     questions = await gptAgent.async_open_ai_gpt_call(answers, prompt, gptTemperature)
         # else : 
-        questions = await gptAgent.async_open_ai_gpt4_call(answers, prompt, gptTemperature)
+        questions = await gptAgent.async_open_ai_gpt4_turbo_call(answers, prompt, gptTemperature)
         renumberedQuestions = infoExtractorV1.renumber_facts(questions) 
         return renumberedQuestions
 async def mcq_false_answers_creator(questions, answers, gpt_type) : 
@@ -33,7 +34,7 @@ async def mcq_false_answers_creator(questions, answers, gpt_type) :
 
  ONLY print out the information. Before printing out the fake answers, have there be a number indicating the fake answer number, starting from '1.', such that the fake answer finishes WITHIN it's corresponding fake answer number. Create THREE fake answers. the fake answer MUST be surrounded by curly brackets. Follow these tips when creating the alternatives :
 
-Alternatives MUST BE False, or deviate from the true answer. IF THEY ARE NOT YOU WILL DIE
+Alternatives MUST BE False. Use your knowledge 
 
 Here is the structure you MUST follow : 
 
@@ -55,7 +56,7 @@ CREATE THREE FACT FAKE ANSWERS PER FACT. }
         if gpt_type == 0 :
             false_answers = await gpt_agent.async_open_ai_gpt_call(gpt_input, prompt, gpt_temperature)
         else : 
-            false_answers = await gpt_agent.async_open_ai_gpt4_call(gpt_input, prompt, gpt_temperature)
+            false_answers = await gpt_agent.async_open_ai_gpt4_turbo_call(gpt_input, prompt, gpt_temperature)
         return false_answers
     
 def extract_questions(text):
@@ -96,7 +97,7 @@ async def mcq_creator_individual_question(real_answers, gpt_type) :
 
 async def mcq_creator_v1(real_answers, gpt_type) : 
         info_extractor_v4 = InfoExtractorV4()
-        fact_chunks = info_extractor_v4.fact_text_chunker(real_answers, 500)
+        fact_chunks = info_extractor_v4.fact_text_chunker(real_answers, 2000)
         mcq_calling_tasks = []
         mcq_list_of_mcqs = []
         for answer_chunk in fact_chunks :

@@ -58,8 +58,6 @@ async def async_yearly_plan():
     # Return the result
     return jsonify(yearly_plan)
 
-
-
 @app.route('/async_text_fact_breakdown/<path:text>') 
 async def async_text_fact_breakdown(text) : 
 
@@ -101,6 +99,20 @@ def create_exam_paper():
 
     return jsonify(exam_paper)
 
+
+@app.route('/file_input', methods=['POST']) 
+def handleFileInput() : 
+    info_extractor = InfoExtractorV5()
+    
+    if 'file' in request.files : 
+        file = request.files['file']
+        path = info_extractor.process_file(file)
+        powerpoint_data = info_extractor.process_powerpoint(path)
+        return jsonify(powerpoint_data)
+    else : 
+        return { 'error ' : 'no file found'}
+
+        
 @app.route('/homework_creator/<path:lesson>')
 def homework_creation(lesson) : 
     homework_creator = homeworkCreatorsV1()

@@ -188,7 +188,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
         # Input the powerpoint URL - Need to have this stored on the cloud, then use the address as the input for this method : 
 
         # have the input for this method be the processed file from request.args.get['file'] or something, then extrac tthe info from the FormData object
-        def process_file(file) : 
+        def process_file(self, file) : 
             temp_path = tempfile.mkdtemp()
 
             secure_filename = secure_filename(file.filename)
@@ -199,7 +199,7 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
 
             return full_path
         
-        def process_powerpoint(directory_path) : 
+        def process_powerpoint(self, directory_path) : 
             loader = UnstructuredPowerPointLoader(directory_path)
             data = loader.load()
             return data

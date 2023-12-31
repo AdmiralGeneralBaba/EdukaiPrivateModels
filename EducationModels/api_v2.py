@@ -18,6 +18,7 @@ import urllib
 from EducationModels.PowerpointCreator.powerpoint_creator_v7 import stage_6_create_powerpoint
 from EducationModels import powerpoint_creator_v6
 from flask_cors import CORS
+import InfoExtractors.file_process_methods as file_processor
 
 app = Flask(__name__)
 CORS(app)
@@ -102,12 +103,14 @@ def create_exam_paper():
 
 @app.route('/file_input', methods=['POST']) 
 def handleFileInput() : 
-    info_extractor = InfoExtractorV5()
+    
     
     if 'file' in request.files : 
         file = request.files['file']
-        path = info_extractor.process_file(file)
-        powerpoint_data = info_extractor.process_powerpoint(path)
+        path = file_processor.process_file(file)
+        fileType = file.name.split('.'[-1])
+        if fileType == 'pptx' :
+            powerpoint_data = file_processor.process_powerpoint(path)
         return jsonify(powerpoint_data)
     else : 
         return { 'error ' : 'no file found'}

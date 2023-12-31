@@ -12,8 +12,9 @@ import re
 import asyncio
 import aiohttp
 import os
+from langchain.document_loaders import Docx2txtLoader
 from langchain.document_loaders import UnstructuredPowerPointLoader
-
+from werkzeug.utils import secure_filename
 
 
 class InfoExtractorV5 :        
@@ -188,32 +189,6 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
         # Input the powerpoint URL - Need to have this stored on the cloud, then use the address as the input for this method : 
 
         # have the input for this method be the processed file from request.args.get['file'] or something, then extrac tthe info from the FormData object
-        def process_file(self, file) : 
-            temp_path = tempfile.mkdtemp()
-
-            secure_filename = secure_filename(file.filename)
-
-            full_path =  os.path.join(temp_path, secure_filename)
-
-            file.save(full_path)
-
-            return full_path
-        
-        def process_powerpoint(self, directory_path) : 
-            loader = UnstructuredPowerPointLoader(directory_path)
-            data = loader.load()
-            return data
-            
-        def powerpoint_translation(powerpoint_file_url : str) : 
-            loader = UnstructuredPowerPointLoader(powerpoint_file_url)
-            data = loader.load()
-            return data
-
-        # Input the word document URL, and it will process it into text
-        def word_document_translation(word_document_file_directory : str) : 
-            loader = Docx2txtLoader(word_document_file_directory)
-            data = loader.load()
-            return data
                     
         def renumber_facts(self, input_text):
             # split the text into lines

@@ -12,11 +12,6 @@ async def mcq_question_creator(answers, gpt_type) : #Creates the questions for t
         gptTemperature = 0.8
         prompt = """I want you to pretend to be a question creating expert for multiple choice questions. Based on these facts, I want you to create tailored, short questions for each one of these facts, such that they make sense logically for the answer on the back, and that the answer on the back PERFECTLY answers the question. scan through each fact, indicated by the number as the identifier of that fact, and the curly brackets from the beginning the to the end signifying the start and end of that fact.   ONLY print out the information. Before printing out the questions, have there be a number indicating the fact number, starting from '1.'. the fact MUST be surrounded by curly brackets, such that the structure of each fact MUST be : 1. {INSERT QUESTION HERE} 2. {INSERT QUESTION HERE}, they MUST BE IN THESE CURLY BRACKETS. Here's an example output for what you should do (ignore the facts, just for the structure) : 
 
-1. {What is the chemical symbol for Iron in the Periodic Table?}
-2. {Which planet in our solar system is known as the Red Planet?}
-3; {Who wrote the novel "1984"?}
-4. {What is the capital of Australia?}
-5. {Who painted the "Starry Night"?}
 
 When creating the question, make sure it does not reveal the answer or the student will be very sad. 
  Here are the raw facts :  """ 

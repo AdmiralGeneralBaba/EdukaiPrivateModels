@@ -2,7 +2,6 @@ import os
 import tempfile
 from langchain.document_loaders import UnstructuredPowerPointLoader
 from langchain.document_loaders import Docx2txtLoader
-from langchain.document_loaders import Docx2txtLoader
 from langchain.document_loaders import UnstructuredPowerPointLoader
 from werkzeug.utils import secure_filename
 from langchain.document_loaders import UnstructuredWordDocumentLoader
@@ -34,11 +33,21 @@ def powerpoint_translation(powerpoint_file_url : str) :
     return data
 
 # Input the word document URL, and it will process it into text
-def word_document_translation(word_document_file_directory : str) : 
-    loader = UnstructuredWordDocumentLoader("example_data/fake.docx")
+def word_document_translation(word_document_file_directory: str):
+    loader = UnstructuredWordDocumentLoader(word_document_file_directory)
 
     data = loader.load()
-    return(data)
+    print(data)
+
+    # Initialize an empty string to store concatenated content
+    combined_content = ""
+
+    for document in data:
+        # Concatenate the content of each document
+        combined_content += document.page_content + "\n"  # Adding a newline for separation
+
+    # Return the combined content as a single string
+    return combined_content
 
 def choose_file_process_type(filetype):
     if filetype == 'pptx':

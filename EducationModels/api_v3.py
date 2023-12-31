@@ -67,7 +67,7 @@ async def async_text_fact_breakdown_youtube_url() :
 
 
 @app.route('/file_input', methods=['POST']) 
-def handleFileInput() : 
+async def handleFileInput() : 
     if 'file' in request.files : 
         file = request.files['file']
         path = file_processor.process_file(file)
@@ -76,9 +76,9 @@ def handleFileInput() :
         print("this is the file type :  ", fileType)
         process_method = file_processor.choose_file_process_type(fileType)
         data = process_method(path)
-        print(process_method)
-        processed_file = process_method(path)
-        return (processed_file)
+
+        data_processed = await text_fact_transformer_V1(data)
+        return jsonify(data_processed)
     else : 
         return { 'error ' : 'no file found'}
 

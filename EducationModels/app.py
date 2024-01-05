@@ -20,8 +20,6 @@ from EducationModels import powerpoint_creator_v6
 from flask_cors import CORS
 import InfoExtractors.file_process_methods as file_processor
 
-print('test')
-
 app = Flask(__name__)
 CORS(app)
 #Need to find out how to take in a PDF input for this app.route path - perhaps it needs to access a database input path? search on this :7
@@ -101,7 +99,3 @@ def flashcard_creator(lesson):
 @app.route('/test/<num>')
 def number_printer(num) :
     return num
-
-
-if __name__  == '__main__' :
-    app.run()

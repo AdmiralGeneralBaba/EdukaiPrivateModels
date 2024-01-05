@@ -5,10 +5,10 @@ from flask import Flask, request, jsonify
 import requests
 from mcq_creator_v1 import mcq_creator_v1
 from flashcard_model_v2 import FlashcardModelV2
-from InfoExtractors.text_processing_v1 import text_fact_transformer_V1
-from InfoExtractors.info_extractor_v5 import InfoExtractorV5
+from text_processing_v1 import text_fact_transformer_V1
+from info_extractor_v5 import InfoExtractorV5
 from flask_cors import CORS
-import InfoExtractors.file_process_methods as file_processor
+import file_process_methods as file_processor
 
 app = Flask(__name__)
 CORS(app)

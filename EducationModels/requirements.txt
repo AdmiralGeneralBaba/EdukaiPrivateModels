@@ -6,4 +6,4 @@ langchain==0.0.354  # If this is a package available on PyPI
 openai==1.6.1
 uvicorn==0.25.0
 Werkzeug  # Add the version if specific one is needed
-docx==0.2.4  # If this refers to python-docx
+python-docx==0.8.11

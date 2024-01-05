@@ -1,22 +1,12 @@
-import sys
 import os
 import asyncio
 import tempfile
 from flask import Flask, request, jsonify
 import requests
-from aqa_english_language_paper_1_v1 import aqa_english_language_paper_1_generator
-from yearly_plan_ai_models_v2 import YearlyPlanCreatorV2
-from yearly_plan_ai_models_v3 import YearlyPlanCreatorV3
-from homework_creator_v1 import homeworkCreatorsV1
-from powerpoint_creator_v5 import PowerpointCreatorV5
 from mcq_creator_v1 import mcq_creator_v1
 from flashcard_model_v2 import FlashcardModelV2
 from InfoExtractors.text_processing_v1 import text_fact_transformer_V1
 from InfoExtractors.info_extractor_v5 import InfoExtractorV5
-from powerpoint_creator_v6 import PowerpointCreatorV6
-import urllib
-from EducationModels.PowerpointCreator.powerpoint_creator_v7 import stage_6_create_powerpoint
-from EducationModels import powerpoint_creator_v6
 from flask_cors import CORS
 import InfoExtractors.file_process_methods as file_processor
 

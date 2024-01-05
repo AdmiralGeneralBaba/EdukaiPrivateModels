@@ -5,15 +5,12 @@ from langchain.document_loaders.blob_loaders.youtube_audio import YoutubeAudioLo
 from langchain.document_loaders import UnstructuredPowerPointLoader
 from langchain.document_loaders import Docx2txtLoader
 from langchain.document_loaders import YoutubeLoader
-from docx import Document
 from EducationModels.openai_calls import OpenAI
 import PyPDF2
 import re
 import asyncio
 import aiohttp
 import os
-from langchain.document_loaders import Docx2txtLoader
-from langchain.document_loaders import UnstructuredPowerPointLoader
 from werkzeug.utils import secure_filename
 
 

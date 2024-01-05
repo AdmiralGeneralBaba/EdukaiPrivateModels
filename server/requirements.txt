@@ -7,3 +7,5 @@ openai==1.6.1
 uvicorn==0.25.0
 Werkzeug  # Add the version if specific one is needed
 python-docx==0.8.11
+fastapi===0.108.0
+temp===2020.7.2

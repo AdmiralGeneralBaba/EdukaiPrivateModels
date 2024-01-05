@@ -57,6 +57,7 @@ async def handleFileInput(file : UploadFile = File(...)) :
         data = process_method(path)
 
         data_processed = await text_fact_transformer_V1(data)
+        print(data_processed)
         return (data_processed)
     else : 
         return { 'error ' : 'no file found'}

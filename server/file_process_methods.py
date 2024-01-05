@@ -1,52 +1,37 @@
 import os
+import shutil
 import tempfile
-from langchain.document_loaders import UnstructuredPowerPointLoader
-from langchain.document_loaders import Docx2txtLoader
-from langchain.document_loaders import UnstructuredPowerPointLoader
-from werkzeug.utils import secure_filename
-from langchain.document_loaders import UnstructuredWordDocumentLoader
+from langchain.document_loaders import UnstructuredPowerPointLoader, Docx2txtLoader, UnstructuredWordDocumentLoader
+from fastapi import UploadFile
 
+def process_file(file: UploadFile):
+    temp_path = tempfile.mkdtemp()
+    filename = os.path.join(temp_path, file.filename)
 
-def process_file(file) : 
-        temp_path = tempfile.mkdtemp()
+    # Save the uploaded file
+    with open(filename, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
 
-        filename = secure_filename(file.filename)
+    return filename
 
-        full_path =  os.path.join(temp_path, filename)
-
-        file.save(full_path)
-
-        return full_path
-    
-def process_powerpoint(directory_path) : 
+def process_powerpoint(directory_path): 
     loader = UnstructuredPowerPointLoader(directory_path)
     data = loader.load()
     return data
 
-# # Finsih this tomorrow (new years eve.)
-# def process_worddoc(self, directory_path) :     
-#     loader = 
-    
-def powerpoint_translation(powerpoint_file_url : str) : 
+def powerpoint_translation(powerpoint_file_url: str): 
     loader = UnstructuredPowerPointLoader(powerpoint_file_url)
     data = loader.load()
     return data
 
-# Input the word document URL, and it will process it into text
 def word_document_translation(word_document_file_directory: str):
     loader = UnstructuredWordDocumentLoader(word_document_file_directory)
-
     data = loader.load()
-    print(data)
-
-    # Initialize an empty string to store concatenated content
+    
     combined_content = ""
-
     for document in data:
-        # Concatenate the content of each document
-        combined_content += document.page_content + "\n"  # Adding a newline for separation
-
-    # Return the combined content as a single string
+        combined_content += document.page_content + "\n"
+    
     return combined_content
 
 def choose_file_process_type(filetype):

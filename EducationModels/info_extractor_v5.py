@@ -5,7 +5,7 @@ from langchain.document_loaders.blob_loaders.youtube_audio import YoutubeAudioLo
 from langchain.document_loaders import UnstructuredPowerPointLoader
 from langchain.document_loaders import Docx2txtLoader
 from langchain.document_loaders import YoutubeLoader
-from EducationModels.openai_calls import OpenAI
+from openai_calls import OpenAI
 import PyPDF2
 import re
 import asyncio

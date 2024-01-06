@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Header, Request, UploadFile, File
+from fastapi import FastAPI, HTTPException, Header, Request, UploadFile, File
 import asyncio
 import tempfile
+from pydantic import BaseModel
 import requests
 import firebase_admin
+import stripe
 from mcq_creator_v1 import mcq_creator_v1
 from flashcard_model_v2 import FlashcardModelV2
 from text_processing_v1 import text_fact_transformer_V1
@@ -15,6 +17,15 @@ from firebase_admin import credentials
 from firebase_admin import auth
 import redis
 from upstash_redis import Redis
+import os
+
+
+stripe.api_key = os.getenv("STRIPE_API_KEY")
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+
+
 
 r = redis.Redis(
   host='eu1-moral-jaybird-38118.upstash.io',
@@ -41,7 +52,7 @@ def checkRedis(user_id):
             return True
     else:
         # Note: Consider using 'hset' for newer Redis versions
-        r.hmset(user_key, {'max_requests': 10, 'current_requests': 0})
+        r.hmset(user_key, {'max_requests': 2, 'current_requests': 0})
         return True
 
 #Need to add in the serverless redis setup so that it can actuaoly chcekc the caching properly : 
@@ -64,11 +75,27 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+@app.post("/register") 
+async def register_user(request: RegisterRequest):
+    try:
+        # Create user with Firebase
+        firebase_user = auth.create_user(email=request.email, password=request.password)
+
+        # Create Stripe customer
+        stripe_customer = stripe.Customer.create(email=request.email)
+
+        # Optional: Save the Stripe customer ID in your database
+
+        # Return the user ID and Stripe customer ID
+        return {"user_id": firebase_user.uid, "stripe_customer_id": stripe_customer.id}     
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/async_text_fact_breakdown/") 
 async def async_text_fact_breakdown(request : Request, user_id : str = Header(None, alias="User-ID")) : 
 
     userPerms = checkUserPerms(user_id)
+    print(userPerms)
     if userPerms == False : 
         return "Nothing"
     incrementRedisRequestCount(user_id)

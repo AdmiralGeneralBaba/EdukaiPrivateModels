@@ -1,4 +1,4 @@
-from EducationModels.openai_calls import OpenAI
+from server.openai_calls import OpenAI
 
 #Here is all the different chains for the scenario creator stage : 
 #Need to create a holistic method combining these into one method

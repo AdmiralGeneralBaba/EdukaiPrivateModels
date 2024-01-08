@@ -15,8 +15,8 @@ from InfoExtractors.text_processing_v1 import text_fact_transformer_V1
 from InfoExtractors.info_extractor_v5 import InfoExtractorV5
 from powerpoint_creator_v6 import PowerpointCreatorV6
 import urllib
-from EducationModels.PowerpointCreator.powerpoint_creator_v7 import stage_6_create_powerpoint
-from EducationModels import powerpoint_creator_v6
+from server.PowerpointCreator.powerpoint_creator_v7 import stage_6_create_powerpoint
+from server import powerpoint_creator_v6
 from flask_cors import CORS
 import InfoExtractors.file_process_methods as file_processor
 

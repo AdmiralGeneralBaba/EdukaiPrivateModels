@@ -8,23 +8,24 @@ import stripe
 from mcq_creator_v1 import mcq_creator_v1
 from flashcard_model_v2 import FlashcardModelV2
 from text_processing_v1 import text_fact_transformer_V1
+from text_processing_v1 import count_facts
 from info_extractor_v5 import InfoExtractorV5
 from flask_cors import CORS
 import file_process_methods as file_processor
 from uvicorn.middleware.wsgi import WSGIMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from firebase_admin import credentials
-from firebase_admin import auth
+from firebase_admin import auth, firestore
 import redis
 from upstash_redis import Redis
 import os
 
 
-stripe.api_key = os.getenv("STRIPE_API_KEY")
-class RegisterRequest(BaseModel):
-    email: str
-    password: str
+# Stripe API key : 
 
+stripe.api_key = "sk_test_51OVfBnJeWZ1WiRc9h7Aei8CVEFrB8nnWElYGs7h8GxD9KY7KtRwe3oAxzGYFgPfiFTqxxRrruwN2G1tTiSw2ixLA00kqG04xTG"
+
+print(os.getenv("STRIPE_API"))
 
 
 r = redis.Redis(
@@ -33,13 +34,20 @@ r = redis.Redis(
   password='f0dc8b78859b4be9acc4d80710b6f83f'
 )
 
-
 cred = credentials.Certificate("./firebase_admin_auth.json")
 firebase_admin.initialize_app(cred)
 
 app = FastAPI()
+app.add_middleware(
+  CORSMiddleware,
+    allow_origins=["*"],  # Specify the allowed origin
+    allow_credentials=True,
+    allow_methods=["POST", "GET"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 
+#Functions for checking Redis and the user perms : 
 def checkRedis(user_id):
     user_key = f"user:{user_id}"
     if r.exists(user_key):
@@ -52,9 +60,8 @@ def checkRedis(user_id):
             return True
     else:
         # Note: Consider using 'hset' for newer Redis versions
-        r.hmset(user_key, {'max_requests': 2, 'current_requests': 0})
+        r.hmset(user_key, {'max_requests': 10, 'current_requests': 0})
         return True
-
 #Need to add in the serverless redis setup so that it can actuaoly chcekc the caching properly : 
 def checkUserPerms(user_id) :
     checkedRedis = checkRedis(user_id)
@@ -67,13 +74,9 @@ def incrementRedisRequestCount(user_id) :
     userid = f"user:{user_id}"
     r.hincrby(userid, 'current_requests', 1)
 
-app.add_middleware(
-  CORSMiddleware,
-    allow_origins=["*"],  # Specify the allowed origin
-    allow_credentials=True,
-    allow_methods=["POST", "GET"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
-)
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
 
 @app.post("/register") 
 async def register_user(request: RegisterRequest):
@@ -84,7 +87,13 @@ async def register_user(request: RegisterRequest):
         # Create Stripe customer
         stripe_customer = stripe.Customer.create(email=request.email)
 
-        # Optional: Save the Stripe customer ID in your database
+        # Save the Stripe customer ID in Firestore
+        db = firestore.client()
+        user_ref = db.collection('users').document(firebase_user.uid)
+        user_ref.set({
+            'stripe_customer_id': stripe_customer.id,
+            # You can add more user-related information here if needed
+        })
 
         # Return the user ID and Stripe customer ID
         return {"user_id": firebase_user.uid, "stripe_customer_id": stripe_customer.id}     
@@ -108,6 +117,7 @@ async def async_text_fact_breakdown(request : Request, user_id : str = Header(No
         return "too long"
     else : 
         text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
+        print("Here are the amount of questions to create : ", count_facts(text_facts['lesson_facts']))
         return (text_facts)
 
 @app.get('/youtube_to_text/') 

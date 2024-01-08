@@ -1,6 +1,6 @@
 import asyncio
 
-from EducationModels.openai_calls import OpenAI
+from server.openai_calls import OpenAI
 import re
 from PowerpointCreator.PowerpointPlanCode.powerpoint_plan_creator_v7 import stage_3_powerpoint_plan_creator
 from PowerpointCreator.ModulesCode.title_page.title_page import *

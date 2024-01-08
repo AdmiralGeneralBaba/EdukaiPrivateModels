@@ -1,6 +1,6 @@
 import random
 import PyPDF2
-from EducationModels.openai_calls import OpenAI
+from server.openai_calls import OpenAI
 import json
 import os
 import re

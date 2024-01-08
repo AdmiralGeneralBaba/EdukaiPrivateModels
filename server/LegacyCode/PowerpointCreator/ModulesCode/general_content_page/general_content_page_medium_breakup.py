@@ -1,9 +1,9 @@
-from EducationModels.openai_calls import OpenAI
+from server.openai_calls import OpenAI
 import re
-from EducationModels.PowerpointCreator.ModulesCode.regexing_code  import extract_content_TITLE_CONTENT_PICTURE
-from EducationModels.PowerpointCreator.ModulesCode.regexing_code import stage_4_replace_fact_numbers_with_text
-from EducationModels.PowerpointCreator.ModulesCode.regexing_code import stage_4_convert_to_separate_numbers
-from EducationModels.PowerpointCreator.ModulesCode.regexing_code import extract_fact_with_number_and_brackets
+from server.PowerpointCreator.ModulesCode.regexing_code  import extract_content_TITLE_CONTENT_PICTURE
+from server.PowerpointCreator.ModulesCode.regexing_code import stage_4_replace_fact_numbers_with_text
+from server.PowerpointCreator.ModulesCode.regexing_code import stage_4_convert_to_separate_numbers
+from server.PowerpointCreator.ModulesCode.regexing_code import extract_fact_with_number_and_brackets
 import asyncio
 
 

@@ -1,4 +1,4 @@
-from EducationModels.openai_calls import OpenAI
+from server.openai_calls import OpenAI
 
 def extract_topic_combined_stage(input) : 
     llm = OpenAI()

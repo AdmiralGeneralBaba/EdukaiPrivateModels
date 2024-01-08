@@ -1,5 +1,5 @@
-from EducationModels.openai_calls import OpenAI
-from EducationModels.PowerpointCreator.ModulesCode.regexing_code import stage_4_content_title_layout_splitter
+from server.openai_calls import OpenAI
+from server.PowerpointCreator.ModulesCode.regexing_code import stage_4_content_title_layout_splitter
 async def stage_4_lo_page_combined_process(lessonFacts):
         gptAgent = OpenAI()
         temperature = 0.5

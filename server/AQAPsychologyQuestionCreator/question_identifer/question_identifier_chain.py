@@ -1,4 +1,4 @@
-from EducationModels.openai_calls import OpenAI
+from server.openai_calls import OpenAI
 
 def psychology_question_type_identifier(query) :
     llm = OpenAI() 

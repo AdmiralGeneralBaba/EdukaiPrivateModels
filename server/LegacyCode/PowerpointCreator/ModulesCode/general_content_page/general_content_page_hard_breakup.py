@@ -1,6 +1,6 @@
-from EducationModels.openai_calls import OpenAI
+from server.openai_calls import OpenAI
 import re
-from EducationModels.PowerpointCreator.ModulesCode.regexing_code import *
+from server.PowerpointCreator.ModulesCode.regexing_code import *
 import asyncio
 
 

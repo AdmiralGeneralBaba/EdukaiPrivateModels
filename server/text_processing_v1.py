@@ -1,5 +1,5 @@
 from info_extractor_v4 import InfoExtractorV4
-
+import re
 # Takes in a raw list of string, puts it inside a new long string, renumbers it, then appends it to a dictionary with the key value 'lesson_facts' : 
 def process_text(text) : 
     lesson = {}
@@ -18,4 +18,9 @@ async def text_fact_transformer_V1(text) :
     return lesson
 
 
- 
+def count_facts(facts) :  
+    fact_counter_regex= r"\d+\.\s\{.*?\}"
+    print("here are the facts : ", facts)
+    fact_count = re.findall(fact_counter_regex,facts)
+    fact_count_num = len(fact_count)
+    return fact_count_num

@@ -1,5 +1,5 @@
 import asyncio
-from EducationModels.openai_calls import OpenAI
+from server.openai_calls import OpenAI
 import re
 
 

@@ -1,5 +1,5 @@
-from EducationModels.PowerpointCreator.ModulesCode.regexing_code import *
-from EducationModels.openai_calls import OpenAI
+from server.PowerpointCreator.ModulesCode.regexing_code import *
+from server.openai_calls import OpenAI
 
 async def stage_4_title_page_combined_process(lessonFacts):
     gptAgent = OpenAI()

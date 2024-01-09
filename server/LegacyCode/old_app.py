@@ -76,57 +76,29 @@ def incrementRedisRequestCount(user_id, question_count) :
 
 class RegisterRequest(BaseModel):
     email: str
-    user_id : str
+    password: str
 
 @app.post("/register") 
 async def register_user(request: RegisterRequest):
     try:
+        # Create user with Firebase
+        firebase_user = auth.create_user(email=request.email, password=request.password)
+
         # Create Stripe customer
         stripe_customer = stripe.Customer.create(email=request.email)
-        print("this is the stripe customer object", stripe_customer)
+
         # Save the Stripe customer ID in Firestore
         db = firestore.client()
-        print("this is the DB", db)
-        print(request.user_id)
-        user_ref = db.collection('users').document(request.user_id)
+        user_ref = db.collection('users').document(firebase_user.uid)
         user_ref.set({
             'stripe_customer_id': stripe_customer.id,
             # You can add more user-related information here if needed
         })
 
         # Return the user ID and Stripe customer ID
-        return {"user_id": request.user_id, "stripe_customer_id": stripe_customer.id}     
+        return {"user_id": firebase_user.uid, "stripe_customer_id": stripe_customer.id}     
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-
-@app.get('/current_usage_data/{user_id}') 
-async def current_usage(user_id: str):
-    search_query = f"user:{user_id}"
-    redis_cache = r.hgetall(search_query)
-    
-    # Ensure that the keys exist in Redis cache
-    if b'max_questions' in redis_cache and b'current_questions' in redis_cache:
-        max_questions = int(redis_cache[b'max_questions'])
-        current_questions = int(redis_cache[b'current_questions'])
-        request_object = { 
-            "max_questions": max_questions,
-            "current_questions": current_questions
-        }
-    else:
-        # Handle the case where the keys don't exist
-        request_object = {
-            "error": "Data not found for the specified user."
-        }
-
-    return request_object
-
-
-#########################################################################################################################################################################
-#########################################################################################################################################################################
-################################################      THE ROUTES BELOW ARE THE AI ROUTES :     ##########################################################################
-#########################################################################################################################################################################
-#########################################################################################################################################################################
-    
 
 @app.post("/async_text_fact_breakdown/") 
 async def async_text_fact_breakdown(request : Request, user_id : str = Header(None, alias="User-ID")) : 

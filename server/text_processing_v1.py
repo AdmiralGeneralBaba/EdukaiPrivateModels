@@ -20,7 +20,6 @@ async def text_fact_transformer_V1(text) :
 
 def count_facts(facts) :  
     fact_counter_regex= r"\d+\.\s\{.*?\}"
-    print("here are the facts : ", facts)
     fact_count = re.findall(fact_counter_regex,facts)
     fact_count_num = len(fact_count)
     return fact_count_num

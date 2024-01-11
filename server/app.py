@@ -1,6 +1,8 @@
 from fastapi import FastAPI, HTTPException, Header, Request, UploadFile, File
 import asyncio
 import tempfile
+from fastapi.responses import RedirectResponse
+from flask import redirect
 from pydantic import BaseModel
 import requests
 import firebase_admin
@@ -36,6 +38,7 @@ r = redis.Redis(
 
 cred = credentials.Certificate("./firebase_admin_auth.json")
 firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 app = FastAPI()
 app.add_middleware(
@@ -76,6 +79,11 @@ def incrementRedisRequestCount(user_id, question_count) :
 
 class RegisterRequest(BaseModel):
     email: str
+    user_id : str
+
+class CheckoutModel(BaseModel) : 
+    tier : int
+    customer_id : str
     user_id : str
 
 @app.post("/register") 
@@ -120,6 +128,68 @@ async def current_usage(user_id: str):
 
     return request_object
 
+@app.post('/create-checkout-session')
+async def create_checkout_session(CheckoutModel : CheckoutModel):
+    tier = CheckoutModel.tier
+    customer_id = CheckoutModel.customer_id
+    user_id = CheckoutModel.user_id
+    print(tier, customer_id, user_id)
+    
+    def choosePrice(tier) : 
+        if(tier == 0): 
+            price = "price_1OVh5aJeWZ1WiRc9hIBWJOoi"
+        elif(tier == 1) : 
+            price = "price_1OVh6NJeWZ1WiRc9eO0RQMq5"
+        elif(tier == 2) :
+            price = "price_1OVh6iJeWZ1WiRc9FzkfrGqW"
+        return price
+    try:
+        price = choosePrice(tier)
+        checkout_session = stripe.checkout.Session.create(
+            customer=customer_id,
+            line_items=[    
+                {
+                    # Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    'price': price,
+                    'quantity': 1,
+                },
+            ],
+            mode='subscription',
+            success_url='http://localhost:3000/' + 'input',
+            cancel_url='http://localhost:3000/' + 'subscriptions',
+        )
+    except Exception as e:
+        return str(e)
+
+    return checkout_session.url
+
+@app.post("/webhook")
+async def webhook(request: Request):  
+    print("CAME THROUGH")
+    data = await request.json()  # Adjusted to get JSON data from the request
+    customer_id = data['data']['object']['customer']
+    line_item = data['data']['object']['lines']['data'][0]['price']['id']
+    usersRef = db.collection("users")
+    users = usersRef.where("stripe_customer_id", "==", customer_id)
+    userDocs = users.get()
+    userDoc = userDocs[0]
+    user_id = userDoc.id
+
+    def chooseRateChange(line_item) : 
+        max_requests = 0
+        if(line_item == "price_1OVh5aJeWZ1WiRc9hIBWJOoi") : 
+            max_requests == 2000
+        elif(line_item == "price_1OVh6NJeWZ1WiRc9eO0RQMq5") :
+            max_requests == 5000
+        elif(line_item == "price_1OVh6iJeWZ1WiRc9FzkfrGqW") : 
+            max_requests == 500000  
+        return max_requests
+    
+    new_max_requests = chooseRateChange(line_item)
+    redis_search = f"user{user_id}"
+    r.hincrby(redis_search, "max_requests", new_max_requests)
+
+  
 
 #########################################################################################################################################################################
 #########################################################################################################################################################################
@@ -127,7 +197,7 @@ async def current_usage(user_id: str):
 #########################################################################################################################################################################
 #########################################################################################################################################################################
     
-
+#http://127.0.0.1:8000/
 @app.post("/async_text_fact_breakdown/") 
 async def async_text_fact_breakdown(request : Request, user_id : str = Header(None, alias="User-ID")) : 
 

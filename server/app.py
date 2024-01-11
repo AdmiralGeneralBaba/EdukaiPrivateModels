@@ -174,20 +174,22 @@ async def webhook(request: Request):
     userDocs = users.get()
     userDoc = userDocs[0]
     user_id = userDoc.id
-
+    print(user_id)
+    
+    checkUserPerms(user_id)
     def chooseRateChange(line_item) : 
         max_requests = 0
         if(line_item == "price_1OVh5aJeWZ1WiRc9hIBWJOoi") : 
-            max_requests == 2000
+            max_requests = 3000
         elif(line_item == "price_1OVh6NJeWZ1WiRc9eO0RQMq5") :
-            max_requests == 5000
+            max_requests = 8000
         elif(line_item == "price_1OVh6iJeWZ1WiRc9FzkfrGqW") : 
-            max_requests == 500000  
+            max_requests = 500000  
         return max_requests
     
     new_max_requests = chooseRateChange(line_item)
-    redis_search = f"user{user_id}"
-    r.hincrby(redis_search, "max_requests", new_max_requests)
+    redis_search = f"user:{user_id}"
+    r.hset(redis_search, "max_questions", new_max_requests)
 
   
 

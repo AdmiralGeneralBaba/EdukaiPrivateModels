@@ -21,6 +21,7 @@ from firebase_admin import auth, firestore
 import redis
 from upstash_redis import Redis
 import os
+from openai_calls import OpenAI
 from os import environ as env
 
 app = FastAPI()
@@ -31,6 +32,9 @@ app.add_middleware(
     allow_methods=["POST", "GET"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
+
+for key, value in os.environ.items():
+    print(f"{key}: {value}")
 
 # Stripe API key : 
 print(env['MY_VARIABLE'])
@@ -233,6 +237,19 @@ async def async_text_fact_breakdown(request : Request, user_id : str = Header(No
         question_count = count_facts(text_facts['lesson_facts'])
         incrementRedisRequestCount(user_id, question_count)
         return text
+
+@app.get('/test-normal/{text}') 
+async def test(text) : 
+    openai = OpenAI()
+    text = openai.open_ai_gpt_call(text, "say anything back from this", 1)
+    return text
+
+@app.get('/test-async/{text}') 
+async def test(text) : 
+    openai = OpenAI()
+    text = await openai.async_open_ai_gpt4_call(text, "say anything back from this", 1)
+    return text
+
 
 @app.get('/youtube_to_text/') 
 async def async_text_fact_breakdown_youtube_url(youtube_url : str) : 

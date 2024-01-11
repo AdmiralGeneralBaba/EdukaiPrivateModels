@@ -99,6 +99,7 @@ async def register_user(request: RegisterRequest):
         user_ref = db.collection('users').document(request.user_id)
         user_ref.set({
             'stripe_customer_id': stripe_customer.id,
+            'tier' : 0
             # You can add more user-related information here if needed
         })
 
@@ -136,11 +137,11 @@ async def create_checkout_session(CheckoutModel : CheckoutModel):
     print(tier, customer_id, user_id)
     
     def choosePrice(tier) : 
-        if(tier == 0): 
+        if(tier == 1): 
             price = "price_1OVh5aJeWZ1WiRc9hIBWJOoi"
-        elif(tier == 1) : 
+        elif(tier == 2) : 
             price = "price_1OVh6NJeWZ1WiRc9eO0RQMq5"
-        elif(tier == 2) :
+        elif(tier == 3) :
             price = "price_1OVh6iJeWZ1WiRc9FzkfrGqW"
         return price
     try:
@@ -175,6 +176,19 @@ async def webhook(request: Request):
     userDoc = userDocs[0]
     user_id = userDoc.id
     print(user_id)
+    def calculateTier(line_item) : 
+        tier = 0
+        if(line_item == "price_1OVh5aJeWZ1WiRc9hIBWJOoi") : 
+            tier = 1
+        elif(line_item == "price_1OVh6NJeWZ1WiRc9eO0RQMq5") :
+            tier = 2
+        elif(line_item == "price_1OVh6iJeWZ1WiRc9FzkfrGqW") : 
+            tier = 3 
+        return tier
+    
+    userDocRef = usersRef.document(user_id)
+    tier = calculateTier(line_item)
+    userDocRef.update({"tier" : tier})
     
     checkUserPerms(user_id)
     def chooseRateChange(line_item) : 

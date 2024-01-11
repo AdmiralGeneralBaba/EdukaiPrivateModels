@@ -229,10 +229,10 @@ async def async_text_fact_breakdown(request : Request, user_id : str = Header(No
     if len(text) > 1000000000 : 
         return "too long"
     else : 
-        # text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
-        # question_count = count_facts(text_facts['lesson_facts'])
-        # incrementRedisRequestCount(user_id, question_count)
-        return (text)
+        text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
+        question_count = count_facts(text_facts['lesson_facts'])
+        incrementRedisRequestCount(user_id, question_count)
+        return text
 
 @app.get('/youtube_to_text/') 
 async def async_text_fact_breakdown_youtube_url(youtube_url : str) : 
@@ -247,6 +247,10 @@ async def async_text_fact_breakdown_youtube_url(youtube_url : str) :
         text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
         return (text_facts)
 
+@app.get('/openai-test/{text}')
+async def test(text : str) : 
+   text_facts =  await text_fact_transformer_V1(text)
+   return (text_facts)
 
 @app.post('/file_input') 
 async def handleFileInput(file : UploadFile = File(...)) : 

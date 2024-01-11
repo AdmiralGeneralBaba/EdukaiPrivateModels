@@ -22,6 +22,7 @@ import redis
 from upstash_redis import Redis
 import os
 from openai_calls import OpenAI
+import openai
 from os import environ as env
 
 app = FastAPI()
@@ -38,7 +39,10 @@ for key, value in os.environ.items():
 
 # Stripe API key : 
 print(env['MY_VARIABLE'])
+#API key setup
 stripe.api_key = os.getenv("STRIPE_API")
+openai.api_key = os.getenv('OPENAI_API_KEY')
+
 
 print(os.getenv("STRIPE_API"))
 print("This is the redis password : ", os.getenv("REDIS_PASSWORD"))

@@ -240,7 +240,7 @@ async def async_text_fact_breakdown(request : Request, user_id : str = Header(No
         text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
         question_count = count_facts(text_facts['lesson_facts'])
         incrementRedisRequestCount(user_id, question_count)
-        return text
+        return text_facts
 
 @app.get('/test-normal/{text}') 
 async def test(text) : 

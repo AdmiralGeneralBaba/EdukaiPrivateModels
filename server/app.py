@@ -21,10 +21,11 @@ from firebase_admin import auth, firestore
 import redis
 from upstash_redis import Redis
 import os
+from os import environ as env
 
 
 # Stripe API key : 
-
+print(env['MY_VARIABLE'])
 stripe.api_key = os.getenv("STRIPE_API")
 
 print(os.getenv("STRIPE_API"))

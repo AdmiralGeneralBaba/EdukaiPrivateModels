@@ -25,15 +25,15 @@ import os
 
 # Stripe API key : 
 
-stripe.api_key = "sk_test_51OVfBnJeWZ1WiRc9h7Aei8CVEFrB8nnWElYGs7h8GxD9KY7KtRwe3oAxzGYFgPfiFTqxxRrruwN2G1tTiSw2ixLA00kqG04xTG"
+stripe.api_key = os.getenv("STRIPE_API")
 
 print(os.getenv("STRIPE_API"))
-
+print("This is the redis password : ", os.getenv("REDIS_PASSWORD"))
 
 r = redis.Redis(
   host='eu1-moral-jaybird-38118.upstash.io',
   port=38118,
-  password='f0dc8b78859b4be9acc4d80710b6f83f'
+  password="f0dc8b78859b4be9acc4d80710b6f83f"
 )
 
 cred = credentials.Certificate("./firebase_admin_auth.json")

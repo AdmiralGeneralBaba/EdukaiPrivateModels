@@ -23,6 +23,14 @@ from upstash_redis import Redis
 import os
 from os import environ as env
 
+app = FastAPI()
+app.add_middleware(
+  CORSMiddleware,
+    allow_origins=["*"],  # Specify the allowed origin
+    allow_credentials=True,
+    allow_methods=["POST", "GET"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 
 # Stripe API key : 
 print(env['MY_VARIABLE'])
@@ -40,16 +48,6 @@ r = redis.Redis(
 cred = credentials.Certificate("./firebase_admin_auth.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
-
-app = FastAPI()
-app.add_middleware(
-  CORSMiddleware,
-    allow_origins=["*"],  # Specify the allowed origin
-    allow_credentials=True,
-    allow_methods=["POST", "GET"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
-)
-
 
 #Functions for checking Redis and the user perms : 
 def checkRedis(user_id):
@@ -287,4 +285,5 @@ async def flashcard_creator(request : Request):
 
 @app.get('/test/{num}')
 def number_printer(num) :
-    return num
+    test = "test"
+    return test

@@ -17,12 +17,14 @@ def process_file(file: UploadFile):
 def process_powerpoint(directory_path): 
     loader = UnstructuredPowerPointLoader(directory_path)
     data = loader.load()
-    return data
 
-def powerpoint_translation(powerpoint_file_url: str): 
-    loader = UnstructuredPowerPointLoader(powerpoint_file_url)
-    data = loader.load()
-    return data
+    combined_content = ""
+    for document in data:
+        combined_content += document.page_content + "\n"
+    
+    return combined_content
+
+
 
 def word_document_translation(word_document_file_directory: str):
     loader = UnstructuredWordDocumentLoader(word_document_file_directory)

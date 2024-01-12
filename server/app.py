@@ -242,7 +242,7 @@ async def async_text_fact_breakdown(request : Request, user_id : str = Header(No
 
 
 @app.post('/file_input') 
-async def handleFileInput(file : UploadFile = File(...), user_id : str = Header(None, alias="User_ID")) : 
+async def handleFileInput(file : UploadFile = File(...), user_id : str = Header(None, alias="User-ID")) : 
 
     print("THIS IS THE USER ID TAKEN FROM AS A HEADER IN THE FILE INPUT : ", user_id)
     userPerms = checkUserPerms(user_id)

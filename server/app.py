@@ -45,12 +45,12 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 print(os.getenv("STRIPE_API"))
-print("This is the redis password : ", os.getenv("REDIS_PASSWORD"))
+print("This is the redis password : ", )
 
 r = redis.Redis(
   host='eu1-moral-jaybird-38118.upstash.io',
   port=38118,
-  password="f0dc8b78859b4be9acc4d80710b6f83f"
+  password= os.getenv("REDIS_PASSWORD")
 )
 
 cred = credentials.Certificate("./firebase_admin_auth.json")
@@ -201,7 +201,7 @@ async def webhook(request: Request):
     def chooseRateChange(line_item) : 
         max_requests = 0
         if(line_item == "price_1OVh5aJeWZ1WiRc9hIBWJOoi") : 
-            max_requests = 3000
+            max_requests = 5
         elif(line_item == "price_1OVh6NJeWZ1WiRc9eO0RQMq5") :
             max_requests = 8000
         elif(line_item == "price_1OVh6iJeWZ1WiRc9FzkfrGqW") : 

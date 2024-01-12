@@ -145,11 +145,9 @@ async def create_checkout_session(CheckoutModel : CheckoutModel):
     
     def choosePrice(tier) : 
         if(tier == 1): 
-            price = "price_1OVh5aJeWZ1WiRc9hIBWJOoi"
+            price = "price_1OXqCOJeWZ1WiRc9mVmS3zZh"
         elif(tier == 2) : 
-            price = "price_1OVh6NJeWZ1WiRc9eO0RQMq5"
-        elif(tier == 3) :
-            price = "price_1OVh6iJeWZ1WiRc9FzkfrGqW"
+            price = "price_1OXqCiJeWZ1WiRc9SOKt90Cy"
         return price
     try:
         price = choosePrice(tier)

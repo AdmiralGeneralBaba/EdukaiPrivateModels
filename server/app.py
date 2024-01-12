@@ -257,9 +257,11 @@ async def handleFileInput(file : UploadFile = File(...), user_id : str = Header(
         process_method = file_processor.choose_file_process_type(fileType)
         data = process_method(path)
 
-        data_processed = await text_fact_transformer_V1(data)
-        print(data_processed)
-        return (data_processed)
+        file_facts = await text_fact_transformer_V1(data)
+        # calculates the question coiunt and increments the redis middleware
+        question_count = count_facts(file_facts['lesson_facts'])
+        incrementRedisRequestCount(user_id, question_count)
+        return (file_facts)
     else : 
         return { 'error ' : 'no file found'}
 

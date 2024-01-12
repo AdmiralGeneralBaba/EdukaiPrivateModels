@@ -50,7 +50,7 @@ print("This is the redis password : ", )
 r = redis.Redis(
   host='eu1-moral-jaybird-38118.upstash.io',
   port=38118,
-  password= os.getenv("REDIS_PASSWORD")
+  password= "f0dc8b78859b4be9acc4d80710b6f83f"
 )
 
 cred = credentials.Certificate("./firebase_admin_auth.json")

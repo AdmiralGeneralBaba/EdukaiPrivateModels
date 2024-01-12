@@ -45,12 +45,12 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 
 print(os.getenv("STRIPE_API"))
-print("This is the redis password : ", os.getenv("REDIS_PASSWORD"))
+print("This is the redis password : ", )
 
 r = redis.Redis(
   host='eu1-moral-jaybird-38118.upstash.io',
   port=38118,
-  password="f0dc8b78859b4be9acc4d80710b6f83f"
+  password= os.getenv("REDIS_PASSWORD")
 )
 
 cred = credentials.Certificate("./firebase_admin_auth.json")
@@ -201,7 +201,7 @@ async def webhook(request: Request):
     def chooseRateChange(line_item) : 
         max_requests = 0
         if(line_item == "price_1OVh5aJeWZ1WiRc9hIBWJOoi") : 
-            max_requests = 3000
+            max_requests = 5
         elif(line_item == "price_1OVh6NJeWZ1WiRc9eO0RQMq5") :
             max_requests = 8000
         elif(line_item == "price_1OVh6iJeWZ1WiRc9FzkfrGqW") : 
@@ -220,15 +220,13 @@ async def webhook(request: Request):
 #########################################################################################################################################################################
 #########################################################################################################################################################################
     
-#http://127.0.0.1:8000/
+
 @app.post("/async_text_fact_breakdown/") 
 async def async_text_fact_breakdown(request : Request, user_id : str = Header(None, alias="User-ID")) : 
 
     userPerms = checkUserPerms(user_id)
-    print(userPerms)
     if userPerms == False : 
-        return "Nothing"
-    
+        return { "error" : "tier_too_low"}
     
     text = await request.body()
     text = text.decode("utf-8")
@@ -241,18 +239,6 @@ async def async_text_fact_breakdown(request : Request, user_id : str = Header(No
         question_count = count_facts(text_facts['lesson_facts'])
         incrementRedisRequestCount(user_id, question_count)
         return text_facts
-
-@app.get('/test-normal/{text}') 
-async def test(text) : 
-    openai = OpenAI()
-    text = openai.open_ai_gpt_call(text, "say anything back from this", 1)
-    return text
-
-@app.get('/test-async/{text}') 
-async def test(text) : 
-    openai = OpenAI()
-    text = await openai.async_open_ai_gpt4_call(text, "say anything back from this", 1)
-    return text
 
 
 @app.get('/youtube_to_text/') 
@@ -274,7 +260,12 @@ async def test(text : str) :
    return (text_facts)
 
 @app.post('/file_input') 
-async def handleFileInput(file : UploadFile = File(...)) : 
+async def handleFileInput(file : UploadFile = File(...), user_id : str = Header(None, alias="User_ID")) : 
+
+    userPerms = checkUserPerms(user_id)
+    if userPerms == False : 
+        return { "error" : "tier_too_low"}
+    
     if file :
         path = file_processor.process_file(file)
         print("this is the file name : ", file.filename)

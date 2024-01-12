@@ -241,27 +241,10 @@ async def async_text_fact_breakdown(request : Request, user_id : str = Header(No
         return text_facts
 
 
-@app.get('/youtube_to_text/') 
-async def async_text_fact_breakdown_youtube_url(youtube_url : str) : 
-    # directory = request.args.get('directory')
-    directory = r"C:\Users\david\Downloads\Youtube"
-    info_extractor = InfoExtractorV5()
-    text = info_extractor.transcribe_youtube_url(youtube_url, directory)
-                   
-    if len(text) > 100000 : 
-        return "too long"
-    else : 
-        text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
-        return (text_facts)
-
-@app.get('/openai-test/{text}')
-async def test(text : str) : 
-   text_facts =  await text_fact_transformer_V1(text)
-   return (text_facts)
-
 @app.post('/file_input') 
 async def handleFileInput(file : UploadFile = File(...), user_id : str = Header(None, alias="User_ID")) : 
 
+    print("THIS IS THE USER ID TAKEN FROM AS A HEADER IN THE FILE INPUT : ", user_id)
     userPerms = checkUserPerms(user_id)
     if userPerms == False : 
         return { "error" : "tier_too_low"}
@@ -303,3 +286,21 @@ async def flashcard_creator(request : Request):
 def number_printer(num) :
     test = "test"
     return test
+
+@app.get('/youtube_to_text/') 
+async def async_text_fact_breakdown_youtube_url(youtube_url : str) : 
+    # directory = request.args.get('directory')
+    directory = r"C:\Users\david\Downloads\Youtube"
+    info_extractor = InfoExtractorV5()
+    text = info_extractor.transcribe_youtube_url(youtube_url, directory)
+                   
+    if len(text) > 100000 : 
+        return "too long"
+    else : 
+        text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
+        return (text_facts)
+
+@app.get('/openai-test/{text}')
+async def test(text : str) : 
+   text_facts =  await text_fact_transformer_V1(text)
+   return (text_facts)

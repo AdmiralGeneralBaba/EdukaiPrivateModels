@@ -93,6 +93,9 @@ class CheckoutModel(BaseModel) :
     customer_id : str
     user_id : str
 
+class BillingModel(BaseModel) : 
+    customer_id : str
+
 @app.post("/register") 
 async def register_user(request: RegisterRequest):
     try:
@@ -168,6 +171,24 @@ async def create_checkout_session(CheckoutModel : CheckoutModel):
         return str(e)
 
     return checkout_session.url
+
+@app.post("/manage-billing-section")
+async def manage_billing(billing_model: BillingModel):
+    customer_id = billing_model.customer_id
+    # You might want to handle exceptions here for production code
+    try:
+        # Create a billing portal session
+        session = stripe.billing_portal.Session.create(
+            customer=customer_id,
+            return_url="http://localhost:3000/input"
+        )
+
+        # Return the URL to the user
+        return {"url": session.url}
+
+    except stripe.error.StripeError as e:
+        # Handle Stripe errors (e.g., invalid customer ID)
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/webhook")
 async def webhook(request: Request):  

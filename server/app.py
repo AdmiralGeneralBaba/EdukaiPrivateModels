@@ -207,9 +207,9 @@ async def webhook(request: Request):
     print(user_id)
     def calculateTier(line_item) : 
         tier = 0
-        if(line_item == "price_1OVh5aJeWZ1WiRc9hIBWJOoi") : 
+        if(line_item == "price_1OXqCOJeWZ1WiRc9mVmS3zZh") : 
             tier = 1
-        elif(line_item == "price_1OVh6NJeWZ1WiRc9eO0RQMq5") :
+        elif(line_item == "price_1OXqCiJeWZ1WiRc9SOKt90Cy") :
             tier = 2
         elif(line_item == "price_1OVh6iJeWZ1WiRc9FzkfrGqW") : 
             tier = 3 

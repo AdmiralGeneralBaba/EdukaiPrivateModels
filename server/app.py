@@ -70,11 +70,11 @@ def checkRedis(user_id):
             return True
     else:
         # Note: Consider using 'hset' for newer Redis versions
-        r.hmset(user_key, {'max_questions': 2000, 'current_questions': 0})
+        r.hmset(user_key, {'max_questions': 30, 'current_questions': 0})
         return True
 def setupRedis(user_id) : 
     user_key = f"user:{user_id}"
-    r.hmset(user_key, {'max_questions' : 100, 'current_questions' : 0})
+    r.hmset(user_key, {'max_questions' : 30, 'current_questions' : 0})
 #Need to add in the serverless redis setup so that it can actuaoly chcekc the caching properly : 
 def checkUserPerms(user_id) :
     checkedRedis = checkRedis(user_id)
@@ -223,11 +223,7 @@ async def webhook(request: Request):
     def chooseRateChange(line_item) : 
         max_requests = 0
         if(line_item == "price_1OVh5aJeWZ1WiRc9hIBWJOoi") : 
-            max_requests = 5
-        elif(line_item == "price_1OVh6NJeWZ1WiRc9eO0RQMq5") :
-            max_requests = 8000
-        elif(line_item == "price_1OVh6iJeWZ1WiRc9FzkfrGqW") : 
-            max_requests = 500000  
+            max_requests = 1000
         return max_requests
     
     new_max_requests = chooseRateChange(line_item)

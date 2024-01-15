@@ -73,7 +73,7 @@ def checkRedis(user_id):
         r.hmset(user_key, {'max_questions': 2000, 'current_questions': 0})
         return True
 def setupRedis(user_id) : 
-    user_key = f"user{user_id}"
+    user_key = f"user:{user_id}"
     r.hmset(user_key, {'max_questions' : 100, 'current_questions' : 0})
 #Need to add in the serverless redis setup so that it can actuaoly chcekc the caching properly : 
 def checkUserPerms(user_id) :

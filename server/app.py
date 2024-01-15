@@ -72,6 +72,9 @@ def checkRedis(user_id):
         # Note: Consider using 'hset' for newer Redis versions
         r.hmset(user_key, {'max_questions': 2000, 'current_questions': 0})
         return True
+def setupRedis(user_id) : 
+    user_key = f"user{user_id}"
+    r.hmset(user_key, {'max_questions' : 100, 'current_questions' : 0})
 #Need to add in the serverless redis setup so that it can actuaoly chcekc the caching properly : 
 def checkUserPerms(user_id) :
     checkedRedis = checkRedis(user_id)
@@ -112,7 +115,7 @@ async def register_user(request: RegisterRequest):
             'tier' : 0
             # You can add more user-related information here if needed
         })
-
+        setupRedis(user_ref.id)
         # Return the user ID and Stripe customer ID
         return {"user_id": request.user_id, "stripe_customer_id": stripe_customer.id}     
     except Exception as e:

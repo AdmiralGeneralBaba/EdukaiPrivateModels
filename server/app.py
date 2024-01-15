@@ -222,7 +222,7 @@ async def webhook(request: Request):
     checkUserPerms(user_id)
     def chooseRateChange(line_item) : 
         max_requests = 0
-        if(line_item == "price_1OVh5aJeWZ1WiRc9hIBWJOoi") : 
+        if(line_item == "price_1OXqCOJeWZ1WiRc9mVmS3zZh") : 
             max_requests = 1000
         return max_requests
     

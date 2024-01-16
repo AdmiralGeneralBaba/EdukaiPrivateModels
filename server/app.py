@@ -8,7 +8,7 @@ import requests
 import firebase_admin
 import stripe
 from mcq_creator_v1 import mcq_creator_v1
-from flashcard_model_v2 import FlashcardModelV2
+import flashcard_model_v2
 from text_processing_v1 import text_fact_transformer_V1
 from text_processing_v1 import count_facts
 from info_extractor_v5 import InfoExtractorV5
@@ -297,9 +297,8 @@ async def flashcard_creator(request : Request):
     set = await request.body()
     set = set.decode("utf-8")
     # Decoding the URL encoded lesson value
-    flashcard_creator = FlashcardModelV2()
     # gpt_type is hard-coded to '1'
-    flashcards = flashcard_creator.flashcard_creator_from_raw_facts(set, '0')
+    flashcards = await flashcard_model_v2.flashcard_creator_from_raw_facts(set, '0')
     return (flashcards)
 
 @app.get('/test/{num}')

@@ -1,15 +1,15 @@
+import asyncio
 from openai_calls import OpenAI
 from info_extraction_v1 import InfoExtractorV1
 import re
+from info_extractor_v4 import InfoExtractorV4
 
-
-class FlashcardModelV2 : 
-    def flashcard_question_creator(self, answers, gpt_type) : #Creates the questions for the given answers
-        infoExtractor = InfoExtractorV1()
-        gptAgent = OpenAI()
-        gptTemperature = 0.8
-        
-        prompt = """I want you to pretend to be a question creating expert for flashcards. Based on these facts, I want you to create tailored, short questions for each one of these facts, such that they make sense logically for the answer on the back, and that the answer on the back PERFECTLY answers the question. scan through each fact, indicated by the number as the identifier of that fact, and the curly brackets from the beginning the to the end signifying the start and end of that fact.   ONLY print out the information. Before printing out the questions, have there be a number indicating the fact number, starting from '1.'. the fact MUST be surrounded by curly brackets, such that the structure of each fact MUST be : 1. {INSERT QUESTION HERE} 2. {INSERT QUESTION HERE}, they MUST BE IN THESE CURLY BRACKETS. Here's an example output for what you should do (ignore the facts, just for the structure : 
+async def flashcard_question_creator(answers, gpt_type) : #Creates the questions for the given answers
+    infoExtractor = InfoExtractorV1()
+    gptAgent = OpenAI()
+    gptTemperature = 0.8
+    
+    prompt = """I want you to pretend to be a question creating expert for flashcards. Based on these facts, I want you to create tailored, short questions for each one of these facts, such that they make sense logically for the answer on the back, and that the answer on the back PERFECTLY answers the question. scan through each fact, indicated by the number as the identifier of that fact, and the curly brackets from the beginning the to the end signifying the start and end of that fact.   ONLY print out the information. Before printing out the questions, have there be a number indicating the fact number, starting from '1.'. the fact MUST be surrounded by curly brackets, such that the structure of each fact MUST be : 1. {INSERT QUESTION HERE} 2. {INSERT QUESTION HERE}, they MUST BE IN THESE CURLY BRACKETS. Here's an example output for what you should do (ignore the facts, just for the structure : 
 
 1. {What is the chemical symbol for Iron in the Periodic Table?}
 2. {Which planet in our solar system is known as the Red Planet?}
@@ -17,60 +17,66 @@ class FlashcardModelV2 :
 4. {What is the capital of Australia?}
 5. {Who painted the "Starry Night"?}
 
- Here are the raw facts :  """ 
-        if gpt_type == 0 :
-            questions = gptAgent.open_ai_gpt_call(answers, prompt, gptTemperature)
-        else : 
-            questions = gptAgent.open_ai_gpt4_turbo_call(answers, prompt, gptTemperature)
-        renumberedQuestions = infoExtractor.renumber_facts(questions)   
-        return renumberedQuestions
+Here are the raw facts :  """ 
+    if gpt_type == 0 :
+        questions = await gptAgent.async_open_ai_gpt_call(answers, prompt, gptTemperature)
+    else : 
+        questions = await gptAgent.async_open_ai_gpt4_turbo_call(answers, prompt, gptTemperature)
+    renumberedQuestions = infoExtractor.renumber_facts(questions)   
+    return renumberedQuestions
+
+def clean_text(text): #Cleans the text around the questions and answers so it looks better for the final output
+    # Remove the number and the curly brackets
+    clean_text = re.sub(r'^\d+\.\s*{(.+)}$', r'\1', text)
+    return clean_text
+
+def create_qa_dict(questions, answers): #creates the question and answers dictionary
+    # Check if both lists have the same length
+    if len(questions) != len(answers):
+        raise ValueError("The questions and answers lists must have the same length.")
     
-    def clean_text(self, text): #Cleans the text around the questions and answers so it looks better for the final output
-        # Remove the number and the curly brackets
-        clean_text = re.sub(r'^\d+\.\s*{(.+)}$', r'\1', text)
-        return clean_text
-
-    def create_qa_dict(self, questions, answers): #creates the question and answers dictionary
-        # Check if both lists have the same length
-        if len(questions) != len(answers):
-            raise ValueError("The questions and answers lists must have the same length.")
-        
-        # Create the dictionary
-        qa_dict = []
-        for i in range(len(questions)):
-            qa_dict.append({'question': self.clean_text(questions[i]), 'answer': self.clean_text(answers[i])})
-        
-        return qa_dict
+    # Create the dictionary
+    qa_dict = []
+    for i in range(len(questions)):
+        qa_dict.append({'question': clean_text(questions[i]), 'answer': clean_text(answers[i])})
     
+    return qa_dict
 
-    #NEW flashcard creator - Creates flashcards based on a input of facts, in the layout specified in the documents. 
-    def flashcard_creator_from_raw_facts(self, answers, gpt_type) : 
-        info_extraction = InfoExtractorV1()
-        questions = self.flashcard_question_creator(answers, gpt_type)
-        question_array = info_extraction.facts_splitter_into_array(questions)
-        answer_array = info_extraction.facts_splitter_into_array(answers)
-        flashcards = self.create_qa_dict(questions=question_array, answers=answer_array) 
-        return flashcards
 
-    def flashcard_intialise_pdf_legacy(self, textbook_path, chunkSize): #Creates flashcards for the whole of an inputted PDF in one go. 
-        gptAgent = OpenAI()
-        infoExtractor = InfoExtractorV1()
-        questionPrompt = """Create me a tailored, short questions for these raw facts to be used in a flashcard. They should follow a numbered structure.
+#NEW flashcard creator - Creates flashcards based on a input of facts, in the layout specified in the documents. 
+async def flashcard_creator_from_raw_facts(answers, gpt_type) : 
+    info_extraction = InfoExtractorV4()
+    fact_chunks = info_extraction.fact_text_chunker(answers, 400)
+    flashcard_calling_tasks = []
+    for answer_chunk in fact_chunks :
+        flashcard_calling_tasks.append(flashcard_question_creator(answer_chunk, gpt_type))
+    questions = await asyncio.gather(*flashcard_calling_tasks)
+    flattened_questions = ' '.join(questions)
+    questions_processed = info_extraction.renumber_facts(flattened_questions)
+    question_array = info_extraction.facts_splitter_into_array(questions_processed)
+    answer_array = info_extraction.facts_splitter_into_array(answers)
+    flashcards = create_qa_dict(questions=question_array, answers=answer_array) 
+    return flashcards
+
+def flashcard_intialise_pdf_legacy(textbook_path, chunkSize): #Creates flashcards for the whole of an inputted PDF in one go. 
+    gptAgent = OpenAI()
+    infoExtractor = InfoExtractorV1()
+    questionPrompt = """Create me a tailored, short questions for these raw facts to be used in a flashcard. They should follow a numbered structure.
 raw facts :  """
-        rawInfo = infoExtractor.info_extractorV2(textbook_path, chunkSize) #creates the raw information in an array 'rawInfo', where at position i it is the raw facts for a section in the textbook.
-        answerArray = []
-        for i in range(len(rawInfo)) : 
-            print("Answer Created!")
-            answerArray.append(infoExtractor.process_facts(rawInfo))  # <-- change this line
-        questionsArray = []
+    rawInfo = infoExtractor.info_extractorV2(textbook_path, chunkSize) #creates the raw information in an array 'rawInfo', where at position i it is the raw facts for a section in the textbook.
+    answerArray = []
+    for i in range(len(rawInfo)) : 
+        print("Answer Created!")
+        answerArray.append(infoExtractor.process_facts(rawInfo))  # <-- change this line
+    questionsArray = []
 
-        for answer in answerArray:
-            questionsArray.append(gptAgent.open_ai_gpt_call(answer, questionPrompt, 0.5))   
-        return questionsArray, answerArray
-    
-    
+    for answer in answerArray:
+        questionsArray.append(gptAgent.open_ai_gpt_call(answer, questionPrompt, 0.5))   
+    return questionsArray, answerArray
+
+
 ############  TESTING CODE #############
-# test = FlashcardModelV2()
+
 # infoExtractionTest = InfoExtractorV1()
 
 # rawText = """Introduction:
@@ -100,6 +106,9 @@ raw facts :  """
 # path2 = "C:\\Users\\david\\Desktop\\AlgoCo\\Edukai\\AI models\\Info extractor\\meetingminutes.pdf"
 # # testRaw = infoExtractionTest.renumber_facts(rawFacts)
 
-# flashcards = test.flashcard_creator_from_raw_facts(rawFacts, 1)
-# print(flashcards)
-# # print(testRaw)
+# async def test () : 
+#     generated_mcq_list = await flashcard_creator_from_raw_facts(rawFacts, 1)
+#     print(generated_mcq_list)
+
+# if __name__ == "__main__":
+#     asyncio.run(test())

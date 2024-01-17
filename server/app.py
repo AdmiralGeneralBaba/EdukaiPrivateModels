@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Header, Request, UploadFile, File
 import asyncio
 import tempfile
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 from flask import redirect
 from pydantic import BaseModel
 import requests
@@ -239,24 +239,23 @@ async def webhook(request: Request):
 #########################################################################################################################################################################
     
 
-@app.post("/async_text_fact_breakdown/") 
-async def async_text_fact_breakdown(request : Request, user_id : str = Header(None, alias="User-ID")) : 
+@app.post("/async_text_fact_breakdown/")
+async def async_text_fact_breakdown(request: Request, user_id: str = Header(None, alias="User-ID")):
 
     userPerms = checkUserPerms(user_id)
-    if userPerms == False : 
-        return { "error" : "tier_too_low"}
+    if not userPerms:
+        return JSONResponse(status_code=403, content={"error" : "tier_too_low"})
     
     text = await request.body()
     text = text.decode("utf-8")
-    
 
-    if len(text) > 1000000000 : 
-        return "too long"
-    else : 
-        text_facts = await text_fact_transformer_V1(text) # NEED TO FIX THIS
+    if len(text) > 20000: 
+        return JSONResponse(status_code=413, content={"error" : "Request entity too large"})
+    else:
+        text_facts = await text_fact_transformer_V1(text)
         question_count = count_facts(text_facts['lesson_facts'])
         incrementRedisRequestCount(user_id, question_count)
-        return text_facts
+        return JSONResponse(status_code=200, content=text_facts)
 
 
 @app.post('/file_input') 

@@ -92,7 +92,7 @@ async def mcq_creator_individual_question(real_answers, gpt_type) :
 
 async def mcq_creator_v1(real_answers, gpt_type) : 
         info_extractor_v4 = InfoExtractorV4()
-        fact_chunks = info_extractor_v4.fact_text_chunker(real_answers, 500)
+        fact_chunks = info_extractor_v4.fact_text_chunker(real_answers, 250)
         mcq_calling_tasks = []
         mcq_list_of_mcqs = []
         for answer_chunk in fact_chunks :

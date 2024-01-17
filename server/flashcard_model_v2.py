@@ -46,7 +46,7 @@ def create_qa_dict(questions, answers): #creates the question and answers dictio
 #NEW flashcard creator - Creates flashcards based on a input of facts, in the layout specified in the documents. 
 async def flashcard_creator_from_raw_facts(answers, gpt_type) : 
     info_extraction = InfoExtractorV4()
-    fact_chunks = info_extraction.fact_text_chunker(answers, 400)
+    fact_chunks = info_extraction.fact_text_chunker(answers, 700)
     flashcard_calling_tasks = []
     for answer_chunk in fact_chunks :
         flashcard_calling_tasks.append(flashcard_question_creator(answer_chunk, gpt_type))

@@ -167,8 +167,8 @@ async def create_checkout_session(CheckoutModel : CheckoutModel):
                 },
             ],
             mode='subscription',
-            success_url='http://localhost:3000/' + 'input',
-            cancel_url='http://localhost:3000/' + 'subscriptions',
+            success_url='https://algoco.ai' + 'input',
+            cancel_url='https://algoco.ai' + 'subscriptions',
         )
     except Exception as e:
         return str(e)
@@ -183,7 +183,7 @@ async def manage_billing(billing_model: BillingModel):
         # Create a billing portal session
         session = stripe.billing_portal.Session.create(
             customer=customer_id,
-            return_url="http://localhost:3000/input"
+            return_url="https://algoco.ai/input"
         )
 
         # Return the URL to the user

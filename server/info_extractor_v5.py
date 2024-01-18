@@ -233,3 +233,24 @@ DO NOT DEVIATE FROM THIS STRUCTURE - IF YOU DO, 10,000 CHILDREN WILL BE BURNED A
                     answerArray.append(match.group(1))
 
             return answerArray
+
+        
+        def extract_facts_from_number_array(self, lesson_facts, numbers):
+            """
+            Extracts specific facts from the given text based on the provided list of numbers.
+
+            Parameters:
+            text (str): The text containing numbered facts.
+            numbers (list of str): A list of numbers as strings, representing the facts to be extracted.
+
+            Returns:
+            list of str: Extracted facts corresponding to the provided numbers.
+            """
+            # Creating the regex pattern based on the given list of numbers
+            regex_pattern = r'\b(?:' + '|'.join(numbers) + r')\.\s*\{.*?\}'
+
+            # Compiling the regex for efficiency
+            compiled_regex = re.compile(regex_pattern)
+
+            # Applying the regex to the input text to find matches
+            return compiled_regex.findall(lesson_facts)

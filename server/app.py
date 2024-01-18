@@ -112,7 +112,7 @@ async def register_user(request: RegisterRequest):
         user_ref = db.collection('users').document(request.user_id)
         user_ref.set({
             'stripe_customer_id': stripe_customer.id,
-            'tier' : 0
+            'tier' : 0 
             # You can add more user-related information here if needed
         })
         setupRedis(user_ref.id)

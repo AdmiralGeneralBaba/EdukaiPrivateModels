@@ -24,6 +24,7 @@ import os
 from openai_calls import OpenAI
 import openai
 from os import environ as env
+from general_option_creator_v1 import general_option_creator_v1
 
 app = FastAPI()
 app.add_middleware(
@@ -240,9 +241,9 @@ async def webhook(request: Request):
     
 
 @app.post("/async_text_fact_breakdown/")
-async def async_text_fact_breakdown(request: Request, user_id: str = Header(None, alias="User-ID")):
-
-    userPerms = checkUserPerms(user_id)
+async def async_text_fact_breakdown(request: Request, user_id: str = Header(None, alias="User-ID"), choice : str = Header(None, alias="Choice")):
+    
+    userPerms = checkUserPerms(user_id)     
     if not userPerms:
         return JSONResponse(status_code=403, content={"error" : "tier_too_low"})
     
@@ -253,6 +254,8 @@ async def async_text_fact_breakdown(request: Request, user_id: str = Header(None
         return JSONResponse(status_code=413, content={"error" : "Request entity too large"})
     else:
         text_facts = await text_fact_transformer_V1(text)
+        if(choice == 1) : 
+            text_facts = general_option_creator_v1(text=text, lesson_facts=text_facts)
         question_count = count_facts(text_facts['lesson_facts'])
         incrementRedisRequestCount(user_id, question_count)
         return JSONResponse(status_code=200, content=text_facts)
@@ -260,7 +263,6 @@ async def async_text_fact_breakdown(request: Request, user_id: str = Header(None
 
 @app.post('/file_input') 
 async def handleFileInput(file : UploadFile = File(...), user_id : str = Header(None, alias="User-ID")) : 
-
     print("THIS IS THE USER ID TAKEN FROM AS A HEADER IN THE FILE INPUT : ", user_id)
     userPerms = checkUserPerms(user_id)
     if userPerms == False : 

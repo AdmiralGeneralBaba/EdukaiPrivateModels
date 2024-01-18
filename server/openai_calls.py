@@ -5,7 +5,6 @@ import openai
 import os
 
 class OpenAI: 
-    
     def open_ai_gpt_call(self, user_content, prompt=None, setTemperature=None):
         try:
             # Initialize messages
@@ -47,6 +46,7 @@ class OpenAI:
             # Handle other exceptions
             print(f"An unexpected error occurred: {e}")
             return f"An unexpected error occurred: {e}"
+        
     def open_ai_gpt4_call(self, user_content, prompt=None, setTemperature=None):
         # Initialize messages
         messages = []
@@ -76,6 +76,7 @@ class OpenAI:
 
         reply_content = completion.choices[0].message.content
         return reply_content  # Returning the reply_content from the function
+    
     def open_ai_gpt4_turbo_call(self, user_content, prompt=None, setTemperature=None):
         # Initialize messages
         messages = []
@@ -116,7 +117,6 @@ class OpenAI:
         image_url = response['data'][0]['url']
         return image_url
     
-
     def open_ai_gpt3_16k_call(self, user_content, prompt=None, setTemperature=None):
         # Initialize messages
         messages = []
@@ -146,6 +146,8 @@ class OpenAI:
 
         reply_content = completion.choices[0].message.content
         return reply_content  # Returning the reply_content from the function 
+
+
 
     async def async_open_ai_gpt_call(self, user_content, prompt=None, setTemperature=None):
         # Initialize messages
@@ -237,7 +239,7 @@ class OpenAI:
         reply_content = completion.choices[0].message.content
         return reply_content  # Returning the reply_content from the function
     
-    async def async_open_ai_gpt_call(self, user_content, prompt=None, setTemperature=None):
+    async def async_open_ai_gpt3_16k_call(self, user_content, prompt=None, setTemperature=None):
         # Initialize messages
         messages = []
 

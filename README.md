@@ -1,6 +1,6 @@
 # EdukaiPrivateModels
-- PRIVATE EYES ONLY - THIS MUST BE KEPT SECRET AT ALL COSTS
-- As of 29/07/2023, it can create (based on a inputted PDF) : 
+- PRIVATE EYES ONLY 
+
 
 - Flashcards 
 - Powerpoint slide content (Picture search query, content, titles etc)
@@ -19,7 +19,7 @@ Aim to add in :
 
 
 
-Things to do with the code AS OF 29/07/2023 : 
+
 1. Create the flashcard model again - have it not have to call a function for every specific fact DONE 
 2. Create the 'homework_creator' method, that only creates homework for one lesson in the yearly lesson facts assigner. 
 3. Need to import the 'powerpoint_creator' into the yearly_plan_ai_models. 

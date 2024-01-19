@@ -250,7 +250,7 @@ async def async_text_fact_breakdown(request: Request, user_id: str = Header(None
     text = await request.body()
     text = text.decode("utf-8")
 
-    if len(text) > 20000: 
+    if len(text) > 30000: 
         return JSONResponse(status_code=413, content={"error" : "Request entity too large"})
     else:
         text_facts = await text_fact_transformer_V1(text)

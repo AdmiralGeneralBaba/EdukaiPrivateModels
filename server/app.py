@@ -168,8 +168,8 @@ async def create_checkout_session(CheckoutModel : CheckoutModel):
                 },
             ],
             mode='subscription',
-            success_url='https://algoco.ai' + 'input',
-            cancel_url='https://algoco.ai' + 'subscriptions',
+            success_url='https://algoco.ai/' + 'input',
+            cancel_url='https://algoco.ai/' + 'subscriptions',
         )
     except Exception as e:
         return str(e)

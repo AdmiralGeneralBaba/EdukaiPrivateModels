@@ -38,8 +38,8 @@ app.add_middleware(
 for key, value in os.environ.items():
     print(f"{key}: {value}")
 
-# Stripe API key : 
-print(env['MY_VARIABLE'])
+# # Stripe API key : 
+# print(env['MY_VARIABLE'])
 #API key setup
 stripe.api_key = os.getenv("STRIPE_API")
 openai.api_key = os.getenv('OPENAI_API_KEY')
@@ -241,8 +241,8 @@ async def webhook(request: Request):
     
 
 @app.post("/async_text_fact_breakdown/")
-async def async_text_fact_breakdown(request: Request, user_id: str = Header(None, alias="User-ID"), choice : str = Header(None, alias="Choice")):
-    
+async def async_text_fact_breakdown(request: Request, user_id: str = Header(None, alias="User-ID"), choice : int = Header(None, alias="Choice")):
+    print(choice)
     userPerms = checkUserPerms(user_id)     
     if not userPerms:
         return JSONResponse(status_code=403, content={"error" : "tier_too_low"})
@@ -254,8 +254,15 @@ async def async_text_fact_breakdown(request: Request, user_id: str = Header(None
         return JSONResponse(status_code=413, content={"error" : "Request entity too large"})
     else:
         text_facts = await text_fact_transformer_V1(text)
-        if(choice == 1) : 
-            text_facts = general_option_creator_v1(text=text, lesson_facts=text_facts)
+        if(choice == 0) : 
+            print(text_facts)
+            print("THIS IS GOING TO GENERAL OPTION CREATOR")
+            new_text_facts = general_option_creator_v1(text=text, lesson_facts=text_facts['lesson_facts'])
+            print("these are the new text facts : ", new_text_facts )
+            question_count = count_facts(new_text_facts['lesson_facts'])
+            incrementRedisRequestCount(user_id, question_count)
+            return JSONResponse(status_code=200, content=new_text_facts)
+        
         question_count = count_facts(text_facts['lesson_facts'])
         incrementRedisRequestCount(user_id, question_count)
         return JSONResponse(status_code=200, content=text_facts)
